@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     webpackBuildWorker: true,
+    optimizeCss: true,
   },
   webpack: (config, { isServer }) => {
     config.optimization = {
