@@ -11,7 +11,8 @@ import {
   Code,
   ArrowRight,
   CheckCircle,
-  AlertTriangle
+  AlertTriangle,
+  GitBranch
 } from 'lucide-react';
 import { 
   Card, 

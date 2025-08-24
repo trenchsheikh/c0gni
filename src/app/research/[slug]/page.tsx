@@ -439,7 +439,7 @@ export default async function PaperPage({ params }: { params: Promise<{ slug: st
                     {children}
                   </td>
                 ),
-                code: ({node, inline, className, children, ...props}) => {
+                code: ({node, inline, className, children, ...props}: any) => {
                   const match = /language-(\w+)/.exec(className || '');
                   return !inline && match ? (
                     <div className="mb-8">
