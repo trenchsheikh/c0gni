@@ -12,7 +12,10 @@ import {
   Shield,
   Download,
   ExternalLink,
-  ArrowRight
+  ArrowRight,
+  BarChart3,
+  Rocket,
+  GitBranch
 } from 'lucide-react';
 import { 
   Card, 
