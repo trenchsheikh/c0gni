@@ -191,9 +191,8 @@ The framework's robustness and adaptability make it suitable for practical deplo
   }
 };
 
-export default async function PaperPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const paper = papers[slug as keyof typeof papers];
+export default function PaperPage({ params }: { params: { slug: string } }) {
+  const paper = papers[params.slug as keyof typeof papers];
   
   if (!paper) {
     notFound();
