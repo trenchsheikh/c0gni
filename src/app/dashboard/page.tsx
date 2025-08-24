@@ -141,7 +141,7 @@ export default function DashboardOverview() {
       >
         <h3 className="text-xl font-medium text-white mb-6">Quick Actions</h3>
         <div className="grid md:grid-cols-3 gap-4">
-          {["Deploy New Model", "Create Project", "Generate Report"].map((action, index) => (
+          {["Deploy New Model", "Create Project", "Generate Report"].map((action) => (
             <motion.button
               key={action}
               whileHover={{ scale: 1.02, y: -2 }}

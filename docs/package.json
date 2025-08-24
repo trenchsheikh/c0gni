@@ -1,0 +1,24 @@
+{
+  "name": "c0gni-docs",
+  "version": "1.0.0",
+  "description": "c0gni Agent Operating System Documentation",
+  "scripts": {
+    "dev": "mintlify dev",
+    "preview": "mintlify dev",
+    "build": "mintlify build",
+    "start": "mintlify dev"
+  },
+  "dependencies": {
+    "mintlify": "^4.0.0"
+  },
+  "keywords": [
+    "c0gni",
+    "autonomous agents", 
+    "AI trading",
+    "Solana",
+    "DeFi",
+    "documentation"
+  ],
+  "author": "Cogni Labs",
+  "license": "MIT"
+}

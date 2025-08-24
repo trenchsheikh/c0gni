@@ -5,9 +5,9 @@ import {
 
 export default function PartnerLogos() {
   return (
-    <section className="w-full bg-[#0A0A0A] py-16">
+    <section className="w-full bg-[#0A0A0A] py-8 sm:py-12 md:py-16">
       <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
-        <ScrollVelocityContainer className="text-xl md:text-3xl lg:text-4xl font-bold tracking-[-0.02em] text-white/40">
+        <ScrollVelocityContainer className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold tracking-[-0.02em] text-white/40">
           <ScrollVelocityRow baseVelocity={1} direction={1}>
             Google Cloud • Microsoft Azure • Amazon Web Services • NVIDIA • 
           </ScrollVelocityRow>

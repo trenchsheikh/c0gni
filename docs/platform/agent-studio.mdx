@@ -1,0 +1,633 @@
+---
+title: 'Agent Studio'
+description: 'Code-first SDK for building custom autonomous trading agents'
+---
+
+# Agent Studio
+
+Agent Studio is the development environment for elite builders who want complete control over their trading strategies. Build custom agents using Python or TypeScript, test them locally, and deploy to the c0gni network.
+
+<CardGroup cols={2}>
+  <Card title="Code-First Development" icon="code">
+    **Full Programming Control**
+    
+    Python & TypeScript SDKs with complete access to agent capabilities
+  </Card>
+  
+  <Card title="Local Simulation" icon="play">
+    **Risk-Free Testing**
+    
+    Test strategies against historical data before risking capital
+  </Card>
+  
+  <Card title="LLM Integration" icon="brain">
+    **AI-Powered Logic**
+    
+    Integrate large language models for intelligent decision making
+  </Card>
+  
+  <Card title="Advanced Analytics" icon="chart-mixed">
+    **Deep Insights**
+    
+    Comprehensive backtesting and performance analysis tools
+  </Card>
+</CardGroup>
+
+## SDK Overview
+
+### Python SDK
+
+```python
+from c0gni import BaseAgent, MarketData, Decision, TradeResult
+
+class CustomSniperAgent(BaseAgent):
+    def __init__(self, config):
+        super().__init__(config)
+        self.min_liquidity = config.get('min_liquidity', 100000)
+        self.social_weight = config.get('social_weight', 0.3)
+        
+    async def analyze_opportunity(self, opportunity):
+        """Custom analysis logic"""
+        
+        # Technical analysis
+        technical_score = self.calculate_technical_score(opportunity)
+        
+        # Social sentiment analysis
+        social_score = await self.get_social_sentiment(opportunity.token)
+        
+        # Liquidity analysis
+        liquidity_score = self.assess_liquidity(opportunity)
+        
+        # Combined scoring
+        final_score = (
+            technical_score * 0.4 +
+            social_score * self.social_weight +
+            liquidity_score * 0.3
+        )
+        
+        return Decision(
+            action='BUY' if final_score > 0.7 else 'PASS',
+            confidence=final_score,
+            reasoning=f"Technical: {technical_score:.2f}, Social: {social_score:.2f}, Liquidity: {liquidity_score:.2f}"
+        )
+    
+    async def execute_trade(self, decision, opportunity):
+        """Custom execution logic"""
+        if decision.action == 'BUY':
+            position_size = self.calculate_position_size(decision.confidence)
+            
+            return await self.submit_trade({
+                'token': opportunity.token,
+                'side': 'BUY',
+                'amount': position_size,
+                'slippage_tolerance': 0.05,
+                'use_jito': True,
+                'priority_fee': 'AUTO'
+            })
+```
+
+### TypeScript SDK
+
+```typescript
+import { BaseAgent, MarketData, Decision, AgentConfig } from '@c0gni/sdk';
+
+export class ArbitrageAgent extends BaseAgent {
+  private exchanges = ['Jupiter', 'Raydium', 'Orca'];
+  private minSpread: number;
+  
+  constructor(config: AgentConfig) {
+    super(config);
+    this.minSpread = config.minSpread || 0.005; // 0.5% minimum
+  }
+  
+  async findArbitrageOpportunities(): Promise<ArbitrageOpportunity[]> {
+    const opportunities: ArbitrageOpportunity[] = [];
+    
+    for (const token of this.monitoredTokens) {
+      const prices = await Promise.all(
+        this.exchanges.map(exchange => this.getPrice(token, exchange))
+      );
+      
+      const maxPrice = Math.max(...prices);
+      const minPrice = Math.min(...prices);
+      const spread = (maxPrice - minPrice) / minPrice;
+      
+      if (spread > this.minSpread) {
+        opportunities.push({
+          token,
+          buyExchange: this.exchanges[prices.indexOf(minPrice)],
+          sellExchange: this.exchanges[prices.indexOf(maxPrice)],
+          spread,
+          profitEstimate: this.calculateProfit(spread, token)
+        });
+      }
+    }
+    
+    return opportunities.sort((a, b) => b.spread - a.spread);
+  }
+  
+  async executeArbitrage(opportunity: ArbitrageOpportunity): Promise<TradeResult> {
+    // Execute simultaneous buy/sell orders
+    const [buyResult, sellResult] = await Promise.all([
+      this.placeBuyOrder(opportunity),
+      this.placeSellOrder(opportunity)
+    ]);
+    
+    return this.combineResults(buyResult, sellResult);
+  }
+}
+```
+
+## Development Environment
+
+### Local Setup
+
+<Steps>
+  <Step title="Install SDK">
+    ```bash
+    # Python
+    pip install c0gni-sdk
+    
+    # TypeScript/Node.js
+    npm install @c0gni/sdk
+    ```
+  </Step>
+  
+  <Step title="Configure Environment">
+    ```python
+    # config.py
+    import os
+    
+    AGENT_CONFIG = {
+        'rpc_url': os.getenv('SOLANA_RPC_URL'),
+        'wallet_private_key': os.getenv('AGENT_PRIVATE_KEY'),
+        'environment': 'development',  # or 'production'
+        'simulation_mode': True,       # Safe testing mode
+    }
+    ```
+  </Step>
+  
+  <Step title="Initialize Development Agent">
+    ```python
+    from c0gni import DevelopmentAgent
+    
+    # Create development instance
+    dev_agent = DevelopmentAgent(AGENT_CONFIG)
+    
+    # Load historical data for testing
+    historical_data = dev_agent.load_market_data(
+        start_date='2024-01-01',
+        end_date='2024-12-01'
+    )
+    
+    print(f"Loaded {len(historical_data)} data points")
+    ```
+  </Step>
+</Steps>
+
+### Simulation Environment
+
+<Tabs>
+  <Tab title="Backtesting Engine">
+    **Historical Performance Testing**
+    
+    ```python
+    from c0gni.simulation import BacktestEngine
+    
+    class BacktestRunner:
+        def __init__(self, agent_class, config):
+            self.engine = BacktestEngine()
+            self.agent = agent_class(config)
+            
+        async def run_backtest(self, start_date, end_date):
+            # Load historical market data
+            market_data = await self.engine.load_data(start_date, end_date)
+            
+            results = BacktestResults()
+            
+            for timestamp, data in market_data:
+                # Simulate market conditions at this timestamp
+                self.engine.set_timestamp(timestamp)
+                
+                # Let agent analyze and make decisions
+                opportunities = self.agent.scan_opportunities(data)
+                
+                for opp in opportunities:
+                    decision = await self.agent.analyze_opportunity(opp)
+                    
+                    if decision.action == 'BUY':
+                        trade = await self.engine.simulate_trade(decision, opp)
+                        results.add_trade(trade)
+            
+            return results.generate_report()
+    ```
+  </Tab>
+  
+  <Tab title="Paper Trading">
+    **Live Market Simulation**
+    
+    ```typescript
+    interface PaperTradingConfig {
+      initialCapital: number;
+      enableSlippage: boolean;
+      enableFees: boolean;
+      marketImpact: boolean;
+      latencySimulation: boolean;
+    }
+    
+    class PaperTrader {
+      private virtualPortfolio: Portfolio;
+      private tradeHistory: Trade[];
+      
+      constructor(config: PaperTradingConfig) {
+        this.virtualPortfolio = new Portfolio(config.initialCapital);
+        this.tradeHistory = [];
+      }
+      
+      async simulateTrade(trade: TradeRequest): Promise<TradeResult> {
+        // Simulate real-world trading conditions
+        const slippage = this.calculateSlippage(trade);
+        const fees = this.calculateFees(trade);
+        const latency = await this.simulateLatency();
+        
+        // Execute virtual trade
+        const result = await this.executeVirtualTrade(trade, slippage, fees);
+        
+        this.tradeHistory.push(result);
+        this.updatePortfolio(result);
+        
+        return result;
+      }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="A/B Testing Framework">
+    **Strategy Comparison**
+    
+    ```python
+    class StrategyComparison:
+        def __init__(self, strategy_a, strategy_b, test_config):
+            self.strategy_a = strategy_a
+            self.strategy_b = strategy_b
+            self.config = test_config
+            
+        async def run_comparison(self, duration_days=30):
+            # Split data randomly between strategies
+            data_a, data_b = self.split_market_data(duration_days)
+            
+            # Run both strategies simultaneously
+            results_a = await self.run_strategy(self.strategy_a, data_a)
+            results_b = await self.run_strategy(self.strategy_b, data_b)
+            
+            # Statistical analysis
+            significance = self.calculate_significance(results_a, results_b)
+            
+            return ComparisonReport(
+                strategy_a_results=results_a,
+                strategy_b_results=results_b,
+                winner=self.determine_winner(results_a, results_b),
+                statistical_significance=significance,
+                recommendations=self.generate_recommendations()
+            )
+    ```
+  </Tab>
+</Tabs>
+
+## Advanced Features
+
+### LLM Integration
+
+<AccordionGroup>
+  <Accordion title="GPT-4 Integration">
+    **AI-Powered Decision Making**
+    
+    ```python
+    from c0gni.llm import GPTAnalyzer
+    
+    class LLMEnhancedAgent(BaseAgent):
+        def __init__(self, config):
+            super().__init__(config)
+            self.llm = GPTAnalyzer(api_key=config.openai_key)
+            
+        async def analyze_with_llm(self, opportunity):
+            prompt = f"""
+            Analyze this trading opportunity:
+            
+            Token: {opportunity.token}
+            Current Price: ${opportunity.price}
+            24h Volume: ${opportunity.volume}
+            Liquidity: ${opportunity.liquidity}
+            Social Sentiment: {opportunity.sentiment}
+            
+            Recent News: {opportunity.news}
+            
+            Should I trade this token? Consider:
+            1. Risk factors
+            2. Profit potential  
+            3. Market conditions
+            4. Technical indicators
+            
+            Respond with BUY/SELL/HOLD and confidence score 0-100.
+            """
+            
+            response = await self.llm.analyze(prompt)
+            
+            return self.parse_llm_response(response)
+    ```
+  </Accordion>
+  
+  <Accordion title="Custom Model Integration">
+    **Your Own AI Models**
+    
+    ```python
+    from c0gni.ai import CustomModelInterface
+    
+    class MyCustomModel(CustomModelInterface):
+        def __init__(self, model_path):
+            self.model = self.load_model(model_path)
+            
+        async def predict(self, features):
+            # Custom prediction logic
+            prediction = self.model.predict(features)
+            confidence = self.model.predict_proba(features).max()
+            
+            return {
+                'prediction': prediction,
+                'confidence': confidence,
+                'features_used': features.keys()
+            }
+    
+    # Use in agent
+    class AIAgent(BaseAgent):
+        def __init__(self, config):
+            super().__init__(config)
+            self.model = MyCustomModel(config.model_path)
+            
+        async def make_decision(self, opportunity):
+            features = self.extract_features(opportunity)
+            prediction = await self.model.predict(features)
+            
+            return Decision(
+                action=prediction['prediction'],
+                confidence=prediction['confidence']
+            )
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Custom Indicators & Analytics
+
+<Tabs>
+  <Tab title="Technical Indicators">
+    **Custom TA Library**
+    
+    ```python
+    from c0gni.indicators import IndicatorBase
+    
+    class CustomRSI(IndicatorBase):
+        def __init__(self, period=14, overbought=70, oversold=30):
+            self.period = period
+            self.overbought = overbought
+            self.oversold = oversold
+            
+        def calculate(self, prices):
+            """Calculate RSI with custom logic"""
+            deltas = np.diff(prices)
+            gains = np.where(deltas > 0, deltas, 0)
+            losses = np.where(deltas < 0, -deltas, 0)
+            
+            avg_gain = np.mean(gains[-self.period:])
+            avg_loss = np.mean(losses[-self.period:])
+            
+            rs = avg_gain / avg_loss if avg_loss != 0 else 100
+            rsi = 100 - (100 / (1 + rs))
+            
+            return {
+                'value': rsi,
+                'signal': self.get_signal(rsi),
+                'strength': abs(rsi - 50) / 50
+            }
+            
+        def get_signal(self, rsi):
+            if rsi > self.overbought:
+                return 'SELL'
+            elif rsi < self.oversold:
+                return 'BUY'
+            else:
+                return 'NEUTRAL'
+    ```
+  </Tab>
+  
+  <Tab title="Social Sentiment">
+    **Social Media Analysis**
+    
+    ```typescript
+    import { SentimentAnalyzer, SocialDataProvider } from '@c0gni/social';
+    
+    class SocialSentimentAgent extends BaseAgent {
+      private sentiment: SentimentAnalyzer;
+      private social: SocialDataProvider;
+      
+      constructor(config: AgentConfig) {
+        super(config);
+        this.sentiment = new SentimentAnalyzer(config.sentimentConfig);
+        this.social = new SocialDataProvider(config.socialConfig);
+      }
+      
+      async analyzeSocialSentiment(token: string): Promise<SentimentScore> {
+        // Gather social media mentions
+        const mentions = await this.social.getMentions(token, {
+          sources: ['twitter', 'discord', 'telegram'],
+          timeframe: '24h',
+          minFollowers: 1000
+        });
+        
+        // Analyze sentiment
+        const scores = await Promise.all(
+          mentions.map(mention => this.sentiment.analyze(mention.text))
+        );
+        
+        // Weighted average by influence
+        const weightedScore = this.calculateWeightedSentiment(scores, mentions);
+        
+        return {
+          score: weightedScore,
+          confidence: this.calculateConfidence(scores),
+          volume: mentions.length,
+          trending: this.detectTrend(mentions)
+        };
+      }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="On-Chain Analytics">
+    **Blockchain Data Analysis**
+    
+    ```python
+    from c0gni.onchain import OnChainAnalyzer
+    
+    class OnChainAgent(BaseAgent):
+        def __init__(self, config):
+            super().__init__(config)
+            self.analyzer = OnChainAnalyzer()
+            
+        async def analyze_token_health(self, token_mint):
+            # Holder distribution analysis
+            holders = await self.analyzer.get_holder_distribution(token_mint)
+            
+            # Trading volume patterns
+            volume_analysis = await self.analyzer.analyze_volume_patterns(token_mint)
+            
+            # Whale activity detection
+            whale_activity = await self.analyzer.detect_whale_movements(token_mint)
+            
+            # Liquidity pool analysis
+            lp_health = await self.analyzer.assess_liquidity_health(token_mint)
+            
+            return TokenHealthScore(
+                holder_concentration=self.score_holder_distribution(holders),
+                volume_legitimacy=self.score_volume_patterns(volume_analysis),
+                whale_risk=self.assess_whale_risk(whale_activity),
+                liquidity_stability=self.score_liquidity(lp_health)
+            )
+    ```
+  </Tab>
+</Tabs>
+
+## Deployment & Production
+
+### Testing Pipeline
+
+<Steps>
+  <Step title="Unit Testing">
+    ```python
+    import unittest
+    from c0gni.testing import AgentTestCase
+    
+    class TestMyAgent(AgentTestCase):
+        def setUp(self):
+            self.agent = MyCustomAgent(self.get_test_config())
+            
+        async def test_opportunity_analysis(self):
+            # Test with known good opportunity
+            opportunity = self.create_test_opportunity('good')
+            decision = await self.agent.analyze_opportunity(opportunity)
+            
+            self.assertEqual(decision.action, 'BUY')
+            self.assertGreater(decision.confidence, 0.7)
+            
+        async def test_risk_management(self):
+            # Test risk controls
+            large_position = self.create_large_position_request()
+            result = await self.agent.validate_trade(large_position)
+            
+            self.assertFalse(result.approved)
+            self.assertIn('position too large', result.reason.lower())
+    ```
+  </Step>
+  
+  <Step title="Integration Testing">
+    ```python
+    from c0gni.testing import IntegrationTestSuite
+    
+    class AgentIntegrationTest(IntegrationTestSuite):
+        async def test_full_trading_cycle(self):
+            # Test complete trading workflow
+            
+            # 1. Market scanning
+            opportunities = await self.agent.scan_market()
+            self.assertGreater(len(opportunities), 0)
+            
+            # 2. Opportunity analysis
+            decisions = []
+            for opp in opportunities[:5]:  # Test first 5
+                decision = await self.agent.analyze_opportunity(opp)
+                decisions.append(decision)
+                
+            # 3. Trade execution (simulation)
+            for decision in decisions:
+                if decision.action == 'BUY':
+                    result = await self.agent.execute_trade(decision)
+                    self.assertTrue(result.success)
+    ```
+  </Step>
+  
+  <Step title="Production Deployment">
+    ```python
+    from c0gni.deployment import ProductionDeployer
+    
+    class ProductionSetup:
+        def deploy_agent(self, agent_code, config):
+            deployer = ProductionDeployer()
+            
+            # Validate agent code
+            validation = deployer.validate_agent(agent_code)
+            if not validation.passed:
+                raise ValueError(f"Validation failed: {validation.errors}")
+            
+            # Deploy to production
+            deployment = deployer.deploy(
+                agent_code=agent_code,
+                config=config,
+                environment='production',
+                monitoring_enabled=True
+            )
+            
+            return deployment
+    ```
+  </Step>
+</Steps>
+
+### Monitoring & Analytics
+
+<CardGroup cols={2}>
+  <Card title="Performance Monitoring" icon="chart-line">
+    **Real-Time Agent Tracking**
+    
+    - Live performance metrics
+    - Error tracking and alerting
+    - Resource usage monitoring
+    - Trade execution analytics
+  </Card>
+  
+  <Card title="Custom Dashboards" icon="dashboard">
+    **Personalized Analytics**
+    
+    - Custom metric visualization
+    - Strategy comparison tools
+    - Portfolio analytics
+    - Risk monitoring dashboards
+  </Card>
+</CardGroup>
+
+## Getting Started with Agent Studio
+
+<Steps>
+  <Step title="Install SDK">
+    Choose your preferred language and install the SDK
+  </Step>
+  
+  <Step title="Build Simple Agent">
+    Start with a basic agent template and customize it
+  </Step>
+  
+  <Step title="Test Locally">
+    Use simulation environment to validate your strategy
+  </Step>
+  
+  <Step title="Deploy to Production">
+    Launch your tested agent on the c0gni network
+  </Step>
+</Steps>
+
+<CardGroup cols={2}>
+  <Card title="SDK Documentation" icon="book" href="/sdk/introduction">
+    Complete SDK reference and examples
+  </Card>
+  
+  <Card title="Agent Examples" icon="code-branch" href="/sdk/examples">
+    Ready-to-use agent implementations
+  </Card>
+</CardGroup>

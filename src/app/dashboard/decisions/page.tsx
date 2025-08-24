@@ -3,23 +3,18 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { 
-  FileText, 
-  Brain, 
   CheckCircle, 
   XCircle, 
   Clock, 
-  Eye, 
-  TrendingUp, 
-  Shield, 
   AlertTriangle,
   User,
   Bot,
   ChevronDown,
   ChevronRight,
   Code,
-  Activity,
   Target,
-  Filter
+  Filter,
+  Activity
 } from "lucide-react";
 
 const decisionFeed = [

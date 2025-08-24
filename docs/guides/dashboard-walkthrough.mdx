@@ -1,0 +1,618 @@
+---
+title: 'Dashboard Walkthrough'
+description: 'Complete guide to navigating and using the c0gni dashboard'
+---
+
+# Dashboard Walkthrough
+
+The c0gni dashboard is your command center for monitoring and controlling autonomous trading agents. This comprehensive guide will walk you through every feature and how to use them effectively.
+
+## Dashboard Overview
+
+<img src="/images/dashboard-overview.png" alt="c0gni Dashboard Overview" />
+
+<CardGroup cols={2}>
+  <Card title="Real-Time Monitoring" icon="chart-line">
+    **Live Performance Tracking**
+    
+    Monitor all your agents' performance with sub-second updates
+  </Card>
+  
+  <Card title="Intuitive Controls" icon="sliders">
+    **Easy Management**
+    
+    Start, stop, and configure agents with simple controls
+  </Card>
+  
+  <Card title="Deep Analytics" icon="magnifying-glass-chart">
+    **Comprehensive Insights**
+    
+    Detailed performance analysis and optimization recommendations
+  </Card>
+  
+  <Card title="Risk Monitoring" icon="shield-check">
+    **Safety First**
+    
+    Real-time risk assessment and automatic safety controls
+  </Card>
+</CardGroup>
+
+## Main Navigation
+
+### Top Navigation Bar
+
+<Tabs>
+  <Tab title="Portfolio Overview">
+    **Your Trading Portfolio**
+    
+    Quick access to portfolio-wide metrics:
+    
+    ```typescript
+    interface PortfolioMetrics {
+      totalValue: number;        // Current portfolio value in SOL
+      dailyPnL: number;         // Today's profit/loss
+      totalReturn: number;      // All-time return percentage
+      activeAgents: number;     // Currently running agents
+      successRate: number;     // Overall success rate
+      riskScore: number;        // Current risk level (0-100)
+    }
+    ```
+    
+    **Key Features:**
+    - Real-time value updates
+    - Performance comparison charts
+    - Risk level indicators
+    - Quick action buttons
+  </Tab>
+  
+  <Tab title="Alerts & Notifications">
+    **Stay Informed**
+    
+    The notification center shows:
+    
+    - **Performance Alerts**: Significant gains or losses
+    - **Risk Warnings**: When agents exceed risk thresholds
+    - **System Updates**: Platform news and updates
+    - **Trade Confirmations**: Successful trade executions
+    
+    <AccordionGroup>
+      <Accordion title="Alert Types">
+        - 🔴 **Critical**: Immediate action required
+        - 🟡 **Warning**: Monitor closely
+        - 🟢 **Success**: Positive performance
+        - 🔵 **Info**: General updates
+      </Accordion>
+      
+      <Accordion title="Notification Settings">
+        Customize alerts for:
+        - Performance thresholds
+        - Risk levels
+        - Trade confirmations
+        - System maintenance
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Quick Actions">
+    **Fast Controls**
+    
+    Instant access to common actions:
+    
+    - **Emergency Stop All**: Halt all agent trading
+    - **Deploy New Agent**: Quick agent deployment
+    - **Fund Agents**: Add capital to agent wallets
+    - **Generate Report**: Create performance summary
+    
+    ```json
+    {
+      "emergencyStop": {
+        "confirmation": "required",
+        "affects": "all_active_agents",
+        "reversible": true
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Agent Status Monitor
+
+### Real-Time Agent Grid
+
+<img src="/images/agent-grid.png" alt="Agent Status Grid" />
+
+Each agent card displays:
+
+<AccordionGroup>
+  <Accordion title="Agent Identity">
+    **Basic Information**
+    
+    - **Agent Name**: Custom or auto-generated name
+    - **Agent Type**: Sniper, Arbitrage, LP Optimizer, etc.
+    - **Status Indicator**: Active, Idle, Error, Learning
+    - **Uptime**: How long the agent has been running
+    
+    ```typescript
+    interface AgentIdentity {
+      id: string;
+      name: string;
+      type: AgentType;
+      status: 'active' | 'idle' | 'error' | 'learning';
+      uptime: number;        // Hours
+      lastSeen: Date;
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Performance Metrics">
+    **Key Performance Indicators**
+    
+    - **Success Rate**: Percentage of profitable trades
+    - **Total PnL**: Cumulative profit/loss
+    - **ROI**: Return on investment percentage
+    - **Trades Today**: Number of trades executed
+    - **Average Trade Time**: Typical holding period
+    
+    Color-coded performance indicators:
+    - 🟢 **Green**: Outperforming expectations
+    - 🟡 **Yellow**: Meeting expectations
+    - 🔴 **Red**: Underperforming
+  </Accordion>
+  
+  <Accordion title="Current Activity">
+    **What's Happening Now**
+    
+    - **Active Positions**: Currently held tokens
+    - **Pending Orders**: Trades waiting to execute
+    - **Last Action**: Most recent agent activity
+    - **Next Action**: Predicted upcoming activity
+    
+    Real-time activity feed shows:
+    ```json
+    {
+      "timestamp": "2024-12-24T10:30:15Z",
+      "action": "BUY",
+      "token": "$BONK",
+      "amount": "1.2 SOL",
+      "confidence": 0.87,
+      "reasoning": "Strong social sentiment + technical breakout"
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Agent Detail View
+
+Click any agent to open detailed monitoring:
+
+<Tabs>
+  <Tab title="Performance Dashboard">
+    **Comprehensive Metrics**
+    
+    <img src="/images/agent-performance.png" alt="Agent Performance Dashboard" />
+    
+    **Charts Available:**
+    - Portfolio value over time
+    - Trade success rate trends
+    - Risk exposure timeline
+    - Execution speed metrics
+    - Comparison vs benchmarks
+    
+    **Interactive Features:**
+    - Zoom into specific time periods
+    - Compare multiple metrics
+    - Export data as CSV/PDF
+    - Share performance reports
+  </Tab>
+  
+  <Tab title="Trade History">
+    **Complete Trading Record**
+    
+    Detailed view of all agent trades:
+    
+    | Time | Token | Action | Amount | Price | PnL | Status |
+    |------|-------|--------|--------|-------|-----|--------|
+    | 10:30 | $BONK | BUY | 1.2 SOL | 0.0000234 | +0.3 SOL | ✅ |
+    | 10:15 | $PEPE | SELL | 0.8 SOL | 0.0000891 | +0.15 SOL | ✅ |
+    | 09:45 | $WIF | BUY | 2.1 SOL | 2.34 | -0.1 SOL | ❌ |
+    
+    **Trade Details Include:**
+    - Entry and exit prices
+    - Hold duration
+    - Fees paid
+    - Slippage experienced
+    - Execution speed
+    - Decision reasoning
+  </Tab>
+  
+  <Tab title="Risk Analysis">
+    **Risk Monitoring**
+    
+    **Current Risk Metrics:**
+    ```typescript
+    interface RiskMetrics {
+      portfolioRisk: number;      // Overall portfolio risk (0-100)
+      concentration: number;      // Single position concentration
+      volatility: number;         // Portfolio volatility
+      maxDrawdown: number;        // Largest loss from peak
+      var95: number;             // Value at Risk (95% confidence)
+      correlation: number;        // Cross-position correlation
+    }
+    ```
+    
+    **Risk Visualizations:**
+    - Risk heatmap by position
+    - Concentration analysis
+    - Correlation matrix
+    - Stress test scenarios
+  </Tab>
+  
+  <Tab title="Agent Configuration">
+    **Settings & Parameters**
+    
+    Adjust agent behavior in real-time:
+    
+    ```json
+    {
+      "riskParameters": {
+        "maxPositionSize": 0.25,
+        "stopLossLevel": 0.15,
+        "takeProfitLevel": 2.0,
+        "maxDailyLoss": 0.05
+      },
+      "executionSettings": {
+        "slippageTolerance": 0.05,
+        "priorityFees": "AUTO",
+        "mevProtection": true,
+        "partialFills": true
+      },
+      "learningSettings": {
+        "adaptationRate": 0.7,
+        "patternSensitivity": 0.8,
+        "riskLearning": true
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Trading Terminal
+
+### Live Trading Interface
+
+<img src="/images/trading-terminal.png" alt="Trading Terminal" />
+
+<Tabs>
+  <Tab title="Active Positions">
+    **Current Holdings Management**
+    
+    Monitor and manage all open positions:
+    
+    **Position Cards Show:**
+    - Token name and current price
+    - Entry price and current PnL
+    - Position size and allocation
+    - Time held and target exit
+    - Risk level and stop loss
+    
+    **Quick Actions:**
+    - Close position immediately
+    - Adjust stop loss/take profit
+    - Increase/decrease position size
+    - Set time-based exit
+    
+    ```typescript
+    interface Position {
+      token: string;
+      entryPrice: number;
+      currentPrice: number;
+      amount: number;
+      pnl: number;
+      pnlPercent: number;
+      timeHeld: number;        // minutes
+      stopLoss?: number;
+      takeProfit?: number;
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Execution Queue">
+    **Pending Operations**
+    
+    View and manage pending trades:
+    
+    **Queue Information:**
+    - Trade type (Buy/Sell/Arbitrage)
+    - Token and amount
+    - Priority level
+    - Estimated execution time
+    - Current status
+    
+    **Queue Management:**
+    - Cancel pending orders
+    - Adjust priority levels
+    - Modify order parameters
+    - View execution history
+    
+    **Status Indicators:**
+    - 🟡 **Pending**: Waiting for execution
+    - 🔵 **Processing**: Currently executing
+    - 🟢 **Completed**: Successfully executed
+    - 🔴 **Failed**: Execution failed
+  </Tab>
+  
+  <Tab title="Market Data">
+    **Real-Time Market Information**
+    
+    **Price Charts:**
+    - Real-time price feeds
+    - Multiple timeframes (1m, 5m, 15m, 1h, 4h, 1d)
+    - Technical indicators
+    - Volume analysis
+    
+    **Market Metrics:**
+    - Current prices across DEXs
+    - Liquidity depth
+    - Trading volume
+    - Price volatility
+    - Social sentiment
+    
+    **Opportunity Scanner:**
+    - New token launches
+    - Arbitrage opportunities
+    - Volume spikes
+    - Price breakouts
+  </Tab>
+</Tabs>
+
+## Analytics & Reporting
+
+### Performance Analytics
+
+<CardGroup cols={2}>
+  <Card title="Portfolio Performance" icon="chart-line">
+    **Overall Performance Tracking**
+    
+    - Total portfolio value over time
+    - Cumulative returns
+    - Risk-adjusted performance metrics
+    - Benchmark comparisons
+  </Card>
+  
+  <Card title="Agent Comparison" icon="arrows-left-right">
+    **Agent Performance Comparison**
+    
+    - Side-by-side agent metrics
+    - Performance rankings
+    - Strategy effectiveness
+    - Resource utilization
+  </Card>
+  
+  <Card title="Risk Analysis" icon="shield-exclamation">
+    **Risk Assessment Tools**
+    
+    - Portfolio risk decomposition
+    - Stress testing results
+    - Correlation analysis
+    - Value at Risk calculations
+  </Card>
+  
+  <Card title="Market Analysis" icon="globe">
+    **Market Condition Assessment**
+    
+    - Market regime identification
+    - Volatility analysis
+    - Opportunity assessment
+    - Competitive landscape
+  </Card>
+</CardGroup>
+
+### Custom Reports
+
+<Tabs>
+  <Tab title="Performance Reports">
+    **Automated Reporting**
+    
+    Generate comprehensive reports:
+    
+    **Report Types:**
+    - Daily performance summary
+    - Weekly portfolio review
+    - Monthly strategy analysis
+    - Custom date range reports
+    
+    **Report Contents:**
+    - Executive summary
+    - Detailed performance metrics
+    - Risk analysis
+    - Trade breakdown
+    - Recommendations
+    
+    **Export Options:**
+    - PDF for presentations
+    - CSV for spreadsheet analysis
+    - JSON for API integration
+    - Email delivery
+  </Tab>
+  
+  <Tab title="Tax Reporting">
+    **Automated Tax Documentation**
+    
+    **Tax Report Features:**
+    - Complete transaction history
+    - Realized gains/losses calculation
+    - Cost basis tracking
+    - Multiple accounting methods (FIFO, LIFO, Specific ID)
+    
+    **Supported Formats:**
+    - TurboTax compatible
+    - TaxAct compatible
+    - Generic CSV format
+    - Form 8949 preparation
+    
+    ```typescript
+    interface TaxTransaction {
+      date: Date;
+      type: 'BUY' | 'SELL';
+      token: string;
+      amount: number;
+      price: number;
+      fees: number;
+      realizedGainLoss?: number;
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Settings & Configuration
+
+### Account Settings
+
+<AccordionGroup>
+  <Accordion title="Profile Settings">
+    **Personal Information**
+    
+    - Display name
+    - Email address
+    - Notification preferences
+    - Timezone settings
+    - Language selection
+  </Accordion>
+  
+  <Accordion title="Security Settings">
+    **Account Security**
+    
+    - Two-factor authentication
+    - API key management
+    - Session management
+    - Wallet connections
+    - Login history
+  </Accordion>
+  
+  <Accordion title="Notification Preferences">
+    **Alert Configuration**
+    
+    ```json
+    {
+      "email": {
+        "performanceAlerts": true,
+        "riskWarnings": true,
+        "systemUpdates": false,
+        "weeklyReports": true
+      },
+      "push": {
+        "criticalAlerts": true,
+        "tradeConfirmations": false,
+        "dailySummaries": true
+      },
+      "sms": {
+        "emergencyOnly": true
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Global Controls
+
+<Tabs>
+  <Tab title="Risk Controls">
+    **Portfolio-Wide Risk Management**
+    
+    - Maximum total portfolio risk
+    - Individual agent risk limits
+    - Correlation limits
+    - Daily/weekly loss limits
+    - Emergency stop conditions
+    
+    ```typescript
+    interface GlobalRiskControls {
+      maxPortfolioRisk: number;      // 0-100 scale
+      maxSingleAgentRisk: number;    // % of portfolio
+      maxCorrelation: number;        // 0-1 scale
+      dailyLossLimit: number;        // % of portfolio
+      emergencyStopTrigger: number;  // % drawdown
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Execution Preferences">
+    **Trading Preferences**
+    
+    - Default slippage tolerance
+    - Priority fee strategy
+    - MEV protection settings
+    - Partial fill acceptance
+    - Retry logic configuration
+    
+    **Advanced Settings:**
+    - Custom RPC endpoints
+    - Transaction timeout values
+    - Gas optimization preferences
+    - Jito bundle settings
+  </Tab>
+</Tabs>
+
+## Mobile Responsiveness
+
+### Mobile Interface
+
+<Info>
+**Responsive Design**: The dashboard is fully optimized for mobile devices with touch-friendly controls and simplified layouts.
+</Info>
+
+**Mobile Features:**
+- Swipe navigation between sections
+- Touch-optimized controls
+- Simplified agent cards
+- Quick action buttons
+- Push notifications
+- Offline data caching
+
+**Mobile-Specific Views:**
+- Portfolio summary
+- Agent status list
+- Quick controls
+- Alert center
+- Performance charts (simplified)
+
+## Best Practices for Dashboard Use
+
+<Steps>
+  <Step title="Daily Monitoring Routine">
+    **Start Your Day Right**
+    
+    1. Check overnight performance
+    2. Review any alerts or warnings
+    3. Verify agent status and health
+    4. Check for market opportunities
+  </Step>
+  
+  <Step title="Weekly Analysis">
+    **Deeper Performance Review**
+    
+    1. Generate weekly performance report
+    2. Analyze agent performance trends
+    3. Review and adjust risk settings
+    4. Optimize underperforming agents
+  </Step>
+  
+  <Step title="Monthly Optimization">
+    **Strategic Review**
+    
+    1. Comprehensive portfolio analysis
+    2. Agent performance comparison
+    3. Strategy effectiveness review
+    4. Risk parameter adjustments
+  </Step>
+</Steps>
+
+<CardGroup cols={2}>
+  <Card title="Dashboard Tips" icon="lightbulb" href="/guides/dashboard-tips">
+    Pro tips for maximizing dashboard effectiveness
+  </Card>
+  
+  <Card title="Troubleshooting" icon="wrench" href="/support/troubleshooting">
+    Common issues and solutions
+  </Card>
+</CardGroup>

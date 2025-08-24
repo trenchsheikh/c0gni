@@ -6,7 +6,6 @@ import {
   Shield, 
   Wallet, 
   Lock, 
-  Key, 
   AlertTriangle, 
   CheckCircle, 
   XCircle, 
@@ -15,9 +14,6 @@ import {
   Settings, 
   Download, 
   Upload, 
-  Zap, 
-  Globe, 
-  Database, 
   Fingerprint,
   Activity,
   Clock

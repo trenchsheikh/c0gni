@@ -1,0 +1,653 @@
+---
+title: 'Agent Types'
+description: 'Comprehensive guide to different agent specializations and their capabilities'
+---
+
+# Agent Types
+
+c0gni offers specialized agents designed for different trading strategies and market conditions. Each agent type is optimized for specific use cases, with unique capabilities and performance characteristics.
+
+## Scout Agents
+
+<img src="/images/scout-agent.png" alt="Scout Agent monitoring multiple market feeds" />
+
+**The Market Watchers**
+
+Scout agents are the intelligence network of c0gni, continuously monitoring markets for emerging opportunities and threats.
+
+### Core Capabilities
+
+<Tabs>
+  <Tab title="Detection Speed">
+    **Ultra-Fast Opportunity Identification**
+    
+    - **New Token Launches**: Detected within 2-5 seconds of program deployment
+    - **Liquidity Events**: LP additions/removals tracked in real-time  
+    - **Price Movements**: 0.1s granularity across 500+ tokens
+    - **Volume Spikes**: Immediate alerts on unusual trading activity
+    
+    ```typescript
+    interface ScoutConfig {
+      monitoringTokens: number;     // 500+ simultaneous
+      detectionLatency: number;     // <5 seconds
+      falsePositiveRate: number;    // <3%
+      volumeThreshold: number;      // Custom spike detection
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Data Sources">
+    **Multi-Source Intelligence**
+    
+    - **On-Chain Events**: Direct Solana program monitoring
+    - **DEX APIs**: Jupiter, Raydium, Orca real-time feeds
+    - **Social Signals**: Twitter, Discord, Telegram sentiment
+    - **Whale Tracking**: Large wallet movement detection
+    - **News Aggregation**: Crypto news and announcement feeds
+  </Tab>
+  
+  <Tab title="Alert System">
+    **Intelligent Notification**
+    
+    ```python
+    class ScoutAlert:
+        def __init__(self):
+            self.priority_levels = {
+                'CRITICAL': 'Immediate execution recommended',
+                'HIGH': 'Strong opportunity detected', 
+                'MEDIUM': 'Worth investigating',
+                'LOW': 'Informational only'
+            }
+        
+        def generate_alert(self, opportunity):
+            return {
+                'token': opportunity.mint,
+                'type': 'NEW_LAUNCH',
+                'confidence': 0.87,
+                'expected_return': '2.3x',
+                'risk_level': 'MEDIUM',
+                'time_sensitive': True
+            }
+    ```
+  </Tab>
+</Tabs>
+
+### Performance Metrics
+
+| Metric | Target | Current Average |
+|--------|--------|----------------|
+| **Detection Latency** | <5s | 3.2s |
+| **Market Coverage** | 100% | 99.7% |
+| **False Positive Rate** | <5% | 2.8% |
+| **Uptime** | 99.9% | 99.95% |
+
+### Best Use Cases
+
+<AccordionGroup>
+  <Accordion title="New Launch Monitoring">
+    Perfect for traders wanting to catch tokens at launch before they pump
+    
+    - Monitors new program deployments
+    - Tracks initial liquidity additions
+    - Identifies promising projects early
+    - Alerts within seconds of opportunity
+  </Accordion>
+  
+  <Accordion title="Arbitrage Detection">
+    Finds price differences across DEXs for risk-free profits
+    
+    - Cross-DEX price monitoring
+    - Flash loan opportunity identification
+    - Route optimization calculations
+    - Execution timing optimization
+  </Accordion>
+  
+  <Accordion title="Whale Movement Tracking">
+    Monitors large wallet activities that often precede major price movements
+    
+    - Large transaction alerts
+    - Wallet clustering analysis
+    - Movement pattern recognition
+    - Institutional activity tracking
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Analyzer Agents
+
+<img src="/images/analyzer-agent.png" alt="Analyzer Agent performing contract safety analysis" />
+
+**The Risk Assessors**
+
+Analyzer agents perform deep due diligence on opportunities identified by Scouts, providing comprehensive risk assessments before trade execution.
+
+### Analysis Framework
+
+<Tabs>
+  <Tab title="Contract Safety">
+    **Smart Contract Security Analysis**
+    
+    ```typescript
+    interface ContractAnalysis {
+      mintAuthority: boolean;        // Can create more tokens?
+      freezeAuthority: boolean;      // Can freeze accounts?
+      liquidityLocked: boolean;      // Is liquidity locked?
+      honeypotRisk: RiskLevel;       // Can users sell?
+      ownershipRenounced: boolean;   // Decentralized control?
+      auditScore: number;            // 0-100 security score
+    }
+    
+    class ContractAnalyzer {
+      async analyzeContract(mint: PublicKey): Promise<ContractAnalysis> {
+        const analysis = await this.performSecurityScan(mint);
+        return {
+          ...analysis,
+          riskScore: this.calculateRiskScore(analysis),
+          recommendations: this.generateRecommendations(analysis)
+        };
+      }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Market Metrics">
+    **Fundamental Analysis**
+    
+    - **Liquidity Depth**: Available liquidity for different trade sizes
+    - **Holder Distribution**: Token concentration analysis
+    - **Trading Volume**: Historical and current volume patterns  
+    - **Price Volatility**: Statistical volatility measures
+    - **Market Cap**: Fully diluted and circulating valuations
+    
+    ```python
+    def analyze_market_health(token_data):
+        health_score = 0
+        
+        # Liquidity Analysis
+        if token_data.liquidity_usd > 50000:
+            health_score += 25
+        
+        # Holder Distribution  
+        if token_data.top_10_holder_pct < 50:
+            health_score += 25
+        
+        # Volume Analysis
+        if token_data.volume_24h > token_data.liquidity_usd * 0.5:
+            health_score += 25
+            
+        # Volatility Check
+        if token_data.volatility_24h < 50:
+            health_score += 25
+            
+        return health_score
+    ```
+  </Tab>
+  
+  <Tab title="Social Sentiment">
+    **Community & Sentiment Analysis**
+    
+    - **Social Media Mentions**: Twitter, Discord, Telegram volume
+    - **Sentiment Scoring**: AI-powered positive/negative analysis
+    - **Influencer Activity**: Key opinion leader engagement
+    - **Community Growth**: Follower/member growth rates
+    - **Developer Activity**: GitHub commits, updates, communication
+  </Tab>
+</Tabs>
+
+### Risk Assessment Categories
+
+<CardGroup cols={2}>
+  <Card title="Technical Risk" icon="code">
+    **Smart Contract Security**
+    - Honeypot detection: 99.2% accuracy
+    - Rug pull prediction: 94.8% accuracy  
+    - Mint authority analysis
+    - Ownership verification
+  </Card>
+  
+  <Card title="Market Risk" icon="chart-line">
+    **Market Structure Analysis**
+    - Liquidity depth assessment
+    - Volume/liquidity ratio
+    - Price impact calculations
+    - Holder concentration risk
+  </Card>
+  
+  <Card title="Social Risk" icon="users">
+    **Community Assessment**
+    - Sentiment analysis
+    - Community authenticity
+    - Developer credibility
+    - Social media manipulation detection
+  </Card>
+  
+  <Card title="Timing Risk" icon="clock">
+    **Market Timing Factors**
+    - Launch phase analysis
+    - Market cycle positioning
+    - Momentum indicators
+    - Seasonal patterns
+  </Card>
+</CardGroup>
+
+### Output & Recommendations
+
+```typescript
+interface AnalyzerOutput {
+  overallRisk: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  confidence: number;           // 0-100%
+  expectedReturn: number;       // Projected ROI
+  timeHorizon: string;         // Recommended holding period
+  positionSize: number;        // Suggested allocation %
+  entryStrategy: EntryPlan;
+  exitStrategy: ExitPlan;
+  warnings: string[];
+}
+```
+
+---
+
+## Trader Agents
+
+<img src="/images/trader-agent.png" alt="Trader Agent executing high-speed transactions" />
+
+**The Execution Specialists**
+
+Trader agents handle the actual buy/sell execution with optimized routing, timing, and MEV protection.
+
+### Execution Capabilities
+
+<Tabs>
+  <Tab title="Speed Optimization">
+    **Ultra-Low Latency Execution**
+    
+    - **Jito Bundle Integration**: Private mempool execution
+    - **Priority Fee Optimization**: Dynamic fee calculation
+    - **Route Pre-computation**: Fastest path identification
+    - **Retry Logic**: Intelligent resubmission strategies
+    
+    ```typescript
+    class SpeedOptimizer {
+      async optimizeExecution(trade: TradeParams): Promise<ExecutionPlan> {
+        const routes = await this.findOptimalRoutes(trade);
+        const fees = await this.calculatePriorityFees();
+        
+        return {
+          route: routes[0],              // Fastest available
+          priorityFee: fees.optimal,     // Speed vs cost optimized
+          bundleStrategy: 'JITO_FAST',   // MEV protection
+          retryAttempts: 3,              // Failure handling
+          expectedLatency: 287           // ms to confirmation
+        };
+      }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Route Optimization">
+    **Intelligent DEX Selection**
+    
+    - **Multi-DEX Analysis**: Jupiter, Raydium, Orca, Phoenix
+    - **Liquidity Assessment**: Real-time depth analysis
+    - **Price Impact Calculation**: Slippage minimization
+    - **Split Order Logic**: Large order optimization
+    
+    ```python
+    def find_best_route(token_in, token_out, amount):
+        routes = []
+        
+        # Check all major DEXs
+        for dex in ['Jupiter', 'Raydium', 'Orca']:
+            route = analyze_route(dex, token_in, token_out, amount)
+            routes.append({
+                'dex': dex,
+                'price': route.price,
+                'slippage': route.slippage,
+                'liquidity': route.liquidity,
+                'fees': route.fees
+            })
+        
+        # Return optimal route considering all factors
+        return optimize_for_execution(routes)
+    ```
+  </Tab>
+  
+  <Tab title="MEV Protection">
+    **Front-Running Prevention**
+    
+    - **Jito Bundles**: Private transaction execution
+    - **Timing Randomization**: Unpredictable execution patterns  
+    - **Sandwich Attack Detection**: Real-time protection
+    - **Priority Queue Management**: Strategic fee bidding
+  </Tab>
+</Tabs>
+
+### Trading Strategies
+
+<AccordionGroup>
+  <Accordion title="Sniper Strategy">
+    **New Launch Exploitation**
+    
+    Optimized for capturing new token launches with maximum efficiency:
+    
+    - Launch detection within 5 seconds
+    - Automated liquidity assessment
+    - Optimal entry size calculation
+    - Anti-rug pull protection
+    - Automated profit taking
+    
+    **Success Rate**: 73.2% | **Avg ROI**: 2.3x | **Speed**: <400ms
+  </Accordion>
+  
+  <Accordion title="Scalping Strategy">
+    **Short-Term Price Movements**
+    
+    Exploits small price movements with high frequency:
+    
+    - 1-5 minute holding periods
+    - Technical indicator integration
+    - Volume-based entry signals
+    - Tight risk management
+    - High win rate optimization
+    
+    **Success Rate**: 68.7% | **Avg ROI**: 0.3x | **Frequency**: 15-30 trades/day
+  </Accordion>
+  
+  <Accordion title="Momentum Strategy">
+    **Trend Following Execution**
+    
+    Rides existing price momentum with intelligent exits:
+    
+    - Multi-timeframe analysis
+    - Momentum confirmation
+    - Dynamic position sizing
+    - Trailing stop losses
+    - Profit scaling exits
+    
+    **Success Rate**: 71.5% | **Avg ROI**: 1.8x | **Hold Time**: 30min-2hours
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Hedger Agents
+
+<img src="/images/hedger-agent.png" alt="Hedger Agent managing portfolio risk" />
+
+**The Risk Managers**
+
+Hedger agents protect portfolios from adverse market movements through sophisticated risk management and hedging strategies.
+
+### Risk Management Tools
+
+<Tabs>
+  <Tab title="Delta Hedging">
+    **Directional Risk Neutralization**
+    
+    ```typescript
+    interface DeltaHedge {
+      portfolioDelta: number;      // Current directional exposure
+      targetDelta: number;         // Desired exposure level
+      hedgeInstruments: Asset[];   // Available hedging tools
+      rebalanceFrequency: string;  // How often to adjust
+    }
+    
+    class DeltaHedger {
+      async calculateHedgeRatio(portfolio: Portfolio): Promise<HedgeRatio> {
+        const currentDelta = this.calculatePortfolioDelta(portfolio);
+        const targetDelta = 0; // Market neutral
+        
+        return {
+          hedgeSize: Math.abs(currentDelta - targetDelta),
+          instrument: this.selectBestHedge(portfolio),
+          confidence: 0.94,
+          costBasisPoints: 12
+        };
+      }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Correlation Hedging">
+    **Cross-Asset Protection**
+    
+    - **Correlation Analysis**: Real-time correlation tracking
+    - **Pair Trading**: Long/short correlated assets
+    - **Beta Hedging**: Market exposure adjustment
+    - **Sector Rotation**: Defensive positioning
+  </Tab>
+  
+  <Tab title="Volatility Management">
+    **Volatility-Based Adjustments**
+    
+    - **VIX Tracking**: Volatility regime identification
+    - **Position Sizing**: Vol-adjusted position limits
+    - **Options Hedging**: Convexity protection
+    - **Stop Loss Optimization**: Dynamic risk levels
+  </Tab>
+</Tabs>
+
+### Protection Mechanisms
+
+<CardGroup cols={2}>
+  <Card title="Drawdown Protection" icon="trending-down">
+    **Maximum Loss Prevention**
+    - Real-time portfolio monitoring
+    - Automatic position reduction
+    - Emergency liquidation triggers
+    - Recovery optimization
+  </Card>
+  
+  <Card title="Black Swan Protection" icon="exclamation-triangle">
+    **Tail Risk Management**
+    - Extreme event detection
+    - Portfolio stress testing
+    - Emergency hedging activation
+    - Capital preservation mode
+  </Card>
+</CardGroup>
+
+---
+
+## Arbitrage Engines
+
+<img src="/images/arbitrage-agent.png" alt="Arbitrage Engine finding cross-DEX opportunities" />
+
+**The Profit Miners**
+
+Arbitrage engines identify and exploit price differences across DEXs for risk-free profits.
+
+### Arbitrage Types
+
+<Tabs>
+  <Tab title="Simple Arbitrage">
+    **Direct Price Differences**
+    
+    Buy low on one DEX, sell high on another:
+    
+    ```python
+    def find_arbitrage_opportunities():
+        opportunities = []
+        
+        for token in monitored_tokens:
+            prices = {
+                'Jupiter': get_price(token, 'Jupiter'),
+                'Raydium': get_price(token, 'Raydium'),
+                'Orca': get_price(token, 'Orca')
+            }
+            
+            max_price = max(prices.values())
+            min_price = min(prices.values())
+            spread = (max_price - min_price) / min_price
+            
+            if spread > 0.005:  # 0.5% minimum
+                opportunities.append({
+                    'token': token,
+                    'spread': spread,
+                    'buy_dex': min(prices, key=prices.get),
+                    'sell_dex': max(prices, key=prices.get),
+                    'profit_estimate': calculate_profit(spread, token)
+                })
+        
+        return opportunities
+    ```
+  </Tab>
+  
+  <Tab title="Triangular Arbitrage">
+    **Multi-Hop Profit Cycles**
+    
+    Exploit price differences across trading pairs:
+    
+    - SOL → TOKEN → USDC → SOL
+    - Identify profitable cycles
+    - Execute all trades atomically
+    - Account for fees and slippage
+  </Tab>
+  
+  <Tab title="Flash Loan Arbitrage">
+    **Capital-Free Arbitrage**
+    
+    Use flash loans to execute large arbitrage trades without capital:
+    
+    - Borrow large amounts instantly
+    - Execute arbitrage trade
+    - Repay loan with interest
+    - Keep the profit
+  </Tab>
+</Tabs>
+
+### Performance Characteristics
+
+| Metric | Target | Performance |
+|--------|--------|-------------|
+| **Success Rate** | >90% | 94.2% |
+| **Average Profit** | 0.5-2.0% | 1.2% |
+| **Execution Speed** | <500ms | 387ms |
+| **Capital Efficiency** | High turnover | 15x daily |
+
+---
+
+## LP Optimizer Agents
+
+<img src="/images/lp-optimizer-agent.png" alt="LP Optimizer managing liquidity positions" />
+
+**The Yield Farmers**
+
+LP Optimizer agents automatically manage liquidity positions to maximize fee generation and minimize impermanent loss.
+
+### Optimization Strategies
+
+<Tabs>
+  <Tab title="Dynamic Rebalancing">
+    **Active Position Management**
+    
+    ```typescript
+    interface LPPosition {
+      pool: string;
+      tokenA: Token;
+      tokenB: Token;
+      liquidity: number;
+      fees24h: number;
+      impermanentLoss: number;
+      apr: number;
+    }
+    
+    class LPOptimizer {
+      async optimizePosition(position: LPPosition): Promise<Action> {
+        const metrics = await this.calculateMetrics(position);
+        
+        if (metrics.impermanentLoss > 0.05) {
+          return { action: 'REBALANCE', reason: 'High IL risk' };
+        }
+        
+        if (metrics.apr < 0.15) {
+          return { action: 'MIGRATE', reason: 'Low yield' };
+        }
+        
+        return { action: 'HOLD', reason: 'Optimal performance' };
+      }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Pool Migration">
+    **Yield Maximization**
+    
+    - **APR Tracking**: Real-time yield comparison
+    - **Migration Logic**: Cost-benefit analysis
+    - **Timing Optimization**: Gas-efficient execution
+    - **Risk Assessment**: Pool safety evaluation
+  </Tab>
+  
+  <Tab title="Impermanent Loss Protection">
+    **IL Minimization Strategies**
+    
+    - **Correlation Monitoring**: Asset price relationship tracking
+    - **Hedging Positions**: Delta-neutral strategies
+    - **Exit Triggers**: Automated IL protection
+    - **Rebalancing Logic**: Optimal ratio maintenance
+  </Tab>
+</Tabs>
+
+---
+
+## Choosing the Right Agent Type
+
+### Decision Matrix
+
+<Tabs>
+  <Tab title="Risk Tolerance">
+    | Risk Level | Recommended Agents | Expected Returns | Volatility |
+    |------------|-------------------|------------------|------------|
+    | **Conservative** | LP Optimizer, Arbitrage | 15-30% APY | Low |
+    | **Moderate** | Hedged Trader, Analyzer + Trader | 50-150% APY | Medium |
+    | **Aggressive** | Sniper, Scout + Trader | 200-500% APY | High |
+  </Tab>
+  
+  <Tab title="Capital Size">
+    | Capital Range | Optimal Strategy | Agent Type | Notes |
+    |---------------|------------------|------------|-------|
+    | **0.5-2 SOL** | Single Agent | Sniper or Arbitrage | Best bang for buck |
+    | **2-10 SOL** | Small Swarm | Scout + Trader + Hedger | Balanced approach |
+    | **10+ SOL** | Full Swarm | All agent types | Maximum sophistication |
+  </Tab>
+  
+  <Tab title="Time Commitment">
+    | Involvement Level | Agent Setup | Monitoring Required |
+    |------------------|-------------|---------------------|
+    | **Set & Forget** | LP Optimizer | Weekly check-ins |
+    | **Regular Monitoring** | Arbitrage Engine | Daily performance review |
+    | **Active Management** | Custom Swarm | Real-time optimization |
+  </Tab>
+</Tabs>
+
+### Getting Started Recommendations
+
+<Steps>
+  <Step title="Beginner: Start with LP Optimizer">
+    Lowest risk, steady returns, minimal monitoring required
+  </Step>
+  
+  <Step title="Intermediate: Add Arbitrage Engine">
+    Higher returns with moderate risk, good for learning
+  </Step>
+  
+  <Step title="Advanced: Deploy Sniper Agent">
+    High risk/reward, requires market understanding
+  </Step>
+  
+  <Step title="Expert: Build Custom Swarm">
+    Multiple agents working together for optimal performance
+  </Step>
+</Steps>
+
+<CardGroup cols={2}>
+  <Card title="Deploy Your First Agent" icon="rocket" href="/quickstart">
+    Quick deployment guide for beginners
+  </Card>
+  
+  <Card title="Build Custom Strategy" icon="code" href="/sdk/introduction">
+    SDK documentation for custom agent development
+  </Card>
+</CardGroup>

@@ -1,0 +1,526 @@
+---
+title: 'FAQ'
+description: 'Frequently asked questions about c0gni autonomous agents'
+---
+
+# Frequently Asked Questions
+
+Common questions and answers about using c0gni autonomous trading agents.
+
+## Getting Started
+
+<AccordionGroup>
+  <Accordion title="What is c0gni?">
+    c0gni is an **Agent Operating System** for autonomous trading on Solana. Unlike traditional bots that follow pre-programmed rules, c0gni agents are autonomous entities that learn, adapt, and make decisions based on real-time market conditions and their own trading experience.
+
+    **Key Differences from Bots:**
+    - **Learning**: Agents remember and learn from every trade
+    - **Adaptation**: Strategies evolve based on performance
+    - **Speed**: <400ms execution from opportunity detection
+    - **Coordination**: Multiple agents can work together as swarms
+  </Accordion>
+
+  <Accordion title="How much money do I need to start?">
+    **Minimum Requirements:**
+    - **Basic Agent**: 0.5 SOL ($20-50 depending on SOL price)
+    - **Recommended Starting Amount**: 2-5 SOL for optimal performance
+    - **Advanced Swarms**: 10+ SOL for full multi-agent capabilities
+
+    **What's Included:**
+    - Agent deployment costs (~0.01 SOL)
+    - Initial trading capital
+    - Transaction fees and priority fees
+    - Ongoing operational costs
+
+    **Pro Tip**: Start small to learn how agents work, then scale up as you gain confidence.
+  </Accordion>
+
+  <Accordion title="Are my funds safe?">
+    **Security Measures:**
+    - **Non-Custodial**: You maintain control of your funds
+    - **Smart Contract Audited**: All core contracts are formally audited
+    - **Risk Controls**: Built-in stop losses and position limits
+    - **Emergency Stops**: Instantly halt all agent activity
+    - **Transparent**: All transactions visible on Solana blockchain
+
+    **Risk Considerations:**
+    - Trading inherently involves risk of loss
+    - Agents can make unprofitable trades
+    - Smart contract risk (though minimized through audits)
+    - Market volatility can cause rapid losses
+
+    **Remember**: Only invest what you can afford to lose.
+  </Accordion>
+
+  <Accordion title="How do agents learn and adapt?">
+    **Learning Mechanisms:**
+
+    1. **Trade Memory**: Every trade is stored on-chain with outcomes
+    2. **Pattern Recognition**: Successful strategies are reinforced
+    3. **Failure Analysis**: Losses trigger strategy adjustments  
+    4. **Market Adaptation**: Performance tracking across different market conditions
+    5. **Cross-Agent Learning**: Agents can learn from swarm collective memory
+
+    **Example Learning Process:**
+    ```
+    Agent notices it performs better during:
+    - High volume periods (learns to be more active)
+    - Certain times of day (adjusts scheduling)
+    - Specific token categories (refines preferences)
+    - Bull vs bear markets (adapts risk tolerance)
+    ```
+
+    **Timeline**: Most agents show meaningful adaptation within 2-4 weeks of operation.
+  </Accordion>
+</AccordionGroup>
+
+## Agent Types & Strategies
+
+<AccordionGroup>
+  <Accordion title="Which agent type should I choose as a beginner?">
+    **Recommended for Beginners:**
+
+    1. **LP Optimizer** (Lowest Risk)
+       - Manages liquidity positions for steady yields
+       - Success Rate: ~89%
+       - Expected Returns: 15-30% APY
+       - Risk Level: Low
+
+    2. **Arbitrage Engine** (Medium Risk)
+       - Exploits price differences across DEXs
+       - Success Rate: ~94%
+       - Expected Returns: 20-50% APY
+       - Risk Level: Low-Medium
+
+    3. **Conservative Sniper** (Medium Risk)
+       - New token launches with enhanced safety
+       - Success Rate: ~75%
+       - Expected Returns: 50-100% APY
+       - Risk Level: Medium
+
+    **Avoid as Beginner:**
+    - Speed Sniper (high risk)
+    - Custom agents (require programming)
+    - Large swarms (complex management)
+  </Accordion>
+
+  <Accordion title="How do Sniper agents work?">
+    **Sniper Agent Process:**
+
+    1. **Detection** (<5 seconds)
+       - Monitor new token launches
+       - Track liquidity additions
+       - Identify trading opportunities
+
+    2. **Analysis** (~30 seconds)
+       - Smart contract safety check
+       - Liquidity depth assessment
+       - Social sentiment analysis
+       - Holder distribution review
+
+    3. **Execution** (<400ms)
+       - Calculate optimal position size
+       - Submit Jito-protected transaction
+       - Confirm trade execution
+
+    4. **Management**
+       - Monitor position performance
+       - Execute auto-exit rules
+       - Update agent memory
+
+    **Risk Factors:**
+    - Rug pulls and honeypots
+    - Low liquidity tokens
+    - High volatility
+    - MEV attacks (mitigated by Jito)
+  </Accordion>
+
+  <Accordion title="What's the difference between agents and swarms?">
+    **Individual Agents:**
+    - Single specialized function
+    - Independent decision making
+    - Simpler to manage
+    - Lower capital requirements
+    - Good for specific strategies
+
+    **Agent Swarms:**
+    - Multiple coordinated agents
+    - Collective intelligence
+    - Enhanced performance through specialization
+    - Higher capital requirements
+    - Complex multi-strategy approach
+
+    **Swarm Example:**
+    ```
+    Scout Agent → Finds opportunities
+    Analyzer Agent → Assesses risk
+    Trader Agent → Executes trades  
+    Hedger Agent → Manages risk
+    Monitor Agent → Tracks performance
+    ```
+
+    **Performance Improvement**: Swarms typically show 23% higher success rates than individual agents.
+  </Accordion>
+</AccordionGroup>
+
+## Performance & Returns
+
+<AccordionGroup>
+  <Accordion title="What kind of returns can I expect?">
+    **Realistic Return Expectations (APY):**
+
+    **Conservative Strategies:**
+    - LP Optimizers: 15-30% APY
+    - Stable Arbitrage: 25-40% APY
+    - Conservative Trading: 30-60% APY
+
+    **Moderate Risk Strategies:**
+    - Balanced Sniping: 50-150% APY
+    - Momentum Trading: 75-200% APY
+    - Multi-Agent Swarms: 100-300% APY
+
+    **Aggressive Strategies:**
+    - Speed Sniping: 200-500% APY (high variance)
+    - Custom High-Risk: 300-1000% APY (very high risk)
+
+    **Important Notes:**
+    - Past performance doesn't guarantee future results
+    - High returns come with high risk
+    - Market conditions significantly impact performance
+    - Results vary widely between agents and time periods
+  </Accordion>
+
+  <Accordion title="How do I track my agent's performance?">
+    **Real-Time Monitoring:**
+    - Dashboard with live metrics updates
+    - Push notifications for significant events
+    - Performance alerts and warnings
+    - Risk monitoring and controls
+
+    **Key Metrics to Watch:**
+    - **Success Rate**: % of profitable trades
+    - **Total PnL**: Cumulative profit/loss  
+    - **ROI**: Return on investment %
+    - **Max Drawdown**: Largest loss from peak
+    - **Sharpe Ratio**: Risk-adjusted returns
+
+    **Reporting Options:**
+    - Daily email summaries
+    - Weekly performance reports
+    - Monthly analytics deep dives
+    - Custom date range reports
+    - Tax reporting (1099 compatible)
+  </Accordion>
+
+  <Accordion title="What happens if my agent performs poorly?">
+    **Automatic Protections:**
+    - Stop-loss triggers halt trading
+    - Daily loss limits prevent large losses
+    - Risk monitoring alerts you to issues
+    - Emergency stop buttons for manual control
+
+    **Optimization Options:**
+    1. **Parameter Adjustment**
+       - Reduce risk tolerance
+       - Lower position sizes
+       - Tighten exit rules
+
+    2. **Strategy Changes**
+       - Switch to more conservative approach
+       - Update market conditions preferences
+       - Modify learning parameters
+
+    3. **Professional Options**
+       - Use community-shared configurations
+       - Copy successful agent settings
+       - Hire developer for custom optimization
+
+    **Recovery Process:**
+    - Analyze what went wrong
+    - Implement corrective measures
+    - Start with reduced capital
+    - Monitor closely during recovery
+  </Accordion>
+</AccordionGroup>
+
+## Technical Questions
+
+<AccordionGroup>
+  <Accordion title="Why is c0gni built on Solana?">
+    **Solana Advantages for Autonomous Trading:**
+
+    **Speed:**
+    - 400ms block times enable rapid execution
+    - Sub-second trade confirmation
+    - Critical for capturing alpha in fast markets
+
+    **Cost:**
+    - ~$0.00025 per transaction
+    - Enables frequent agent memory updates
+    - Supports micro-trading strategies
+
+    **Scalability:**
+    - 50,000+ TPS theoretical capacity
+    - Parallel execution of multiple agents
+    - No network congestion bottlenecks
+
+    **Developer Experience:**
+    - Native program architecture
+    - Efficient account model
+    - Rich DeFi ecosystem integration
+  </Accordion>
+
+  <Accordion title="How does MEV protection work?">
+    **MEV (Maximum Extractable Value) Threats:**
+    - Front-running: Bots copy successful trades
+    - Sandwich attacks: Price manipulation around trades
+    - Arbitrage extraction: Value extracted from price differences
+
+    **c0gni's Protection (via Jito):**
+
+    1. **Private Mempool**
+       - Transactions hidden until execution
+       - Prevents front-running bots from seeing trades
+
+    2. **Bundle Execution**
+       - Multiple transactions executed atomically
+       - Reduces MEV extraction opportunities
+
+    3. **Priority Fees**
+       - Agents bid for transaction priority
+       - Ensures fast execution before MEV bots
+
+    **Effectiveness**: ~90% reduction in MEV losses compared to public mempool trading.
+  </Accordion>
+
+  <Accordion title="Can I build custom agents?">
+    **Yes! c0gni provides full SDK support:**
+
+    **Agent Studio Features:**
+    - Python and TypeScript SDKs
+    - Local simulation environment
+    - Backtesting framework
+    - Custom indicator library
+    - ML/AI integration support
+
+    **Development Process:**
+    1. **Design Strategy**: Define your trading logic
+    2. **Code Agent**: Implement using SDK
+    3. **Backtest**: Test on historical data
+    4. **Paper Trade**: Test with live data, fake money
+    5. **Deploy**: Launch with real capital
+
+    **Skill Requirements:**
+    - Basic programming knowledge (Python/TypeScript)
+    - Understanding of trading concepts
+    - Familiarity with data analysis
+
+    **Resources:**
+    - Complete SDK documentation
+    - Example agent implementations
+    - Community developer forum
+    - Professional development services
+  </Accordion>
+</AccordionGroup>
+
+## Costs & Fees
+
+<AccordionGroup>
+  <Accordion title="What are all the costs involved?">
+    **One-Time Costs:**
+    - Agent Deployment: ~0.01 SOL
+    - Account Creation: ~0.002 SOL (rent-exempt)
+
+    **Per-Trade Costs:**
+    - Network Fees: ~0.000005 SOL
+    - Priority Fees: 0.00001-0.0001 SOL (dynamic)
+    - Jito Tips: ~0.000008 SOL
+    - DEX Swap Fees: 0.25-0.3% (varies by DEX)
+
+    **Platform Fees:**
+    - Agent Factory: Free to use
+    - Agent Studio: Free for development
+    - Performance Sharing: 10% of profits (only on gains)
+
+    **Estimated Monthly Costs** (for 5 SOL agent making 20 trades):
+    - Network fees: ~0.002 SOL
+    - Priority fees: ~0.02 SOL
+    - DEX fees: ~0.15 SOL
+    - **Total**: ~0.17 SOL (~$8-17 depending on SOL price)
+  </Accordion>
+
+  <Accordion title="How does performance fee sharing work?">
+    **c0gni Performance Sharing:**
+    - **Rate**: 10% of net profits only
+    - **No Losses**: Never charged on losing trades
+    - **Net Basis**: Only on overall positive performance
+
+    **Example:**
+    ```
+    Month 1: +2 SOL profit → 0.2 SOL fee (10%)
+    Month 2: -1 SOL loss → 0 SOL fee
+    Month 3: +3 SOL profit → 0.2 SOL fee (10% of net: 2-1+3=4)
+    ```
+
+    **Fee Collection:**
+    - Automatically deducted from agent wallet
+    - Only when agent generates net profits
+    - Transparent on-chain transactions
+    - Monthly fee statements provided
+  </Accordion>
+
+  <Accordion title="Are there any hidden fees?">
+    **No hidden fees. All costs are transparent:**
+
+    **Disclosed Upfront:**
+    - All network and priority fees
+    - DEX trading fees
+    - Performance sharing rates
+    - Account creation costs
+
+    **Variable Costs:**
+    - Priority fees (based on network congestion)
+    - DEX fees (varies by exchange)
+    - Gas optimization costs
+
+    **Never Charged:**
+    - Account maintenance fees
+    - Inactivity fees
+    - Withdrawal fees
+    - Platform subscription fees
+
+    **Cost Control Tools:**
+    - Real-time fee monitoring
+    - Fee optimization settings
+    - Monthly cost reports
+    - Budget alerts and controls
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="My agent isn't trading. What's wrong?">
+    **Common Causes & Solutions:**
+
+    **1. Insufficient Capital**
+    - Check agent wallet balance
+    - Ensure enough SOL for trades + fees
+    - Add funds if needed
+
+    **2. Conservative Settings**
+    - Risk parameters too restrictive
+    - Opportunity thresholds too high
+    - Market conditions don't match criteria
+
+    **3. Market Conditions**
+    - Low volatility periods
+    - Insufficient opportunities
+    - High competition for trades
+
+    **4. Technical Issues**
+    - RPC connection problems
+    - Network congestion
+    - Agent program errors
+
+    **Diagnostic Steps:**
+    1. Check agent status indicator
+    2. Review recent activity logs
+    3. Verify wallet funding
+    4. Check alert notifications
+    5. Contact support if issues persist
+  </Accordion>
+
+  <Accordion title="How do I stop my agent?">
+    **Immediate Stop Options:**
+
+    **1. Emergency Stop**
+    - Red "Emergency Stop" button on dashboard
+    - Halts all trading immediately
+    - Closes open positions at market price
+    - Reversible (can restart later)
+
+    **2. Pause Agent**
+    - Pause button on agent card
+    - Stops new trades but keeps positions
+    - Monitoring continues
+    - Easy to resume
+
+    **3. Deactivate Agent**
+    - Settings → Deactivate
+    - Closes positions and stops agent
+    - Withdraws remaining funds
+    - Requires redeployment to restart
+
+    **Note**: Emergency stops execute within 5-10 seconds.
+  </Accordion>
+
+  <Accordion title="Can I get my money back if I'm not satisfied?">
+    **Refund Policy:**
+
+    **What's Refundable:**
+    - Unused deployment fees (first 24 hours)
+    - Platform performance fees (if net negative)
+    - Subscription fees (pro-rated)
+
+    **What's Not Refundable:**
+    - Trading losses (market risk)
+    - Network fees (paid to Solana)
+    - DEX fees (paid to exchanges)
+    - Agent funds (always yours, just withdraw)
+
+    **Satisfaction Guarantee:**
+    - 7-day trial period for new users
+    - Full support during trial
+    - Fee waivers for technical issues
+    - Performance optimization assistance
+
+    **To Request Refund:**
+    - Contact support within 7 days
+    - Explain dissatisfaction
+    - We'll work to resolve issues first
+    - Refund if we can't meet expectations
+  </Accordion>
+</AccordionGroup>
+
+## Need More Help?
+
+<CardGroup cols={2}>
+  <Card title="Discord Community" icon="message-circle">
+    **Join 10,000+ Traders**
+    
+    Get help from experienced users and the c0gni team
+    
+    [Join Discord →](https://discord.gg/cognilabs)
+  </Card>
+  
+  <Card title="Support Tickets" icon="headphones">
+    **Direct Technical Support**
+    
+    For complex issues requiring developer assistance
+    
+    [Create Ticket →](mailto:support@cognilabs.com)
+  </Card>
+  
+  <Card title="Documentation" icon="book-open">
+    **Complete Guides**
+    
+    Comprehensive documentation for all features
+    
+    [Browse Docs →](/introduction)
+  </Card>
+  
+  <Card title="Video Tutorials" icon="play-circle">
+    **Visual Learning**
+    
+    Step-by-step video guides for common tasks
+    
+    [Watch Tutorials →](https://youtube.com/@cognilabs)
+  </Card>
+</CardGroup>
+
+---
+
+<Info>
+**Still have questions?** Join our Discord community or contact support. We're here to help you succeed with autonomous trading!
+</Info>

@@ -3,12 +3,10 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { 
-  Database, 
   TrendingUp, 
   MessageCircle, 
   Wallet, 
   Globe, 
-  Eye, 
   Filter, 
   Settings, 
   Volume2, 
@@ -16,8 +14,7 @@ import {
   CheckCircle,
   Clock,
   Zap,
-  Activity,
-  BarChart3
+  Activity
 } from "lucide-react";
 
 const dataStreams = [

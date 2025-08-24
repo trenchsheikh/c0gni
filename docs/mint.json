@@ -1,0 +1,147 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "c0gni Documentation",
+  "logo": {
+    "dark": "/logo/c0gni-white.svg",
+    "light": "/logo/c0gni.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#ffffff",
+    "light": "#ffffff",
+    "dark": "#000000",
+    "anchors": {
+      "from": "#ffffff",
+      "to": "#999999"
+    }
+  },
+  "theme": "quill",
+  "topbarLinks": [
+    {
+      "name": "Platform",
+      "url": "https://app.cognilabs.com"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Launch App",
+    "url": "https://app.cognilabs.com"
+  },
+  "tabs": [
+    {
+      "name": "API Reference",
+      "url": "api-reference"
+    },
+    {
+      "name": "SDK",
+      "url": "sdk"
+    }
+  ],
+  "anchors": [
+    {
+      "name": "Discord Community",
+      "icon": "discord",
+      "url": "https://discord.gg/cognilabs"
+    },
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/cognilabs"
+    },
+    {
+      "name": "Twitter",
+      "icon": "twitter",
+      "url": "https://twitter.com/cognilabs"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        "introduction",
+        "quickstart",
+        "token-overview",
+        "architecture"
+      ]
+    },
+    {
+      "group": "Agent System",
+      "pages": [
+        "agents/overview",
+        "agents/types",
+        "agents/swarm-intelligence",
+        "agents/lifecycle",
+        "agents/performance"
+      ]
+    },
+    {
+      "group": "Platform Features",
+      "pages": [
+        "platform/agent-factory",
+        "platform/agent-studio",
+        "platform/agent-cloud",
+        "platform/marketplace",
+        "platform/trading-terminal"
+      ]
+    },
+    {
+      "group": "User Guides",
+      "pages": [
+        "guides/dashboard-walkthrough",
+        "guides/first-agent",
+        "guides/risk-management",
+        "guides/strategy-development"
+      ]
+    },
+    {
+      "group": "Technical Integration",
+      "pages": [
+        "technical/solana-integration",
+        "technical/jito-integration",
+        "technical/on-chain-memory",
+        "technical/mev-protection"
+      ]
+    },
+    {
+      "group": "Advanced Topics",
+      "pages": [
+        "advanced/custom-strategies",
+        "advanced/multi-agent-coordination",
+        "advanced/performance-optimization",
+        "advanced/security-best-practices"
+      ]
+    },
+    {
+      "group": "API Documentation",
+      "pages": [
+        "api-reference/introduction",
+        "api-reference/authentication",
+        "api-reference/agents",
+        "api-reference/swarms",
+        "api-reference/trading",
+        "api-reference/analytics"
+      ]
+    },
+    {
+      "group": "SDK Reference",
+      "pages": [
+        "sdk/introduction",
+        "sdk/python",
+        "sdk/typescript",
+        "sdk/examples"
+      ]
+    },
+    {
+      "group": "Support",
+      "pages": [
+        "support/troubleshooting",
+        "support/faq",
+        "support/changelog"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "twitter": "https://twitter.com/cognilabs",
+    "github": "https://github.com/cognilabs",
+    "discord": "https://discord.gg/cognilabs"
+  }
+}

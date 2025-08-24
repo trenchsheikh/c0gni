@@ -8,20 +8,20 @@ export default function AboutSection() {
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
-    <section ref={sectionRef} className="py-32 bg-[#0A0A0A] relative overflow-hidden" id="about">
+    <section ref={sectionRef} className="py-16 sm:py-24 md:py-32 bg-[#0A0A0A] relative overflow-hidden" id="about">
       {/* Interactive Grid Pattern Background */}
-      <div className="absolute inset-0 flex items-center justify-end pr-32">
+      <div className="absolute inset-0 flex items-center justify-end pr-8 sm:pr-16 md:pr-32">
         <InteractiveGridPattern
           className={cn(
-            "[mask-image:radial-gradient(600px_circle_at_center,white,transparent)]",
-            "skew-y-6 opacity-30",
+            "[mask-image:radial-gradient(300px_circle_at_center,white,transparent)] sm:[mask-image:radial-gradient(600px_circle_at_center,white,transparent)]",
+            "skew-y-6 opacity-20 sm:opacity-30",
           )}
-          squares={[30, 30]}
+          squares={[20, 20]}
           squaresClassName="stroke-white/20 hover:fill-white/10"
         />
       </div>
       
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -31,11 +31,11 @@ export default function AboutSection() {
           <span className="text-sm font-medium text-white/60 tracking-wider uppercase">
             Solana as the AI Execution Layer
           </span>
-          <h2 className="mt-4 text-5xl md:text-6xl font-light text-white tracking-tighter">
+          <h2 className="mt-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white tracking-tighter px-4">
             Ethereum is for settlement.<br />
             <span className="font-medium">Solana is for action.</span>
           </h2>
-          <p className="mt-6 text-lg text-white/60 max-w-3xl mx-auto leading-relaxed">
+          <p className="mt-6 text-base sm:text-lg text-white/60 max-w-3xl mx-auto leading-relaxed px-4">
             400ms blocks = AI reaction speed. Sub-cent fees = high-frequency experimentation.<br />
             Jito = priority execution. Helius = real-time event stream.<br />
             <br />

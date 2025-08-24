@@ -3,9 +3,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { 
-  Store, 
   Star, 
-  TrendingUp, 
   Users, 
   DollarSign, 
   Download, 
@@ -19,10 +17,8 @@ import {
   CheckCircle, 
   Clock, 
   Zap,
-  Target,
-  BarChart3,
-  Shield,
-  Settings
+  Settings,
+  BarChart3
 } from "lucide-react";
 
 const featuredSwarms = [

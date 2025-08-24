@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { 
   Home, 
@@ -12,7 +12,8 @@ import {
   BarChart3, 
   Brain, 
   Shield, 
-  Store 
+  Store,
+  BookOpen 
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -27,6 +28,7 @@ const navItems = [
   { id: "decisions", label: "Decision Log", icon: FileText, href: "/dashboard/decisions" },
   { id: "analytics", label: "Analytics", icon: BarChart3, href: "/dashboard/analytics" },
   { id: "memory", label: "Memory Vault", icon: Brain, href: "/dashboard/memory" },
+  { id: "research", label: "Research Papers", icon: BookOpen, href: "/dashboard/research" },
   { id: "security", label: "Security Hub", icon: Shield, href: "/dashboard/security" },
   { id: "marketplace", label: "Marketplace", icon: Store, href: "/dashboard/marketplace" }
 ];

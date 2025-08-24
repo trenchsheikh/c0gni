@@ -29,8 +29,8 @@ export default function ProcessSection() {
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
   
   return (
-    <section ref={sectionRef} className="py-32 bg-[#111111]" id="process">
-      <div className="container mx-auto px-6">
+    <section ref={sectionRef} className="py-16 sm:py-24 md:py-32 bg-[#111111]" id="process">
+      <div className="container mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -59,7 +59,7 @@ export default function ProcessSection() {
             initial={{ height: 0 }}
             animate={isInView ? { height: "100%" } : {}}
             transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute left-6 top-0 bottom-0 w-px bg-white/20"
+            className="absolute left-5 sm:left-6 top-0 bottom-0 w-px bg-white/20"
           />
           
           {processSteps.map((step, index) => (
@@ -76,14 +76,14 @@ export default function ProcessSection() {
                   }
                 }
               }}
-              className="relative flex items-start gap-8 pl-16 pb-16 last:pb-0"
+              className="relative flex items-start gap-4 sm:gap-8 pl-12 sm:pl-16 pb-12 sm:pb-16 last:pb-0"
             >
-              <div className="absolute left-0 top-0 flex items-center justify-center w-12 h-12 bg-[#0A0A0A] border-2 border-white/20 rounded-full">
-                <span className="text-white font-medium text-sm">{step.number}</span>
+              <div className="absolute left-0 top-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-[#0A0A0A] border-2 border-white/20 rounded-full">
+                <span className="text-white font-medium text-xs sm:text-sm">{step.number}</span>
               </div>
               <div className="pt-2">
-                <h3 className="text-xl font-semibold text-white mb-3">{step.title}</h3>
-                <p className="text-white/70 leading-relaxed">{step.description}</p>
+                <h3 className="text-lg sm:text-xl font-semibold text-white mb-2 sm:mb-3">{step.title}</h3>
+                <p className="text-sm sm:text-base text-white/70 leading-relaxed">{step.description}</p>
               </div>
             </motion.div>
           ))}

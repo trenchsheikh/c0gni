@@ -154,10 +154,10 @@ const CombinedFactoryStudioCard = () => {
         scale: 1.02,
         transition: { duration: 0.3, ease: "easeOut" }
       }}
-      className="group relative p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl hover:bg-white/[0.08] hover:border-white/20 transition-all duration-500"
+      className="group relative p-4 sm:p-6 md:p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl hover:bg-white/[0.08] hover:border-white/20 transition-all duration-500"
     >
       <div
-        className="relative flex h-[300px] w-full items-center justify-center overflow-hidden"
+        className="relative flex h-[200px] sm:h-[250px] md:h-[300px] w-full items-center justify-center overflow-hidden"
         ref={containerRef}
       >
         <div className="flex size-full max-w-lg flex-row items-stretch justify-between gap-10">
@@ -256,15 +256,15 @@ const ServiceCard = ({ service, index, tall }: { service: ServiceType, index: nu
         scale: 1.02,
         transition: { duration: 0.3, ease: "easeOut" }
       }}
-      className={`group relative p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl hover:bg-white/[0.08] hover:border-white/20 transition-all duration-500 ${tall ? 'h-full flex flex-col' : ''}`}
+      className={`group relative p-4 sm:p-6 md:p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl hover:bg-white/[0.08] hover:border-white/20 transition-all duration-500 ${tall ? 'h-full flex flex-col' : ''}`}
     >
       <div className={`relative z-10 ${tall ? 'h-full flex flex-col' : ''}`}>
         <div className={tall ? 'flex-1 flex flex-col justify-center' : ''}>
-          <div className="inline-flex p-3 rounded-xl bg-white/10 mb-6 group-hover:bg-white/20 transition-colors duration-300 w-fit">
-            <Icon className="w-8 h-8 text-white" />
+          <div className="inline-flex p-2 sm:p-3 rounded-xl bg-white/10 mb-4 sm:mb-6 group-hover:bg-white/20 transition-colors duration-300 w-fit">
+            <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
           </div>
-          <h3 className="text-xl font-semibold text-white mb-4">{service.title}</h3>
-          <p className="text-white/70 leading-relaxed">{service.description}</p>
+          <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4">{service.title}</h3>
+          <p className="text-sm sm:text-base text-white/70 leading-relaxed">{service.description}</p>
         </div>
         {service.title === "Agent Cloud" && tall && (
           <div className="relative h-64 overflow-hidden -mb-8">
@@ -281,14 +281,14 @@ export default function ServicesSection() {
   const isInView = useInView(sectionRef, { once: true, margin: "-200px" });
 
   return (
-    <section ref={sectionRef} className="py-32 bg-[#0A0A0A] relative overflow-hidden" id="services">
+    <section ref={sectionRef} className="py-16 sm:py-24 md:py-32 bg-[#0A0A0A] relative overflow-hidden" id="services">
       {/* Background orbs */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 left-0 w-96 h-96 bg-gradient-to-r from-white/3 to-gray-400/3 rounded-full filter blur-3xl animate-blob" />
         <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-gradient-to-l from-gray-300/3 to-white/3 rounded-full filter blur-3xl animate-blob animation-delay-2000" />
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <motion.div 
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -313,20 +313,20 @@ export default function ServicesSection() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-6 max-w-7xl mx-auto">
-          <div className="md:col-span-4 lg:col-span-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6 max-w-7xl mx-auto">
+          <div className="col-span-full sm:col-span-2 md:col-span-4 lg:col-span-4">
             <CombinedFactoryStudioCard />
           </div>
-          <div className="md:col-span-2 lg:col-span-2 md:row-span-3">
+          <div className="col-span-full sm:col-span-2 md:col-span-2 lg:col-span-2 md:row-span-3">
             <ServiceCard service={services[2]} index={2} tall={3} />
           </div>
-          <div className="md:col-span-2 lg:col-span-2">
+          <div className="col-span-full sm:col-span-1 md:col-span-2 lg:col-span-2">
             <ServiceCard service={services[3]} index={3} />
           </div>
-          <div className="md:col-span-2 lg:col-span-2 md:row-span-2">
+          <div className="col-span-full sm:col-span-1 md:col-span-2 lg:col-span-2 md:row-span-2">
             <ServiceCard service={services[4]} index={4} tall={2} />
           </div>
-          <div className="md:col-span-2 lg:col-span-2">
+          <div className="col-span-full sm:col-span-2 md:col-span-2 lg:col-span-2">
             <ServiceCard service={services[5]} index={5} />
           </div>
         </div>

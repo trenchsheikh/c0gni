@@ -1,0 +1,731 @@
+---
+title: 'SDK Introduction'
+description: 'Getting started with the c0gni SDK for custom agent development'
+---
+
+# c0gni SDK
+
+The c0gni SDK enables developers to build custom autonomous trading agents with full access to the platform's capabilities. Available in Python and TypeScript, the SDK provides everything needed to create sophisticated trading strategies.
+
+<CardGroup cols={2}>
+  <Card title="Python SDK" icon="python">
+    **c0gni-python**
+    
+    Comprehensive Python library for data science and AI-powered trading agents
+  </Card>
+  
+  <Card title="TypeScript SDK" icon="javascript">
+    **@c0gni/sdk**
+    
+    Type-safe JavaScript/TypeScript SDK for web and Node.js applications
+  </Card>
+  
+  <Card title="Local Simulation" icon="flask">
+    **Risk-Free Testing**
+    
+    Test strategies against historical data before deploying real capital
+  </Card>
+  
+  <Card title="Production Ready" icon="rocket">
+    **Seamless Deployment**
+    
+    Deploy tested agents directly to the c0gni network
+  </Card>
+</CardGroup>
+
+## Quick Start
+
+### Installation
+
+<Tabs>
+  <Tab title="Python">
+    ```bash
+    # Install via pip
+    pip install c0gni-sdk
+    
+    # Or install from source
+    git clone https://github.com/cognilabs/c0gni-python-sdk
+    cd c0gni-python-sdk
+    pip install -e .
+    ```
+  </Tab>
+  
+  <Tab title="TypeScript/Node.js">
+    ```bash
+    # Install via npm
+    npm install @c0gni/sdk
+    
+    # Or via yarn
+    yarn add @c0gni/sdk
+    
+    # Types are included
+    npm install --save-dev @types/node
+    ```
+  </Tab>
+</Tabs>
+
+### Basic Agent Example
+
+<Tabs>
+  <Tab title="Python">
+    ```python
+    from c0gni import BaseAgent, MarketData, Decision, TradeResult
+    
+    class SimpleMovingAverageAgent(BaseAgent):
+        def __init__(self, config):
+            super().__init__(config)
+            self.short_window = config.get('short_window', 10)
+            self.long_window = config.get('long_window', 30)
+            
+        async def analyze_opportunity(self, market_data: MarketData) -> Decision:
+            """Analyze market data and make trading decision"""
+            
+            # Get price history
+            prices = await self.get_price_history(
+                market_data.token, 
+                self.long_window
+            )
+            
+            if len(prices) < self.long_window:
+                return Decision(action='HOLD', confidence=0, reasoning='Insufficient data')
+            
+            # Calculate moving averages
+            short_ma = sum(prices[-self.short_window:]) / self.short_window
+            long_ma = sum(prices) / self.long_window
+            
+            # Make decision
+            if short_ma > long_ma * 1.02:  # 2% above long MA
+                return Decision(
+                    action='BUY',
+                    confidence=0.8,
+                    reasoning=f'Short MA ({short_ma:.6f}) > Long MA ({long_ma:.6f})'
+                )
+            elif short_ma < long_ma * 0.98:  # 2% below long MA
+                return Decision(
+                    action='SELL', 
+                    confidence=0.7,
+                    reasoning=f'Short MA ({short_ma:.6f}) < Long MA ({long_ma:.6f})'
+                )
+            else:
+                return Decision(
+                    action='HOLD',
+                    confidence=0.5,
+                    reasoning='No clear trend signal'
+                )
+        
+        async def calculate_position_size(self, decision: Decision, market_data: MarketData) -> float:
+            """Calculate position size based on confidence and risk management"""
+            base_size = self.available_capital * 0.1  # 10% of capital
+            confidence_multiplier = decision.confidence
+            
+            return base_size * confidence_multiplier
+    
+    # Deploy the agent
+    if __name__ == "__main__":
+        config = {
+            'name': 'SMA Agent',
+            'initial_capital': 5.0,  # 5 SOL
+            'short_window': 10,
+            'long_window': 30,
+            'risk_level': 'medium'
+        }
+        
+        agent = SimpleMovingAverageAgent(config)
+        await agent.deploy()
+    ```
+  </Tab>
+  
+  <Tab title="TypeScript">
+    ```typescript
+    import { BaseAgent, MarketData, Decision, AgentConfig } from '@c0gni/sdk';
+    
+    interface SMAConfig extends AgentConfig {
+      shortWindow: number;
+      longWindow: number;
+    }
+    
+    export class SimpleMovingAverageAgent extends BaseAgent {
+      private shortWindow: number;
+      private longWindow: number;
+      
+      constructor(config: SMAConfig) {
+        super(config);
+        this.shortWindow = config.shortWindow || 10;
+        this.longWindow = config.longWindow || 30;
+      }
+      
+      async analyzeOpportunity(marketData: MarketData): Promise<Decision> {
+        // Get price history
+        const prices = await this.getPriceHistory(
+          marketData.token, 
+          this.longWindow
+        );
+        
+        if (prices.length < this.longWindow) {
+          return {
+            action: 'HOLD',
+            confidence: 0,
+            reasoning: 'Insufficient price data'
+          };
+        }
+        
+        // Calculate moving averages
+        const shortMA = prices.slice(-this.shortWindow)
+          .reduce((sum, price) => sum + price, 0) / this.shortWindow;
+        
+        const longMA = prices
+          .reduce((sum, price) => sum + price, 0) / this.longWindow;
+        
+        // Decision logic
+        if (shortMA > longMA * 1.02) {
+          return {
+            action: 'BUY',
+            confidence: 0.8,
+            reasoning: `Short MA (${shortMA.toFixed(6)}) > Long MA (${longMA.toFixed(6)})`
+          };
+        } else if (shortMA < longMA * 0.98) {
+          return {
+            action: 'SELL',
+            confidence: 0.7,
+            reasoning: `Short MA (${shortMA.toFixed(6)}) < Long MA (${longMA.toFixed(6)})`
+          };
+        } else {
+          return {
+            action: 'HOLD',
+            confidence: 0.5,
+            reasoning: 'No clear trend signal'
+          };
+        }
+      }
+      
+      async calculatePositionSize(decision: Decision): Promise<number> {
+        const baseSize = this.availableCapital * 0.1; // 10% of capital
+        return baseSize * decision.confidence;
+      }
+    }
+    
+    // Deploy the agent
+    async function main() {
+      const config: SMAConfig = {
+        name: 'SMA Agent',
+        initialCapital: 5.0,
+        shortWindow: 10,
+        longWindow: 30,
+        riskLevel: 'medium'
+      };
+      
+      const agent = new SimpleMovingAverageAgent(config);
+      await agent.deploy();
+    }
+    
+    main().catch(console.error);
+    ```
+  </Tab>
+</Tabs>
+
+## Core Concepts
+
+### BaseAgent Class
+
+The foundation for all custom agents:
+
+```python
+class BaseAgent:
+    """Base class for all c0gni trading agents"""
+    
+    def __init__(self, config: AgentConfig):
+        self.config = config
+        self.available_capital = config.initial_capital
+        self.trades = []
+        self.performance_metrics = PerformanceMetrics()
+    
+    # Abstract methods that must be implemented
+    async def analyze_opportunity(self, market_data: MarketData) -> Decision:
+        """Analyze market opportunity and make trading decision"""
+        raise NotImplementedError
+    
+    async def calculate_position_size(self, decision: Decision) -> float:
+        """Calculate position size for trade"""
+        raise NotImplementedError
+    
+    # Built-in functionality
+    async def execute_trade(self, decision: Decision, market_data: MarketData) -> TradeResult:
+        """Execute trade based on decision"""
+        position_size = await self.calculate_position_size(decision)
+        
+        if position_size > self.available_capital:
+            return TradeResult(
+                success=False,
+                error="Insufficient capital"
+            )
+        
+        # Execute the trade
+        return await self._submit_trade_to_network(decision, position_size, market_data)
+    
+    async def update_memory(self, trade_result: TradeResult):
+        """Update agent memory with trade results"""
+        self.trades.append(trade_result)
+        await self._update_on_chain_memory(trade_result)
+    
+    def get_performance_metrics(self) -> PerformanceMetrics:
+        """Calculate current performance metrics"""
+        return self.performance_metrics.calculate(self.trades)
+```
+
+### Data Types
+
+<AccordionGroup>
+  <Accordion title="MarketData">
+    ```python
+    @dataclass
+    class MarketData:
+        token: str                    # Token address
+        price: float                  # Current price in SOL
+        volume_24h: float            # 24h trading volume
+        liquidity: float             # Available liquidity
+        price_change_24h: float      # 24h price change %
+        social_sentiment: float      # Sentiment score (-1 to 1)
+        technical_indicators: Dict   # RSI, MACD, etc.
+        market_cap: float           # Market capitalization
+        holder_count: int           # Number of holders
+        timestamp: datetime         # Data timestamp
+    ```
+  </Accordion>
+  
+  <Accordion title="Decision">
+    ```python
+    @dataclass 
+    class Decision:
+        action: Literal['BUY', 'SELL', 'HOLD']
+        confidence: float            # 0.0 to 1.0
+        reasoning: str              # Human-readable explanation
+        target_price: Optional[float] # Target exit price
+        stop_loss: Optional[float]   # Stop loss price
+        time_horizon: Optional[int]  # Expected hold time (minutes)
+        risk_score: Optional[float]  # Risk assessment (0-1)
+    ```
+  </Accordion>
+  
+  <Accordion title="TradeResult">
+    ```python
+    @dataclass
+    class TradeResult:
+        success: bool
+        transaction_hash: Optional[str]
+        token: str
+        action: str                  # BUY or SELL
+        amount: float               # Amount traded
+        price: float                # Execution price
+        fees: float                 # Transaction fees
+        slippage: float            # Price slippage experienced
+        execution_time: int        # Time to execute (ms)
+        pnl: Optional[float]       # Profit/loss if closing position
+        error: Optional[str]       # Error message if failed
+        timestamp: datetime        # Execution timestamp
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Advanced Features
+
+### Custom Indicators
+
+```python
+from c0gni.indicators import Indicator
+
+class BollingerBands(Indicator):
+    def __init__(self, period: int = 20, std_dev: float = 2.0):
+        self.period = period
+        self.std_dev = std_dev
+    
+    def calculate(self, prices: List[float]) -> Dict[str, float]:
+        if len(prices) < self.period:
+            return {}
+        
+        # Calculate moving average
+        ma = sum(prices[-self.period:]) / self.period
+        
+        # Calculate standard deviation
+        variance = sum((price - ma) ** 2 for price in prices[-self.period:]) / self.period
+        std = variance ** 0.5
+        
+        # Calculate bands
+        upper_band = ma + (self.std_dev * std)
+        lower_band = ma - (self.std_dev * std)
+        
+        current_price = prices[-1]
+        
+        return {
+            'middle': ma,
+            'upper': upper_band,
+            'lower': lower_band,
+            'position': (current_price - lower_band) / (upper_band - lower_band),
+            'squeeze': (upper_band - lower_band) / ma  # Band width
+        }
+
+# Use in agent
+class BollingerAgent(BaseAgent):
+    def __init__(self, config):
+        super().__init__(config)
+        self.bb = BollingerBands(period=20, std_dev=2.0)
+    
+    async def analyze_opportunity(self, market_data: MarketData) -> Decision:
+        prices = await self.get_price_history(market_data.token, 25)
+        bands = self.bb.calculate(prices)
+        
+        if not bands:
+            return Decision(action='HOLD', confidence=0, reasoning='Insufficient data')
+        
+        position = bands['position']
+        
+        if position > 0.95:  # Price above upper band
+            return Decision(
+                action='SELL',
+                confidence=0.8,
+                reasoning=f'Price above upper Bollinger Band (position: {position:.2f})'
+            )
+        elif position < 0.05:  # Price below lower band
+            return Decision(
+                action='BUY',
+                confidence=0.8,
+                reasoning=f'Price below lower Bollinger Band (position: {position:.2f})'
+            )
+        else:
+            return Decision(
+                action='HOLD',
+                confidence=0.3,
+                reasoning=f'Price within bands (position: {position:.2f})'
+            )
+```
+
+### Machine Learning Integration
+
+<Tabs>
+  <Tab title="Scikit-learn">
+    ```python
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.preprocessing import StandardScaler
+    import numpy as np
+    
+    class MLAgent(BaseAgent):
+        def __init__(self, config):
+            super().__init__(config)
+            self.model = RandomForestClassifier(n_estimators=100, random_state=42)
+            self.scaler = StandardScaler()
+            self.is_trained = False
+        
+        def extract_features(self, market_data: MarketData, price_history: List[float]) -> np.ndarray:
+            """Extract features for ML model"""
+            if len(price_history) < 20:
+                return np.array([])
+            
+            # Technical indicators
+            rsi = self.calculate_rsi(price_history)
+            macd = self.calculate_macd(price_history)
+            bb_position = self.calculate_bb_position(price_history)
+            
+            # Market features
+            features = [
+                market_data.price,
+                market_data.volume_24h,
+                market_data.price_change_24h,
+                market_data.social_sentiment,
+                market_data.liquidity,
+                rsi,
+                macd,
+                bb_position,
+                len(price_history),  # Data points available
+                np.std(price_history[-10:])  # Recent volatility
+            ]
+            
+            return np.array(features).reshape(1, -1)
+        
+        async def train_model(self, historical_data: List[Dict]):
+            """Train ML model on historical data"""
+            X = []
+            y = []
+            
+            for data_point in historical_data:
+                features = self.extract_features(
+                    data_point['market_data'],
+                    data_point['price_history']
+                )
+                if len(features) > 0:
+                    X.append(features.flatten())
+                    # Label: 1 for profitable trades, 0 for unprofitable
+                    y.append(1 if data_point['profit'] > 0 else 0)
+            
+            if len(X) > 50:  # Minimum training data
+                X = np.array(X)
+                y = np.array(y)
+                
+                # Scale features
+                X_scaled = self.scaler.fit_transform(X)
+                
+                # Train model
+                self.model.fit(X_scaled, y)
+                self.is_trained = True
+        
+        async def analyze_opportunity(self, market_data: MarketData) -> Decision:
+            if not self.is_trained:
+                return Decision(action='HOLD', confidence=0, reasoning='Model not trained')
+            
+            # Get price history and extract features
+            price_history = await self.get_price_history(market_data.token, 25)
+            features = self.extract_features(market_data, price_history)
+            
+            if len(features) == 0:
+                return Decision(action='HOLD', confidence=0, reasoning='Insufficient data')
+            
+            # Scale features and predict
+            features_scaled = self.scaler.transform(features)
+            prediction_proba = self.model.predict_proba(features_scaled)[0]
+            
+            # Get prediction confidence
+            buy_confidence = prediction_proba[1]  # Probability of profitable trade
+            
+            if buy_confidence > 0.7:
+                return Decision(
+                    action='BUY',
+                    confidence=buy_confidence,
+                    reasoning=f'ML model predicts profitable trade (confidence: {buy_confidence:.2f})'
+                )
+            elif buy_confidence < 0.3:
+                return Decision(
+                    action='SELL',
+                    confidence=1 - buy_confidence,
+                    reasoning=f'ML model predicts unprofitable trade (confidence: {1-buy_confidence:.2f})'
+                )
+            else:
+                return Decision(
+                    action='HOLD',
+                    confidence=0.5,
+                    reasoning=f'ML model uncertain (confidence: {buy_confidence:.2f})'
+                )
+    ```
+  </Tab>
+  
+  <Tab title="TensorFlow/Keras">
+    ```python
+    import tensorflow as tf
+    from tensorflow.keras.models import Sequential
+    from tensorflow.keras.layers import LSTM, Dense, Dropout
+    
+    class DeepLearningAgent(BaseAgent):
+        def __init__(self, config):
+            super().__init__(config)
+            self.sequence_length = 60  # 60 data points for LSTM
+            self.model = self.build_model()
+            self.scaler = StandardScaler()
+        
+        def build_model(self):
+            """Build LSTM model for price prediction"""
+            model = Sequential([
+                LSTM(50, return_sequences=True, input_shape=(self.sequence_length, 1)),
+                Dropout(0.2),
+                LSTM(50, return_sequences=False),
+                Dropout(0.2),
+                Dense(25),
+                Dense(1, activation='sigmoid')  # Buy/sell probability
+            ])
+            
+            model.compile(
+                optimizer='adam',
+                loss='binary_crossentropy',
+                metrics=['accuracy']
+            )
+            
+            return model
+        
+        def prepare_sequences(self, price_history: List[float]) -> np.ndarray:
+            """Prepare sequences for LSTM input"""
+            if len(price_history) < self.sequence_length:
+                return np.array([])
+            
+            # Normalize prices
+            prices_normalized = self.scaler.fit_transform(
+                np.array(price_history).reshape(-1, 1)
+            )
+            
+            # Create sequences
+            sequences = []
+            for i in range(len(prices_normalized) - self.sequence_length):
+                sequences.append(prices_normalized[i:i + self.sequence_length])
+            
+            return np.array(sequences)
+        
+        async def analyze_opportunity(self, market_data: MarketData) -> Decision:
+            # Get extended price history for LSTM
+            price_history = await self.get_price_history(
+                market_data.token, 
+                self.sequence_length + 20
+            )
+            
+            sequences = self.prepare_sequences(price_history)
+            if len(sequences) == 0:
+                return Decision(action='HOLD', confidence=0, reasoning='Insufficient data')
+            
+            # Predict with latest sequence
+            latest_sequence = sequences[-1:] 
+            prediction = self.model.predict(latest_sequence, verbose=0)[0][0]
+            
+            if prediction > 0.7:
+                return Decision(
+                    action='BUY',
+                    confidence=prediction,
+                    reasoning=f'LSTM predicts price increase (confidence: {prediction:.2f})'
+                )
+            elif prediction < 0.3:
+                return Decision(
+                    action='SELL', 
+                    confidence=1 - prediction,
+                    reasoning=f'LSTM predicts price decrease (confidence: {1-prediction:.2f})'
+                )
+            else:
+                return Decision(
+                    action='HOLD',
+                    confidence=0.5,
+                    reasoning=f'LSTM prediction uncertain (confidence: {prediction:.2f})'
+                )
+    ```
+  </Tab>
+</Tabs>
+
+## Testing & Simulation
+
+### Backtesting Framework
+
+```python
+from c0gni.simulation import BacktestEngine, HistoricalDataProvider
+
+class BacktestRunner:
+    def __init__(self, agent_class, config):
+        self.agent_class = agent_class
+        self.config = config
+        self.engine = BacktestEngine()
+        self.data_provider = HistoricalDataProvider()
+    
+    async def run_backtest(
+        self, 
+        start_date: str, 
+        end_date: str,
+        initial_capital: float = 10.0
+    ) -> BacktestResults:
+        
+        # Initialize agent with backtest config
+        config = {**self.config, 'initial_capital': initial_capital}
+        agent = self.agent_class(config)
+        
+        # Load historical market data
+        market_data = await self.data_provider.load_data(
+            tokens=config.get('tokens', ['SOL/USDC']),
+            start_date=start_date,
+            end_date=end_date,
+            interval='5m'
+        )
+        
+        results = BacktestResults(initial_capital)
+        
+        # Simulate trading
+        for timestamp, data in market_data:
+            self.engine.set_timestamp(timestamp)
+            
+            # Let agent analyze opportunity
+            decision = await agent.analyze_opportunity(data)
+            
+            if decision.action in ['BUY', 'SELL']:
+                # Simulate trade execution
+                trade_result = await self.engine.simulate_trade(
+                    decision, data, agent.available_capital
+                )
+                
+                # Update agent state
+                await agent.update_memory(trade_result)
+                results.add_trade(trade_result)
+        
+        return results
+    
+    async def optimize_parameters(self, parameter_ranges: Dict) -> Dict:
+        """Optimize agent parameters using grid search"""
+        best_params = {}
+        best_score = -float('inf')
+        
+        # Generate parameter combinations
+        param_combinations = self.generate_combinations(parameter_ranges)
+        
+        for params in param_combinations:
+            config = {**self.config, **params}
+            
+            # Run backtest with these parameters
+            results = await self.run_backtest('2024-01-01', '2024-06-01')
+            
+            # Score based on Sharpe ratio
+            score = results.sharpe_ratio
+            
+            if score > best_score:
+                best_score = score
+                best_params = params
+        
+        return best_params
+
+# Usage
+async def optimize_sma_agent():
+    runner = BacktestRunner(SimpleMovingAverageAgent, {})
+    
+    parameter_ranges = {
+        'short_window': [5, 10, 15, 20],
+        'long_window': [20, 30, 40, 50]
+    }
+    
+    best_params = await runner.optimize_parameters(parameter_ranges)
+    print(f"Best parameters: {best_params}")
+```
+
+## Deployment
+
+### Local to Production
+
+<Steps>
+  <Step title="Local Development">
+    ```python
+    # Develop and test locally
+    agent = MyCustomAgent(config)
+    await agent.test_locally()
+    ```
+  </Step>
+  
+  <Step title="Simulation Testing">
+    ```python
+    # Backtest on historical data
+    backtest = BacktestRunner(MyCustomAgent, config)
+    results = await backtest.run_backtest('2024-01-01', '2024-12-01')
+    print(results.summary())
+    ```
+  </Step>
+  
+  <Step title="Paper Trading">
+    ```python
+    # Test with live data but fake money
+    agent = MyCustomAgent({**config, 'paper_trading': True})
+    await agent.deploy()
+    ```
+  </Step>
+  
+  <Step title="Production Deployment">
+    ```python
+    # Deploy with real capital
+    agent = MyCustomAgent({**config, 'environment': 'production'})
+    await agent.deploy()
+    ```
+  </Step>
+</Steps>
+
+<CardGroup cols={2}>
+  <Card title="Python Examples" icon="python" href="/sdk/python">
+    Complete Python SDK documentation and examples
+  </Card>
+  
+  <Card title="TypeScript Examples" icon="javascript" href="/sdk/typescript">
+    Full TypeScript SDK reference and code samples
+  </Card>
+</CardGroup>

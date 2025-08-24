@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "katex/dist/katex.min.css";
 
 :root {
   --background: #ffffff;
@@ -23,6 +24,112 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  /* Ensure proper mobile scrolling */
+  -webkit-overflow-scrolling: touch;
+  /* Prevent font size adjustments in mobile Safari */
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Research page article styles */
+.prose {
+  @apply text-white/80;
+}
+
+.prose h1 {
+  @apply text-3xl font-semibold text-white mt-12 mb-6;
+}
+
+.prose h2 {
+  @apply text-2xl font-semibold text-white mt-12 mb-6;
+}
+
+.prose h3 {
+  @apply text-xl font-semibold text-white mt-8 mb-4;
+}
+
+.prose h4 {
+  @apply text-lg font-semibold text-white mt-6 mb-3;
+}
+
+.prose p {
+  @apply mb-6 leading-relaxed;
+}
+
+.prose ul, .prose ol {
+  @apply mb-6 pl-6;
+}
+
+.prose li {
+  @apply mb-2;
+}
+
+.prose strong {
+  @apply text-white font-semibold;
+}
+
+.prose em {
+  @apply italic;
+}
+
+.prose code {
+  @apply bg-white/10 px-2 py-1 rounded text-sm font-mono;
+}
+
+.prose pre {
+  @apply bg-white/5 border border-white/10 rounded-2xl p-6 overflow-x-auto mb-6;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-white/20 pl-6 italic text-white/70 mb-6;
+}
+
+.prose table {
+  @apply w-full border-collapse border border-white/20 rounded-lg overflow-hidden mb-6;
+}
+
+.prose th {
+  @apply bg-white/10 border border-white/20 px-4 py-2 text-left font-semibold text-white;
+}
+
+.prose td {
+  @apply border border-white/20 px-4 py-2;
+}
+
+.prose a {
+  @apply text-blue-400 hover:text-blue-300 transition-colors underline;
+}
+
+/* Line clamp utility */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Improve touch targets for mobile */
+@media (max-width: 768px) {
+  button, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Better mobile spacing */
+  .mobile-spacing {
+    padding: 1rem;
+  }
+  
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    .animation-delay-2000,
+    .animation-delay-4000 {
+      animation-delay: 0s;
+    }
+    
+    .animate-blob {
+      animation-duration: 0.01ms !important;
+    }
+  }
 }
 
 .animation-delay-2000 {

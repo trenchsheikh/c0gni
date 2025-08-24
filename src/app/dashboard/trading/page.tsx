@@ -4,15 +4,10 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { 
   TrendingUp, 
-  TrendingDown, 
   DollarSign, 
-  Zap, 
-  Shield, 
   Clock, 
   Target, 
   StopCircle, 
-  Play, 
-  Pause, 
   Settings, 
   ExternalLink,
   AlertTriangle,

@@ -42,7 +42,7 @@ export default function HeroSection() {
         <div className="absolute bottom-1/4 left-1/2 w-80 h-80 bg-gradient-to-t from-gray-300/5 to-white/5 rounded-full filter blur-3xl animate-blob animation-delay-4000" />
       </div>
 
-      <div className="container mx-auto px-6 text-center relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 text-center relative z-10">
         <motion.div
           initial="hidden"
           animate="visible"
@@ -69,7 +69,7 @@ export default function HeroSection() {
                 } 
               }
             }}
-            className="text-6xl md:text-8xl font-light text-white leading-tight tracking-tighter mb-8"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-white leading-tight tracking-tighter mb-6 sm:mb-8 px-4"
           >
             Your last trade
             <br />
@@ -88,7 +88,7 @@ export default function HeroSection() {
                 } 
               }
             }}
-            className="text-xl text-white/70 max-w-2xl mx-auto leading-relaxed mb-12"
+            className="text-lg sm:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed mb-8 sm:mb-12 px-4"
           >
             Stop building bots that react. Start deploying agents that decide.<br />
             The best alpha is captured in &lt;1 second. Humans can&apos;t move that fast.
@@ -106,13 +106,13 @@ export default function HeroSection() {
                 } 
               }
             }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            className="flex flex-col sm:flex-row gap-4 justify-center px-4"
           >
             <motion.button
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="group flex items-center justify-center gap-2 px-8 py-4 bg-white text-black rounded-xl font-medium transition-all duration-300 hover:shadow-2xl hover:shadow-white/10"
+              className="group flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-white text-black rounded-xl font-medium transition-all duration-300 hover:shadow-2xl hover:shadow-white/10 min-h-[44px] text-sm sm:text-base"
             >
               Request Access
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -122,7 +122,7 @@ export default function HeroSection() {
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="px-8 py-4 bg-white/5 backdrop-blur-sm text-white border border-white/10 rounded-xl font-medium transition-all duration-300 hover:bg-white/10 hover:border-white/20"
+              className="px-6 sm:px-8 py-3 sm:py-4 bg-white/5 backdrop-blur-sm text-white border border-white/10 rounded-xl font-medium transition-all duration-300 hover:bg-white/10 hover:border-white/20 min-h-[44px] text-sm sm:text-base"
             >
               View Performance
             </motion.button>

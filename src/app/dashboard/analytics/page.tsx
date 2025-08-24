@@ -3,22 +3,13 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { 
-  BarChart3, 
   TrendingUp, 
   TrendingDown, 
-  DollarSign, 
-  Clock, 
   Target, 
-  Users, 
-  Zap, 
   ExternalLink, 
   Download, 
-  Calendar, 
-  Activity, 
   Award, 
-  AlertTriangle,
-  CheckCircle,
-  Eye
+  CheckCircle
 } from "lucide-react";
 
 const portfolioMetrics = {

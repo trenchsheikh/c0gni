@@ -5,20 +5,13 @@ import { motion } from "framer-motion";
 import { 
   Brain, 
   Network, 
-  Clock, 
-  TrendingUp, 
   AlertTriangle, 
-  CheckCircle, 
-  Eye, 
   Lightbulb, 
-  Settings, 
   Download, 
-  Upload, 
   RotateCcw, 
-  Zap, 
-  Target, 
   Activity,
-  Database
+  Database,
+  Target
 } from "lucide-react";
 
 const learnedPatterns = [
