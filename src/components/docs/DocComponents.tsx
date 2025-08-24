@@ -6,7 +6,7 @@ import {
   ChevronRight, 
   Copy, 
   Check, 
-  Info, 
+  Info as InfoIcon, 
   AlertTriangle, 
   CheckCircle, 
   AlertCircle,
@@ -282,15 +282,15 @@ export const Alert = ({ type = 'info', children, className = '' }: AlertProps) =
 };
 
 // Convenience alert components
-export const Info = ({ children, className }: Omit<AlertProps, 'type'>) => (
+export const Info = ({ children, className = '' }: { children?: React.ReactNode; className?: string }) => (
   <Alert type="info" className={className}>{children}</Alert>
 );
 
-export const Warning = ({ children, className }: Omit<AlertProps, 'type'>) => (
+export const Warning = ({ children, className = '' }: { children?: React.ReactNode; className?: string }) => (
   <Alert type="warning" className={className}>{children}</Alert>
 );
 
-export const Tip = ({ children, className }: Omit<AlertProps, 'type'>) => (
+export const Tip = ({ children, className = '' }: { children?: React.ReactNode; className?: string }) => (
   <Alert type="success" className={className}>{children}</Alert>
 );
 
