@@ -14,7 +14,8 @@ import {
   Shield,
   Clock,
   DollarSign,
-  ArrowRight
+  ArrowRight,
+  AlertTriangle
 } from 'lucide-react';
 import { 
   Card, 

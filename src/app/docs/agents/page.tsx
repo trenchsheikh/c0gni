@@ -40,7 +40,7 @@ export default function AgentsPage() {
         <h1 className="text-4xl font-light text-white">Agent System</h1>
         <p className="text-xl text-white/80">
           Autonomous AI entities that think, learn, and execute trades faster than human reaction time. 
-          The future of trading is not about better tools - it's about autonomous intelligence.
+          The future of trading is not about better tools - it&apos;s about autonomous intelligence.
         </p>
       </div>
 
@@ -484,7 +484,7 @@ export default function AgentsPage() {
         </CardGroup>
         
         <Warning>
-          All agents operate within strict risk parameters. While they're designed for autonomous operation, 
+          All agents operate within strict risk parameters. While they&apos;re designed for autonomous operation, 
           you maintain full control and can pause or terminate agents at any time.
         </Warning>
       </div>

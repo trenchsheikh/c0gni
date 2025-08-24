@@ -64,7 +64,7 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \\
                     <p>Get your API keys from the developer dashboard:</p>
                     <ol className="list-decimal list-inside space-y-1 text-white/70">
                       <li>Navigate to Settings → API Keys</li>
-                      <li>Click "Generate New Key"</li>
+                      <li>Click &quot;Generate New Key&quot;</li>
                       <li>Select appropriate permissions</li>
                       <li>Copy and secure your key immediately</li>
                     </ol>

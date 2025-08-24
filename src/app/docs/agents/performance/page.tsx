@@ -35,7 +35,7 @@ export default function AgentPerformancePage() {
       <div className="space-y-4">
         <h1 className="text-4xl font-light text-white">Agent Performance</h1>
         <p className="text-xl text-white/80">
-          Understanding how to measure, analyze, and optimize your agents' trading performance. 
+          Understanding how to measure, analyze, and optimize your agents&apos; trading performance. 
           Data-driven insights for maximizing profitability.
         </p>
       </div>

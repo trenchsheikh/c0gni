@@ -13,6 +13,7 @@ import {
   ArrowRight,
   Crosshair,
   ArrowLeftRight,
+  Shield,
   TrendingUp,
   Code
 } from 'lucide-react';

@@ -224,7 +224,7 @@ export default function AgentTypesPage() {
             
             <p className="text-white/80 leading-relaxed">
               Continuously scans markets for opportunities and generates signals for other agents. 
-              Doesn't execute trades but provides valuable market intelligence for swarm coordination.
+              Doesn&apos;t execute trades but provides valuable market intelligence for swarm coordination.
             </p>
             
             <div className="space-y-3">
@@ -388,7 +388,7 @@ export default function AgentTypesPage() {
       </Info>
 
       <Warning>
-        Remember that past performance doesn't guarantee future results. Start with smaller amounts 
+        Remember that past performance doesn&apos;t guarantee future results. Start with smaller amounts 
         to understand agent behavior before scaling up your deployments.
       </Warning>
     </div>
