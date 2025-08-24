@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { 
   Crosshair, 
@@ -23,7 +21,7 @@ import {
   CodeBlock,
   AccordionGroup,
   Accordion
-} from '@/components/docs/DocComponents';
+} from '@/components/docs';
 
 export default function AgentTypesPage() {
   return (
@@ -278,21 +276,21 @@ export default function AgentTypesPage() {
               </p>
               
               <div className="space-y-4">
-                <Card title="Conservative (Low Risk)" icon={Shield}>
+                <Card title="Conservative (Low Risk)" icon={<Shield />}>
                   <div className="space-y-2">
                     <p><strong>Recommended:</strong> LP Optimizer, Arbitrage Engine</p>
                     <p>Focus on steady, predictable returns with minimal risk exposure.</p>
                   </div>
                 </Card>
                 
-                <Card title="Balanced (Medium Risk)" icon={BarChart3}>
+                <Card title="Balanced (Medium Risk)" icon={<BarChart3 />}>
                   <div className="space-y-2">
                     <p><strong>Recommended:</strong> Arbitrage Engine, Scout + Trader combination</p>
                     <p>Balance growth potential with risk management through diversified strategies.</p>
                   </div>
                 </Card>
                 
-                <Card title="Aggressive (High Risk)" icon={TrendingUp}>
+                <Card title="Aggressive (High Risk)" icon={<TrendingUp />}>
                   <div className="space-y-2">
                     <p><strong>Recommended:</strong> Sniper Agent, Multi-agent swarms</p>
                     <p>Maximum growth potential with higher risk tolerance for experienced traders.</p>

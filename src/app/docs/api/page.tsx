@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { 
   Code, 
@@ -24,7 +22,7 @@ import {
   AccordionGroup,
   Accordion,
   Tip
-} from '@/components/docs/DocComponents';
+} from '@/components/docs';
 
 export default function APIReferencePage() {
   return (

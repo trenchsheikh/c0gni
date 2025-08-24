@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { 
   Code, 
@@ -30,7 +28,7 @@ import {
   AccordionGroup,
   Accordion,
   Tip
-} from '@/components/docs/DocComponents';
+} from '@/components/docs';
 
 export default function SDKPage() {
   return (
@@ -51,7 +49,7 @@ export default function SDKPage() {
         <h2 className="text-3xl font-light text-white">Choose Your Language</h2>
         
         <CardGroup cols={2}>
-          <Card title="Python SDK" icon={Code} href="/docs/sdk/python">
+          <Card title="Python SDK" icon={<Code />} href="/docs/sdk/python">
             <div className="space-y-2">
               <p className="text-blue-400 text-sm font-medium">Recommended for ML strategies</p>
               <p>Full-featured SDK with ML libraries, backtesting, and data analysis tools</p>
@@ -63,7 +61,7 @@ export default function SDKPage() {
             </div>
           </Card>
           
-          <Card title="TypeScript SDK" icon={Terminal} href="/docs/sdk/typescript">
+          <Card title="TypeScript SDK" icon={<Terminal />} href="/docs/sdk/typescript">
             <div className="space-y-2">
               <p className="text-green-400 text-sm font-medium">Perfect for web integration</p>
               <p>Lightweight SDK for React/Node.js applications and web-based strategies</p>
@@ -236,7 +234,7 @@ await agent.deploy();`}
         <h2 className="text-3xl font-light text-white">SDK Features</h2>
         
         <CardGroup cols={2}>
-          <Card title="Strategy Framework" icon={Brain}>
+          <Card title="Strategy Framework" icon={<Brain />}>
             <div className="space-y-2">
               <p>Pre-built base classes for common trading strategies</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -248,7 +246,7 @@ await agent.deploy();`}
             </div>
           </Card>
           
-          <Card title="Market Data API" icon={Database}>
+          <Card title="Market Data API" icon={<Database />}>
             <div className="space-y-2">
               <p>Real-time and historical market data from multiple sources</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -260,7 +258,7 @@ await agent.deploy();`}
             </div>
           </Card>
           
-          <Card title="Backtesting Engine" icon={Zap}>
+          <Card title="Backtesting Engine" icon={<Zap />}>
             <div className="space-y-2">
               <p>Test your strategies against historical data before deployment</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -272,7 +270,7 @@ await agent.deploy();`}
             </div>
           </Card>
           
-          <Card title="Agent Management" icon={Network}>
+          <Card title="Agent Management" icon={<Network />}>
             <div className="space-y-2">
               <p>Deploy, monitor, and control your agents programmatically</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -290,7 +288,7 @@ await agent.deploy();`}
         <h2 className="text-3xl font-light text-white">Development Workflow</h2>
         
         <AccordionGroup>
-          <Accordion title="1. Local Development" icon={Code}>
+          <Accordion title="1. Local Development" icon={<Code />}>
             <div className="space-y-3">
               <p>Develop and test your strategies locally:</p>
               <ul className="space-y-1 text-white/70">
@@ -317,7 +315,7 @@ print(f"Sharpe ratio: {results.sharpe_ratio:.2f}")`}
             </div>
           </Accordion>
           
-          <Accordion title="2. Backtesting" icon={BarChart3}>
+          <Accordion title="2. Backtesting" icon={<BarChart3 />}>
             <div className="space-y-3">
               <p>Comprehensive backtesting framework:</p>
               <ul className="space-y-1 text-white/70">
@@ -329,7 +327,7 @@ print(f"Sharpe ratio: {results.sharpe_ratio:.2f}")`}
             </div>
           </Accordion>
           
-          <Accordion title="3. Paper Trading" icon={Shield}>
+          <Accordion title="3. Paper Trading" icon={<Shield />}>
             <div className="space-y-3">
               <p>Test with live market data but simulated trades:</p>
               <ul className="space-y-1 text-white/70">
@@ -341,7 +339,7 @@ print(f"Sharpe ratio: {results.sharpe_ratio:.2f}")`}
             </div>
           </Accordion>
           
-          <Accordion title="4. Production Deployment" icon={Rocket}>
+          <Accordion title="4. Production Deployment" icon={<Rocket />}>
             <div className="space-y-3">
               <p>Deploy your tested agent to production:</p>
               <ul className="space-y-1 text-white/70">
@@ -392,11 +390,11 @@ class MLSniperStrategy(Strategy):
               </CodeBlock>
               
               <div className="grid md:grid-cols-2 gap-4">
-                <Card title="Pre-trained Models" icon={Brain}>
+                <Card title="Pre-trained Models" icon={<Brain />}>
                   Access battle-tested ML models for common trading tasks
                 </Card>
                 
-                <Card title="Custom Training" icon={Database}>
+                <Card title="Custom Training" icon={<Database />}>
                   Train your own models using our data pipeline
                 </Card>
               </div>
@@ -493,15 +491,15 @@ class SentimentAwareStrategy(Strategy):
         <h2 className="text-3xl font-light text-white">Resources</h2>
         
         <CardGroup cols={3}>
-          <Card title="Documentation" icon={Book} href="/docs/api">
+          <Card title="Documentation" icon={<Book />} href="/docs/api">
             Complete API reference and guides
           </Card>
           
-          <Card title="Examples" icon={Code} href="https://github.com/c0gni/examples">
+          <Card title="Examples" icon={<Code />} href="https://github.com/c0gni/examples">
             Sample strategies and implementation examples
           </Card>
           
-          <Card title="Community" icon={Network} href="/docs/support/community">
+          <Card title="Community" icon={<Network />} href="/docs/support/community">
             Discord community and developer forums
           </Card>
         </CardGroup>

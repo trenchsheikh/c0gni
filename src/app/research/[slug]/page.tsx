@@ -23,7 +23,14 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import Iridescence from "@/components/Iridescence";
+import dynamic from 'next/dynamic';
+
+const Iridescence = dynamic(() => import("@/components/Iridescence"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full bg-gradient-to-br from-purple-900/20 to-blue-900/20 animate-pulse" />
+  )
+});
 
 // This would typically come from your CMS or markdown files
 const papers = {

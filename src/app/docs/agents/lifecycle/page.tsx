@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { 
   Play, 
@@ -29,7 +27,7 @@ import {
   Accordion,
   Tip,
   Frame
-} from '@/components/docs/DocComponents';
+} from '@/components/docs';
 
 export default function AgentLifecyclePage() {
   return (
@@ -183,7 +181,7 @@ export default function AgentLifecyclePage() {
               </p>
               
               <CardGroup cols={2}>
-                <Card title="Paper Trading" icon={Shield}>
+                <Card title="Paper Trading" icon={<Shield />}>
                   <div className="space-y-2">
                     <p>Risk-free simulation using live market data</p>
                     <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -194,7 +192,7 @@ export default function AgentLifecyclePage() {
                   </div>
                 </Card>
                 
-                <Card title="Strategy Validation" icon={CheckCircle}>
+                <Card title="Strategy Validation" icon={<CheckCircle />}>
                   <div className="space-y-2">
                     <p>Backtesting against historical market data</p>
                     <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -395,7 +393,7 @@ export default function AgentLifecyclePage() {
               </p>
               
               <CardGroup cols={2}>
-                <Card title="Graceful Shutdown" icon={CheckCircle}>
+                <Card title="Graceful Shutdown" icon={<CheckCircle />}>
                   <div className="space-y-2">
                     <p>Controlled termination with position closure</p>
                     <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -407,7 +405,7 @@ export default function AgentLifecyclePage() {
                   </div>
                 </Card>
                 
-                <Card title="Emergency Stop" icon={AlertTriangle}>
+                <Card title="Emergency Stop" icon={<AlertTriangle />}>
                   <div className="space-y-2">
                     <p>Immediate termination for critical situations</p>
                     <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -455,7 +453,7 @@ export default function AgentLifecyclePage() {
         <h2 className="text-3xl font-light text-white">Lifecycle Management Tools</h2>
         
         <CardGroup cols={2}>
-          <Card title="Agent Dashboard" icon={Settings}>
+          <Card title="Agent Dashboard" icon={<Settings />}>
             <div className="space-y-2">
               <p>Comprehensive control panel for lifecycle management</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -467,7 +465,7 @@ export default function AgentLifecyclePage() {
             </div>
           </Card>
           
-          <Card title="Automated Policies" icon={Zap}>
+          <Card title="Automated Policies" icon={<Zap />}>
             <div className="space-y-2">
               <p>Set rules for automatic lifecycle transitions</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">

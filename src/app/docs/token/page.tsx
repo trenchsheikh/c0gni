@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { 
   Coins, 
@@ -27,7 +25,7 @@ import {
   AccordionGroup,
   Accordion,
   Tip
-} from '@/components/docs/DocComponents';
+} from '@/components/docs';
 
 export default function TokenPage() {
   return (
@@ -40,13 +38,13 @@ export default function TokenPage() {
       </div>
 
       <CardGroup cols={3}>
-        <Card title="Utility Token" icon={Zap}>
+        <Card title="Utility Token" icon={<Zap />}>
           Powers agent deployment, trading fees, and platform governance
         </Card>
-        <Card title="Staking Rewards" icon={TrendingUp}>
+        <Card title="Staking Rewards" icon={<TrendingUp />}>
           Earn yields by staking tokens to secure the network
         </Card>
-        <Card title="Governance Rights" icon={Users}>
+        <Card title="Governance Rights" icon={<Users />}>
           Vote on protocol upgrades and feature development
         </Card>
       </CardGroup>
@@ -135,7 +133,7 @@ export default function TokenPage() {
               </p>
               
               <div className="grid md:grid-cols-2 gap-6">
-                <Card title="Agent Deployment" icon={Zap}>
+                <Card title="Agent Deployment" icon={<Zap />}>
                   <div className="space-y-2">
                     <p>Deploy new agents with CGNI tokens</p>
                     <div className="text-sm text-white/60">
@@ -150,7 +148,7 @@ export default function TokenPage() {
                   </div>
                 </Card>
                 
-                <Card title="Trading Fees" icon={DollarSign}>
+                <Card title="Trading Fees" icon={<DollarSign />}>
                   <div className="space-y-2">
                     <p>Reduced fees when paying with CGNI</p>
                     <div className="text-sm text-white/60">

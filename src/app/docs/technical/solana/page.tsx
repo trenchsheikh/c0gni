@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { 
   Zap, 
@@ -26,7 +24,7 @@ import {
   Accordion,
   Tip,
   Frame
-} from '@/components/docs/DocComponents';
+} from '@/components/docs';
 
 export default function SolanaIntegrationPage() {
   return (
@@ -48,7 +46,7 @@ export default function SolanaIntegrationPage() {
         <h2 className="text-3xl font-light text-white">Why Solana?</h2>
         
         <CardGroup cols={2}>
-          <Card title="Ultra-Low Latency" icon={Zap}>
+          <Card title="Ultra-Low Latency" icon={<Zap />}>
             <div className="space-y-2">
               <p>~400ms block times enable near-instant trade execution</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -59,7 +57,7 @@ export default function SolanaIntegrationPage() {
             </div>
           </Card>
           
-          <Card title="Minimal Costs" icon={DollarSign}>
+          <Card title="Minimal Costs" icon={<DollarSign />}>
             <div className="space-y-2">
               <p>Transaction fees typically under $0.01 per trade</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -70,7 +68,7 @@ export default function SolanaIntegrationPage() {
             </div>
           </Card>
           
-          <Card title="Massive Throughput" icon={Network}>
+          <Card title="Massive Throughput" icon={<Network />}>
             <div className="space-y-2">
               <p>65,000+ theoretical TPS supports high-frequency trading</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -81,7 +79,7 @@ export default function SolanaIntegrationPage() {
             </div>
           </Card>
           
-          <Card title="Rich DeFi Ecosystem" icon={Database}>
+          <Card title="Rich DeFi Ecosystem" icon={<Database />}>
             <div className="space-y-2">
               <p>Extensive DEXs and protocols for diverse strategies</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -251,7 +249,7 @@ class SolanaConnectionManager {
               </p>
               
               <div className="grid md:grid-cols-2 gap-6">
-                <Card title="DEX Integrations" icon={Network}>
+                <Card title="DEX Integrations" icon={<Network />}>
                   <div className="space-y-2">
                     <div className="text-sm text-white/60 space-y-1">
                       <div>• <strong>Jupiter:</strong> Aggregated routing</div>
@@ -263,7 +261,7 @@ class SolanaConnectionManager {
                   </div>
                 </Card>
                 
-                <Card title="Protocol Support" icon={Code}>
+                <Card title="Protocol Support" icon={<Code />}>
                   <div className="space-y-2">
                     <div className="text-sm text-white/60 space-y-1">
                       <div>• <strong>Token Program:</strong> SPL token transfers</div>
@@ -379,28 +377,28 @@ class JupiterSwapHandler {
         <h2 className="text-3xl font-light text-white">Performance Metrics</h2>
         
         <div className="grid md:grid-cols-4 gap-6">
-          <Card title="Network Latency" icon={Clock}>
+          <Card title="Network Latency" icon={<Clock />}>
             <div className="space-y-2">
               <div className="text-2xl font-bold text-green-400">8.7ms</div>
               <p className="text-sm text-white/60">Average RPC response time</p>
             </div>
           </Card>
           
-          <Card title="Transaction Success" icon={CheckCircle}>
+          <Card title="Transaction Success" icon={<CheckCircle />}>
             <div className="space-y-2">
               <div className="text-2xl font-bold text-green-400">99.4%</div>
               <p className="text-sm text-white/60">First-attempt success rate</p>
             </div>
           </Card>
           
-          <Card title="Confirmation Time" icon={Zap}>
+          <Card title="Confirmation Time" icon={<Zap />}>
             <div className="space-y-2">
               <div className="text-2xl font-bold text-blue-400">387ms</div>
               <p className="text-sm text-white/60">Average confirmation</p>
             </div>
           </Card>
           
-          <Card title="Fee Efficiency" icon={DollarSign}>
+          <Card title="Fee Efficiency" icon={<DollarSign />}>
             <div className="space-y-2">
               <div className="text-2xl font-bold text-purple-400">$0.008</div>
               <p className="text-sm text-white/60">Average transaction cost</p>
@@ -413,7 +411,7 @@ class JupiterSwapHandler {
         <h2 className="text-3xl font-light text-white">Network Resilience</h2>
         
         <AccordionGroup>
-          <Accordion title="Outage Handling" icon={Shield}>
+          <Accordion title="Outage Handling" icon={<Shield />}>
             <div className="space-y-3">
               <p>Comprehensive strategies for network disruptions:</p>
               <ul className="space-y-2 text-white/70">
@@ -425,7 +423,7 @@ class JupiterSwapHandler {
             </div>
           </Accordion>
           
-          <Accordion title="Fork Handling" icon={GitBranch}>
+          <Accordion title="Fork Handling" icon={<GitBranch />}>
             <div className="space-y-3">
               <p>Protection against chain reorganizations:</p>
               <ul className="space-y-2 text-white/70">
@@ -437,7 +435,7 @@ class JupiterSwapHandler {
             </div>
           </Accordion>
           
-          <Accordion title="Emergency Procedures" icon={AlertTriangle}>
+          <Accordion title="Emergency Procedures" icon={<AlertTriangle />}>
             <div className="space-y-3">
               <p>Critical situation response protocols:</p>
               <ul className="space-y-2 text-white/70">

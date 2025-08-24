@@ -1,8 +1,8 @@
 import React, { useRef, forwardRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { BrainCircuit, Bot, Code, BarChartBig, Eye, Layers, LucideIcon } from "lucide-react";
-import { Globe } from "@/components/magicui/globe";
-import { AnimatedBeam } from "@/components/magicui/animated-beam";
+import { Globe } from "@/components/LazyComponents";
+import { AnimatedBeam } from "@/components/LazyComponents";
 import { cn } from "@/lib/utils";
 
 interface ServiceType {

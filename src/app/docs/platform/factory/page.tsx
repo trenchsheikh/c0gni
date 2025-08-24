@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { 
   Rocket, 
@@ -30,7 +28,7 @@ import {
   AccordionGroup,
   Accordion,
   Tip
-} from '@/components/docs/DocComponents';
+} from '@/components/docs';
 
 export default function AgentFactoryPage() {
   return (
@@ -51,7 +49,7 @@ export default function AgentFactoryPage() {
         <h2 className="text-3xl font-light text-white">Available Blueprints</h2>
         
         <CardGroup cols={2}>
-          <Card title="Sniper Agent" icon={Zap}>
+          <Card title="Sniper Agent" icon={<Zap />}>
             <div className="space-y-2">
               <p className="text-green-400 text-sm font-medium">Most Popular • 73% Success Rate</p>
               <p>Detects and trades new token launches with sub-400ms execution speed</p>
@@ -63,7 +61,7 @@ export default function AgentFactoryPage() {
             </div>
           </Card>
           
-          <Card title="Arbitrage Engine" icon={BarChart3}>
+          <Card title="Arbitrage Engine" icon={<BarChart3 />}>
             <div className="space-y-2">
               <p className="text-blue-400 text-sm font-medium">Low Risk • 94% Success Rate</p>
               <p>Finds price differences across DEXs and executes profitable arbitrage</p>
@@ -75,7 +73,7 @@ export default function AgentFactoryPage() {
             </div>
           </Card>
           
-          <Card title="LP Optimizer" icon={Settings}>
+          <Card title="LP Optimizer" icon={<Settings />}>
             <div className="space-y-2">
               <p className="text-purple-400 text-sm font-medium">Passive Income • 15% APY</p>
               <p>Automatically manages liquidity positions for optimal fee generation</p>
@@ -87,7 +85,7 @@ export default function AgentFactoryPage() {
             </div>
           </Card>
           
-          <Card title="Scout Network" icon={Users}>
+          <Card title="Scout Network" icon={<Users />}>
             <div className="space-y-2">
               <p className="text-orange-400 text-sm font-medium">Intelligence • 87% Accuracy</p>
               <p>Network of scouts that gather market intelligence for other agents</p>
@@ -131,7 +129,7 @@ export default function AgentFactoryPage() {
               </p>
               
               <AccordionGroup>
-                <Accordion title="Budget Allocation" icon={DollarSign}>
+                <Accordion title="Budget Allocation" icon={<DollarSign />}>
                   <div className="space-y-3">
                     <p>Set the total amount of SOL your agent can use for trading:</p>
                     <ul className="space-y-1 text-white/70">
@@ -151,7 +149,7 @@ export default function AgentFactoryPage() {
                   </div>
                 </Accordion>
                 
-                <Accordion title="Risk Management" icon={Shield}>
+                <Accordion title="Risk Management" icon={<Shield />}>
                   <div className="space-y-3">
                     <p>Built-in safety controls to protect your capital:</p>
                     <ul className="space-y-1 text-white/70">
@@ -162,7 +160,7 @@ export default function AgentFactoryPage() {
                   </div>
                 </Accordion>
                 
-                <Accordion title="Execution Speed" icon={Zap}>
+                <Accordion title="Execution Speed" icon={<Zap />}>
                   <div className="space-y-3">
                     <p>Priority fee settings for transaction speed:</p>
                     <ul className="space-y-1 text-white/70">
@@ -183,7 +181,7 @@ export default function AgentFactoryPage() {
               </p>
               
               <CardGroup cols={2}>
-                <Card title="MEV Protection" icon={Shield}>
+                <Card title="MEV Protection" icon={<Shield />}>
                   <div className="space-y-2">
                     <p>Protect against front-running and sandwich attacks</p>
                     <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -194,7 +192,7 @@ export default function AgentFactoryPage() {
                   </div>
                 </Card>
                 
-                <Card title="Slippage Tolerance" icon={Settings}>
+                <Card title="Slippage Tolerance" icon={<Settings />}>
                   <div className="space-y-2">
                     <p>Maximum acceptable price movement during execution</p>
                     <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -243,15 +241,15 @@ const sniperConfig = {
               </p>
               
               <div className="grid md:grid-cols-3 gap-4">
-                <Card title="Live Dashboard" icon={BarChart3}>
+                <Card title="Live Dashboard" icon={<BarChart3 />}>
                   Real-time performance metrics and trade history
                 </Card>
                 
-                <Card title="Alert System" icon={AlertTriangle}>
+                <Card title="Alert System" icon={<AlertTriangle />}>
                   Custom notifications for trades, profits, and losses
                 </Card>
                 
-                <Card title="Remote Control" icon={Settings}>
+                <Card title="Remote Control" icon={<Settings />}>
                   Pause, resume, or terminate agents remotely
                 </Card>
               </div>
@@ -327,7 +325,7 @@ const sniperConfig = {
         <h2 className="text-3xl font-light text-white">Pricing</h2>
         
         <div className="grid md:grid-cols-3 gap-6">
-          <Card title="Starter" icon={Rocket}>
+          <Card title="Starter" icon={<Rocket />}>
             <div className="space-y-4">
               <div className="text-center">
                 <div className="text-3xl font-bold text-white">10 CGNI</div>
@@ -341,7 +339,7 @@ const sniperConfig = {
             </div>
           </Card>
           
-          <Card title="Professional" icon={Users}>
+          <Card title="Professional" icon={<Users />}>
             <div className="space-y-4">
               <div className="text-center">
                 <div className="text-3xl font-bold text-white">25 CGNI</div>
@@ -356,7 +354,7 @@ const sniperConfig = {
             </div>
           </Card>
           
-          <Card title="Enterprise" icon={Brain}>
+          <Card title="Enterprise" icon={<Brain />}>
             <div className="space-y-4">
               <div className="text-center">
                 <div className="text-3xl font-bold text-white">50 CGNI</div>

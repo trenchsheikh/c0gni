@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { 
   Network, 
@@ -29,7 +27,7 @@ import {
   AccordionGroup,
   Accordion,
   Frame
-} from '@/components/docs/DocComponents';
+} from '@/components/docs';
 
 export default function ArchitecturePage() {
   return (
@@ -108,7 +106,7 @@ export default function ArchitecturePage() {
               </p>
               
               <CardGroup cols={2}>
-                <Card title="Decision Engine" icon={Brain}>
+                <Card title="Decision Engine" icon={<Brain />}>
                   <div className="space-y-2">
                     <p>AI-powered strategy execution with machine learning models</p>
                     <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -119,7 +117,7 @@ export default function ArchitecturePage() {
                   </div>
                 </Card>
                 
-                <Card title="Memory System" icon={Database}>
+                <Card title="Memory System" icon={<Database />}>
                   <div className="space-y-2">
                     <p>On-chain persistent memory for learning and adaptation</p>
                     <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -213,7 +211,7 @@ class SwarmOrchestrator {
               </p>
               
               <CardGroup cols={2}>
-                <Card title="Execution Engine" icon={Zap}>
+                <Card title="Execution Engine" icon={<Zap />}>
                   <div className="space-y-2">
                     <p>Sub-400ms trade execution with Jito bundle optimization</p>
                     <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -224,7 +222,7 @@ class SwarmOrchestrator {
                   </div>
                 </Card>
                 
-                <Card title="Data Pipeline" icon={Wifi}>
+                <Card title="Data Pipeline" icon={<Wifi />}>
                   <div className="space-y-2">
                     <p>Real-time market data ingestion and processing</p>
                     <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -288,7 +286,7 @@ class SwarmOrchestrator {
         <h2 className="text-3xl font-light text-white">Security Architecture</h2>
         
         <AccordionGroup>
-          <Accordion title="Agent Isolation" icon={Shield}>
+          <Accordion title="Agent Isolation" icon={<Shield />}>
             <div className="space-y-3">
               <p>Each agent runs in an isolated environment with limited permissions:</p>
               <ul className="space-y-1 text-white/70">
@@ -300,7 +298,7 @@ class SwarmOrchestrator {
             </div>
           </Accordion>
           
-          <Accordion title="Private Key Management" icon={Lock}>
+          <Accordion title="Private Key Management" icon={<Lock />}>
             <div className="space-y-3">
               <p>Secure key management using hardware security modules:</p>
               <ul className="space-y-1 text-white/70">
@@ -312,7 +310,7 @@ class SwarmOrchestrator {
             </div>
           </Accordion>
           
-          <Accordion title="Network Security" icon={Network}>
+          <Accordion title="Network Security" icon={<Network />}>
             <div className="space-y-3">
               <p>Multiple layers of network protection:</p>
               <ul className="space-y-1 text-white/70">
@@ -372,7 +370,7 @@ class SwarmOrchestrator {
         <h2 className="text-3xl font-light text-white">Integration Points</h2>
         
         <CardGroup cols={2}>
-          <Card title="Solana Blockchain" icon={Database}>
+          <Card title="Solana Blockchain" icon={<Database />}>
             <div className="space-y-2">
               <p>Native integration with Solana's high-performance blockchain</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -383,7 +381,7 @@ class SwarmOrchestrator {
             </div>
           </Card>
           
-          <Card title="DEX Aggregators" icon={GitBranch}>
+          <Card title="DEX Aggregators" icon={<GitBranch />}>
             <div className="space-y-2">
               <p>Connected to all major Solana DEXs for optimal pricing</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">

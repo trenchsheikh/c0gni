@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { 
   Wallet, 
@@ -30,7 +28,7 @@ import {
   Tab,
   AccordionGroup,
   Accordion
-} from '@/components/docs/DocComponents';
+} from '@/components/docs';
 
 export default function QuickstartPage() {
   return (
@@ -79,7 +77,7 @@ export default function QuickstartPage() {
         </p>
 
         <CardGroup cols={2}>
-          <Card title="Sniper Agent" icon={Crosshair}>
+          <Card title="Sniper Agent" icon={<Crosshair />}>
             <div className="space-y-2">
               <p className="text-green-400 text-sm font-medium">Best for beginners</p>
               <p>Detects new token launches and executes entry trades within milliseconds.</p>
@@ -91,7 +89,7 @@ export default function QuickstartPage() {
             </div>
           </Card>
           
-          <Card title="Arbitrage Engine" icon={ArrowLeftRight}>
+          <Card title="Arbitrage Engine" icon={<ArrowLeftRight />}>
             <div className="space-y-2">
               <p className="text-blue-400 text-sm font-medium">Steady returns</p>
               <p>Finds price differences across DEXs and executes profitable arbitrage trades.</p>
@@ -105,7 +103,7 @@ export default function QuickstartPage() {
         </CardGroup>
 
         <CardGroup cols={2}>
-          <Card title="LP Optimizer" icon={BarChart3}>
+          <Card title="LP Optimizer" icon={<BarChart3 />}>
             <div className="space-y-2">
               <p className="text-purple-400 text-sm font-medium">Long-term growth</p>
               <p>Automatically manages liquidity positions for optimal fee generation.</p>
@@ -117,7 +115,7 @@ export default function QuickstartPage() {
             </div>
           </Card>
           
-          <Card title="Custom Agent" icon={Code}>
+          <Card title="Custom Agent" icon={<Code />}>
             <div className="space-y-2">
               <p className="text-orange-400 text-sm font-medium">For developers</p>
               <p>Build your own strategy using our SDK and deploy as an autonomous agent.</p>
@@ -355,19 +353,19 @@ export default function QuickstartPage() {
         <h2 className="text-3xl font-light text-white">Next Steps</h2>
 
         <CardGroup cols={2}>
-          <Card title="Dashboard Walkthrough" icon={BarChart3} href="/docs/guides/dashboard">
+          <Card title="Dashboard Walkthrough" icon={<BarChart3 />} href="/docs/guides/dashboard">
             Learn to navigate and interpret your agent's performance
           </Card>
           
-          <Card title="Risk Management" icon={Shield} href="/docs/guides/risk">
+          <Card title="Risk Management" icon={<Shield />} href="/docs/guides/risk">
             Set up advanced safety controls and alerts
           </Card>
           
-          <Card title="Agent Types" icon={TrendingUp} href="/docs/agents/types">
+          <Card title="Agent Types" icon={<TrendingUp />} href="/docs/agents/types">
             Explore different agent specializations and strategies
           </Card>
           
-          <Card title="SDK Development" icon={Code} href="/docs/sdk">
+          <Card title="SDK Development" icon={<Code />} href="/docs/sdk">
             Build custom agents with our Python/TypeScript SDK
           </Card>
         </CardGroup>

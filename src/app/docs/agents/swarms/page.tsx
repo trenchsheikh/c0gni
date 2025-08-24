@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { 
   Network, 
@@ -29,7 +27,7 @@ import {
   Accordion,
   Tip,
   Frame
-} from '@/components/docs/DocComponents';
+} from '@/components/docs';
 
 export default function SwarmIntelligencePage() {
   return (
@@ -231,7 +229,7 @@ const opportunityMessage: SwarmMessage = {
               </p>
               
               <CardGroup cols={2}>
-                <Card title="Competitive Swarming" icon={TrendingUp}>
+                <Card title="Competitive Swarming" icon={<TrendingUp />}>
                   <div className="space-y-2">
                     <p>Agents compete for the best opportunities while sharing market intelligence</p>
                     <div className="text-sm text-white/60 mt-3">
@@ -240,7 +238,7 @@ const opportunityMessage: SwarmMessage = {
                   </div>
                 </Card>
                 
-                <Card title="Cooperative Execution" icon={Users}>
+                <Card title="Cooperative Execution" icon={<Users />}>
                   <div className="space-y-2">
                     <p>Agents work together to execute large trades without market impact</p>
                     <div className="text-sm text-white/60 mt-3">
@@ -249,7 +247,7 @@ const opportunityMessage: SwarmMessage = {
                   </div>
                 </Card>
                 
-                <Card title="Hierarchical Command" icon={GitBranch}>
+                <Card title="Hierarchical Command" icon={<GitBranch />}>
                   <div className="space-y-2">
                     <p>Lead agents coordinate subordinate agents for complex strategies</p>
                     <div className="text-sm text-white/60 mt-3">
@@ -258,7 +256,7 @@ const opportunityMessage: SwarmMessage = {
                   </div>
                 </Card>
                 
-                <Card title="Defensive Formation" icon={Shield}>
+                <Card title="Defensive Formation" icon={<Shield />}>
                   <div className="space-y-2">
                     <p>Agents coordinate to protect against market manipulation</p>
                     <div className="text-sm text-white/60 mt-3">
@@ -335,7 +333,7 @@ const opportunityMessage: SwarmMessage = {
         <h2 className="text-3xl font-light text-white">Swarm Configuration</h2>
         
         <AccordionGroup>
-          <Accordion title="Basic Swarm Setup" icon={Users}>
+          <Accordion title="Basic Swarm Setup" icon={<Users />}>
             <div className="space-y-4">
               <p>Creating a basic swarm with complementary agents:</p>
               <CodeBlock language="json">
@@ -375,7 +373,7 @@ const opportunityMessage: SwarmMessage = {
             </div>
           </Accordion>
           
-          <Accordion title="Advanced Coordination" icon={Network}>
+          <Accordion title="Advanced Coordination" icon={<Network />}>
             <div className="space-y-3">
               <p>Configure complex swarm behaviors:</p>
               <ul className="space-y-1 text-white/70">
@@ -387,7 +385,7 @@ const opportunityMessage: SwarmMessage = {
             </div>
           </Accordion>
           
-          <Accordion title="Monitoring & Control" icon={Shield}>
+          <Accordion title="Monitoring & Control" icon={<Shield />}>
             <div className="space-y-3">
               <p>Real-time swarm oversight:</p>
               <ul className="space-y-1 text-white/70">
@@ -405,7 +403,7 @@ const opportunityMessage: SwarmMessage = {
         <h2 className="text-3xl font-light text-white">Use Cases</h2>
         
         <CardGroup cols={2}>
-          <Card title="MEV Protection Swarms" icon={Shield}>
+          <Card title="MEV Protection Swarms" icon={<Shield />}>
             <div className="space-y-2">
               <p>Coordinated defense against front-running and sandwich attacks</p>
               <div className="text-sm text-white/60 mt-3">
@@ -414,7 +412,7 @@ const opportunityMessage: SwarmMessage = {
             </div>
           </Card>
           
-          <Card title="Cross-DEX Arbitrage" icon={Share2}>
+          <Card title="Cross-DEX Arbitrage" icon={<Share2 />}>
             <div className="space-y-2">
               <p>Multi-agent coordination for complex arbitrage opportunities</p>
               <div className="text-sm text-white/60 mt-3">
@@ -423,7 +421,7 @@ const opportunityMessage: SwarmMessage = {
             </div>
           </Card>
           
-          <Card title="Large Position Management" icon={TrendingUp}>
+          <Card title="Large Position Management" icon={<TrendingUp />}>
             <div className="space-y-2">
               <p>Break large trades into optimal smaller positions</p>
               <div className="text-sm text-white/60 mt-3">
@@ -432,7 +430,7 @@ const opportunityMessage: SwarmMessage = {
             </div>
           </Card>
           
-          <Card title="Market Making Swarms" icon={Network}>
+          <Card title="Market Making Swarms" icon={<Network />}>
             <div className="space-y-2">
               <p>Distributed liquidity provision across multiple pairs</p>
               <div className="text-sm text-white/60 mt-3">

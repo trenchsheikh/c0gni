@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { 
   Code, 
@@ -26,7 +24,7 @@ import {
   AccordionGroup,
   Accordion,
   Tip
-} from '@/components/docs/DocComponents';
+} from '@/components/docs';
 
 export default function PythonSDKPage() {
   return (
@@ -498,7 +496,7 @@ class MLEnhancedStrategy(Strategy):
         <h2 className="text-3xl font-light text-white">Testing & Debugging</h2>
         
         <CardGroup cols={2}>
-          <Card title="Unit Testing" icon={CheckCircle}>
+          <Card title="Unit Testing" icon={<CheckCircle />}>
             <div className="space-y-2">
               <p>Comprehensive testing framework for strategy validation</p>
               <div className="text-sm text-white/60 mt-3">
@@ -507,7 +505,7 @@ class MLEnhancedStrategy(Strategy):
             </div>
           </Card>
           
-          <Card title="Debug Tools" icon={AlertCircle}>
+          <Card title="Debug Tools" icon={<AlertCircle />}>
             <div className="space-y-2">
               <p>Advanced debugging capabilities for complex strategies</p>
               <div className="text-sm text-white/60 mt-3">

@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { 
   TrendingUp, 
@@ -27,7 +25,7 @@ import {
   Accordion,
   Tip,
   Frame
-} from '@/components/docs/DocComponents';
+} from '@/components/docs';
 
 export default function AgentPerformancePage() {
   return (
@@ -49,28 +47,28 @@ export default function AgentPerformancePage() {
         <h2 className="text-3xl font-light text-white">Key Performance Metrics</h2>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card title="Success Rate" icon={Target}>
+          <Card title="Success Rate" icon={<Target />}>
             <div className="space-y-2">
               <div className="text-2xl font-bold text-green-400">78.4%</div>
               <p className="text-sm text-white/60">Profitable trades / Total trades</p>
             </div>
           </Card>
           
-          <Card title="Average ROI" icon={TrendingUp}>
+          <Card title="Average ROI" icon={<TrendingUp />}>
             <div className="space-y-2">
               <div className="text-2xl font-bold text-green-400">2.3x</div>
               <p className="text-sm text-white/60">Return on investment per trade</p>
             </div>
           </Card>
           
-          <Card title="Execution Speed" icon={Zap}>
+          <Card title="Execution Speed" icon={<Zap />}>
             <div className="space-y-2">
               <div className="text-2xl font-bold text-blue-400">387ms</div>
               <p className="text-sm text-white/60">Average time to execution</p>
             </div>
           </Card>
           
-          <Card title="Max Drawdown" icon={ArrowDown}>
+          <Card title="Max Drawdown" icon={<ArrowDown />}>
             <div className="space-y-2">
               <div className="text-2xl font-bold text-yellow-400">-12.4%</div>
               <p className="text-sm text-white/60">Largest loss from peak</p>
@@ -145,7 +143,7 @@ export default function AgentPerformancePage() {
               </p>
               
               <CardGroup cols={2}>
-                <Card title="Execution Latency" icon={Clock}>
+                <Card title="Execution Latency" icon={<Clock />}>
                   <div className="space-y-3">
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
@@ -169,7 +167,7 @@ export default function AgentPerformancePage() {
                   </div>
                 </Card>
                 
-                <Card title="Slippage Control" icon={Target}>
+                <Card title="Slippage Control" icon={<Target />}>
                   <div className="space-y-3">
                     <div className="text-sm text-white/60">
                       <div>• <strong>Target Slippage:</strong> &lt;2%</div>
@@ -289,7 +287,7 @@ export default function AgentPerformancePage() {
         <h2 className="text-3xl font-light text-white">Performance Analysis Tools</h2>
         
         <CardGroup cols={2}>
-          <Card title="Real-Time Dashboard" icon={Activity}>
+          <Card title="Real-Time Dashboard" icon={<Activity />}>
             <div className="space-y-2">
               <p>Live monitoring of all key performance indicators</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -301,7 +299,7 @@ export default function AgentPerformancePage() {
             </div>
           </Card>
           
-          <Card title="Historical Analysis" icon={BarChart3}>
+          <Card title="Historical Analysis" icon={<BarChart3 />}>
             <div className="space-y-2">
               <p>Deep dive into past performance with advanced analytics</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -313,7 +311,7 @@ export default function AgentPerformancePage() {
             </div>
           </Card>
           
-          <Card title="Benchmark Comparison" icon={TrendingUp}>
+          <Card title="Benchmark Comparison" icon={<TrendingUp />}>
             <div className="space-y-2">
               <p>Compare agent performance against market benchmarks</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -325,7 +323,7 @@ export default function AgentPerformancePage() {
             </div>
           </Card>
           
-          <Card title="Optimization Suggestions" icon={Target}>
+          <Card title="Optimization Suggestions" icon={<Target />}>
             <div className="space-y-2">
               <p>AI-powered recommendations for improving performance</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -343,7 +341,7 @@ export default function AgentPerformancePage() {
         <h2 className="text-3xl font-light text-white">Performance Optimization</h2>
         
         <AccordionGroup>
-          <Accordion title="Strategy Tuning" icon={Gauge}>
+          <Accordion title="Strategy Tuning" icon={<Gauge />}>
             <div className="space-y-4">
               <p>Optimize agent parameters based on performance data:</p>
               <CodeBlock language="json">
@@ -381,7 +379,7 @@ export default function AgentPerformancePage() {
             </div>
           </Accordion>
           
-          <Accordion title="A/B Testing" icon={CheckCircle}>
+          <Accordion title="A/B Testing" icon={<CheckCircle />}>
             <div className="space-y-3">
               <p>Test strategy variations systematically:</p>
               <ul className="space-y-1 text-white/70">
@@ -393,7 +391,7 @@ export default function AgentPerformancePage() {
             </div>
           </Accordion>
           
-          <Accordion title="Market Regime Detection" icon={Activity}>
+          <Accordion title="Market Regime Detection" icon={<Activity />}>
             <div className="space-y-3">
               <p>Adapt strategies based on market conditions:</p>
               <ul className="space-y-1 text-white/70">

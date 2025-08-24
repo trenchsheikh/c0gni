@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { 
   HelpCircle, 
@@ -20,7 +18,7 @@ import {
   AccordionGroup,
   Accordion,
   Tip
-} from '@/components/docs/DocComponents';
+} from '@/components/docs';
 
 export default function FAQPage() {
   return (
@@ -308,7 +306,7 @@ export default function FAQPage() {
         <h2 className="text-3xl font-light text-white">Still Have Questions?</h2>
         
         <CardGroup cols={2}>
-          <Card title="Join Discord Community" icon={Users}>
+          <Card title="Join Discord Community" icon={<Users />}>
             <div className="space-y-2">
               <p>Connect with other traders and get real-time help</p>
               <div className="text-sm text-white/60 mt-3">
@@ -317,7 +315,7 @@ export default function FAQPage() {
             </div>
           </Card>
           
-          <Card title="Read Troubleshooting Guide" icon={Settings}>
+          <Card title="Read Troubleshooting Guide" icon={<Settings />}>
             <div className="space-y-2">
               <p>Step-by-step solutions for common issues</p>
               <div className="text-sm text-white/60 mt-3">

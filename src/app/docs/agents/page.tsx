@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { 
   Users, 
@@ -31,7 +29,7 @@ import {
   Accordion,
   Tip,
   Frame
-} from '@/components/docs/DocComponents';
+} from '@/components/docs';
 
 export default function AgentsPage() {
   return (
@@ -115,7 +113,7 @@ export default function AgentsPage() {
               </p>
               
               <CardGroup cols={2}>
-                <Card title="Pattern Recognition" icon={Brain}>
+                <Card title="Pattern Recognition" icon={<Brain />}>
                   <div className="space-y-2">
                     <p>Advanced ML models identify profitable patterns across market conditions</p>
                     <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -126,7 +124,7 @@ export default function AgentsPage() {
                   </div>
                 </Card>
                 
-                <Card title="Risk Assessment" icon={Shield}>
+                <Card title="Risk Assessment" icon={<Shield />}>
                   <div className="space-y-2">
                     <p>Dynamic risk evaluation for every trade opportunity</p>
                     <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -273,7 +271,7 @@ export default function AgentsPage() {
               </Steps>
               
               <div className="grid md:grid-cols-2 gap-6">
-                <Card title="Swarm Coordination" icon={Network}>
+                <Card title="Swarm Coordination" icon={<Network />}>
                   <div className="space-y-2">
                     <p>Agents communicate through encrypted channels to share insights</p>
                     <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -284,7 +282,7 @@ export default function AgentsPage() {
                   </div>
                 </Card>
                 
-                <Card title="Emergent Behavior" icon={TrendingUp}>
+                <Card title="Emergent Behavior" icon={<TrendingUp />}>
                   <div className="space-y-2">
                     <p>Swarms develop strategies beyond individual agent capabilities</p>
                     <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -304,7 +302,7 @@ export default function AgentsPage() {
         <h2 className="text-3xl font-light text-white">Agent Specializations</h2>
         
         <CardGroup cols={2}>
-          <Card title="Sniper Agent" icon={Crosshair}>
+          <Card title="Sniper Agent" icon={<Crosshair />}>
             <div className="space-y-2">
               <p className="text-green-400 text-sm font-medium">Best for new token launches</p>
               <p>Detects and trades new tokens within milliseconds of launch</p>
@@ -316,7 +314,7 @@ export default function AgentsPage() {
             </div>
           </Card>
           
-          <Card title="Arbitrage Engine" icon={ArrowLeftRight}>
+          <Card title="Arbitrage Engine" icon={<ArrowLeftRight />}>
             <div className="space-y-2">
               <p className="text-blue-400 text-sm font-medium">Steady, low-risk returns</p>
               <p>Finds and exploits price differences across DEXs</p>
@@ -328,7 +326,7 @@ export default function AgentsPage() {
             </div>
           </Card>
           
-          <Card title="LP Optimizer" icon={BarChart3}>
+          <Card title="LP Optimizer" icon={<BarChart3 />}>
             <div className="space-y-2">
               <p className="text-purple-400 text-sm font-medium">Long-term yield generation</p>
               <p>Manages liquidity positions for optimal fee collection</p>
@@ -340,7 +338,7 @@ export default function AgentsPage() {
             </div>
           </Card>
           
-          <Card title="Scout Agent" icon={Target}>
+          <Card title="Scout Agent" icon={<Target />}>
             <div className="space-y-2">
               <p className="text-orange-400 text-sm font-medium">Market intelligence</p>
               <p>Continuously monitors for trading opportunities</p>
@@ -460,7 +458,7 @@ export default function AgentsPage() {
         <h2 className="text-3xl font-light text-white">Safety & Risk Management</h2>
         
         <CardGroup cols={2}>
-          <Card title="Built-in Guardrails" icon={Shield}>
+          <Card title="Built-in Guardrails" icon={<Shield />}>
             <div className="space-y-2">
               <p>Multiple layers of protection prevent catastrophic losses</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -471,7 +469,7 @@ export default function AgentsPage() {
             </div>
           </Card>
           
-          <Card title="Circuit Breakers" icon={AlertTriangle}>
+          <Card title="Circuit Breakers" icon={<AlertTriangle />}>
             <div className="space-y-2">
               <p>Automatic shutdown triggers for unusual conditions</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">

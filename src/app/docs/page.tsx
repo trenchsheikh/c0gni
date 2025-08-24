@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import Image from 'next/image';
 import { 
@@ -27,7 +25,7 @@ import {
   Step, 
   Tip, 
   Info 
-} from '@/components/docs/DocComponents';
+} from '@/components/docs';
 
 export default function DocsIntroduction() {
   return (
@@ -55,16 +53,16 @@ export default function DocsIntroduction() {
       </div>
 
       <CardGroup cols={2}>
-        <Card title="<400ms Execution" icon={Zap} href="/docs/technical/solana">
+        <Card title="<400ms Execution" icon={<Zap />} href="/docs/technical/solana">
           From detection to execution faster than human reaction time
         </Card>
-        <Card title="On-Chain Memory" icon={Brain} href="/docs/technical/memory">
+        <Card title="On-Chain Memory" icon={<Brain />} href="/docs/technical/memory">
           Persistent agent state and learning stored on Solana
         </Card>
-        <Card title="Swarm Intelligence" icon={Network} href="/docs/agents/swarms">
+        <Card title="Swarm Intelligence" icon={<Network />} href="/docs/agents/swarms">
           Multi-agent coordination that compounds performance
         </Card>
-        <Card title="MEV Protected" icon={Shield} href="/docs/technical/mev">
+        <Card title="MEV Protected" icon={<Shield />} href="/docs/technical/mev">
           Built-in protection against frontrunning and sandwich attacks
         </Card>
       </CardGroup>
@@ -115,19 +113,19 @@ export default function DocsIntroduction() {
         <h2 className="text-3xl font-light text-white">Platform Capabilities</h2>
         
         <AccordionGroup>
-          <Accordion title="Agent Factory" icon={Rocket}>
+          <Accordion title="Agent Factory" icon={<Rocket />}>
             Deploy autonomous agents in under 60 seconds with pre-composed blueprints. No coding required.
           </Accordion>
 
-          <Accordion title="Agent Studio" icon={Code}>
+          <Accordion title="Agent Studio" icon={<Code />}>
             Code-first SDK for elite builders. Python/TypeScript with local simulation and LLM integration.
           </Accordion>
 
-          <Accordion title="Agent Cloud" icon={Cloud}>
+          <Accordion title="Agent Cloud" icon={<Cloud />}>
             Orchestration layer with swarm intelligence. Multi-agent teams that collaborate and compete.
           </Accordion>
 
-          <Accordion title="Agent Marketplace" icon={Store}>
+          <Accordion title="Agent Marketplace" icon={<Store />}>
             Network effect engine. Buy/sell agent strategies with verified on-chain PnL.
           </Accordion>
         </AccordionGroup>

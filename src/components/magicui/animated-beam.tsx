@@ -64,6 +64,8 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
       };
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    
     const updatePath = () => {
       if (containerRef.current && fromRef.current && toRef.current) {
         const containerRect = containerRef.current.getBoundingClientRect();
@@ -91,12 +93,15 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
       }
     };
 
-    // Initialize ResizeObserver
-    const resizeObserver = new ResizeObserver((entries) => {
-      // For all entries, recalculate the path
-      entries.forEach(() => {
-        updatePath();
-      });
+    // Throttle resize updates to improve performance
+    const throttledUpdate = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(updatePath, 16); // ~60fps throttling
+    };
+
+    // Initialize ResizeObserver with throttling
+    const resizeObserver = new ResizeObserver(() => {
+      throttledUpdate();
     });
 
     // Observe the container element
@@ -109,6 +114,7 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
 
     // Clean up the observer on component unmount
     return () => {
+      clearTimeout(timeoutId);
       resizeObserver.disconnect();
     };
   }, [

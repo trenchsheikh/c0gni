@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { 
   Code, 
@@ -28,7 +26,7 @@ import {
   AccordionGroup,
   Accordion,
   Tip
-} from '@/components/docs/DocComponents';
+} from '@/components/docs';
 
 export default function AgentStudioPage() {
   return (
@@ -50,7 +48,7 @@ export default function AgentStudioPage() {
         <h2 className="text-3xl font-light text-white">Studio Features</h2>
         
         <CardGroup cols={2}>
-          <Card title="Code Editor" icon={Code}>
+          <Card title="Code Editor" icon={<Code />}>
             <div className="space-y-2">
               <p>Full-featured IDE with syntax highlighting and auto-completion</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -62,7 +60,7 @@ export default function AgentStudioPage() {
             </div>
           </Card>
           
-          <Card title="Strategy Simulator" icon={Play}>
+          <Card title="Strategy Simulator" icon={<Play />}>
             <div className="space-y-2">
               <p>Test strategies against historical data with realistic market conditions</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -74,7 +72,7 @@ export default function AgentStudioPage() {
             </div>
           </Card>
           
-          <Card title="Debug Console" icon={Bug}>
+          <Card title="Debug Console" icon={<Bug />}>
             <div className="space-y-2">
               <p>Advanced debugging tools for strategy development</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -86,7 +84,7 @@ export default function AgentStudioPage() {
             </div>
           </Card>
           
-          <Card title="Version Control" icon={GitBranch}>
+          <Card title="Version Control" icon={<GitBranch />}>
             <div className="space-y-2">
               <p>Built-in Git support for strategy version management</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
@@ -222,7 +220,7 @@ class AdvancedSniperStrategy(Strategy):
               </p>
               
               <CardGroup cols={2}>
-                <Card title="Backtesting Engine" icon={Database}>
+                <Card title="Backtesting Engine" icon={<Database />}>
                   <div className="space-y-2">
                     <p>Test strategies against historical market data</p>
                     <div className="text-sm text-white/60 mt-3">
@@ -231,7 +229,7 @@ class AdvancedSniperStrategy(Strategy):
                   </div>
                 </Card>
                 
-                <Card title="Paper Trading" icon={Zap}>
+                <Card title="Paper Trading" icon={<Zap />}>
                   <div className="space-y-2">
                     <p>Live testing with real market data, simulated trades</p>
                     <div className="text-sm text-white/60 mt-3">
@@ -402,7 +400,7 @@ spec:
         <h2 className="text-3xl font-light text-white">Advanced Features</h2>
         
         <AccordionGroup>
-          <Accordion title="Machine Learning Integration" icon={Brain}>
+          <Accordion title="Machine Learning Integration" icon={<Brain />}>
             <div className="space-y-3">
               <p>Integrate ML models into your trading strategies:</p>
               <ul className="space-y-1 text-white/70">
@@ -414,7 +412,7 @@ spec:
             </div>
           </Accordion>
           
-          <Accordion title="Multi-Asset Support" icon={Database}>
+          <Accordion title="Multi-Asset Support" icon={<Database />}>
             <div className="space-y-3">
               <p>Trade across different asset classes:</p>
               <ul className="space-y-1 text-white/70">
@@ -426,7 +424,7 @@ spec:
             </div>
           </Accordion>
           
-          <Accordion title="Real-time Collaboration" icon={GitBranch}>
+          <Accordion title="Real-time Collaboration" icon={<GitBranch />}>
             <div className="space-y-3">
               <p>Work with your team on agent development:</p>
               <ul className="space-y-1 text-white/70">
@@ -444,7 +442,7 @@ spec:
         <h2 className="text-3xl font-light text-white">Pricing</h2>
         
         <div className="grid md:grid-cols-3 gap-6">
-          <Card title="Starter" icon={Code}>
+          <Card title="Starter" icon={<Code />}>
             <div className="space-y-4">
               <div className="text-center">
                 <div className="text-3xl font-bold text-white">Free</div>
@@ -459,7 +457,7 @@ spec:
             </div>
           </Card>
           
-          <Card title="Professional" icon={Terminal}>
+          <Card title="Professional" icon={<Terminal />}>
             <div className="space-y-4">
               <div className="text-center">
                 <div className="text-3xl font-bold text-white">$49</div>
@@ -474,7 +472,7 @@ spec:
             </div>
           </Card>
           
-          <Card title="Enterprise" icon={Cpu}>
+          <Card title="Enterprise" icon={<Cpu />}>
             <div className="space-y-4">
               <div className="text-center">
                 <div className="text-3xl font-bold text-white">Custom</div>

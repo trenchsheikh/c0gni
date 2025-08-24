@@ -1,0 +1,14 @@
+{
+  "functions": {
+    "src/app/**/*.tsx": {
+      "maxDuration": 30,
+      "memory": 1024
+    }
+  },
+  "framework": "nextjs",
+  "buildCommand": "pnpm run build:vercel",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "env": {
+    "NODE_OPTIONS": "--max-old-space-size=8192"
+  }
+}

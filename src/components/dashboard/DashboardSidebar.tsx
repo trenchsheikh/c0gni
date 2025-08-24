@@ -2,35 +2,13 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { 
-  Home, 
-  Settings, 
-  Activity, 
-  TrendingUp, 
-  Database, 
-  FileText, 
-  BarChart3, 
-  Brain, 
-  Shield, 
-  Store,
-  BookOpen 
-} from "lucide-react";
+import { Home } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
 const navItems = [
-  { id: "overview", label: "Overview", icon: Home, href: "/dashboard" },
-  { id: "swarm-config", label: "Swarm Config", icon: Settings, href: "/dashboard/swarm-config" },
-  { id: "agent-status", label: "Agent Status", icon: Activity, href: "/dashboard/agent-status" },
-  { id: "trading", label: "Trading Terminal", icon: TrendingUp, href: "/dashboard/trading" },
-  { id: "data-feeds", label: "Data Feeds", icon: Database, href: "/dashboard/data-feeds" },
-  { id: "decisions", label: "Decision Log", icon: FileText, href: "/dashboard/decisions" },
-  { id: "analytics", label: "Analytics", icon: BarChart3, href: "/dashboard/analytics" },
-  { id: "memory", label: "Memory Vault", icon: Brain, href: "/dashboard/memory" },
-  { id: "research", label: "Research Papers", icon: BookOpen, href: "/dashboard/research" },
-  { id: "security", label: "Security Hub", icon: Shield, href: "/dashboard/security" },
-  { id: "marketplace", label: "Marketplace", icon: Store, href: "/dashboard/marketplace" }
+  { id: "overview", label: "Overview", icon: Home, href: "/dashboard" }
 ];
 
 export default function DashboardSidebar() {

@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import LightRays from "./LightRays";
+import { LightRays } from "./LazyComponents";
 
 export default function HeroSection() {
   const sectionRef = useRef(null);
