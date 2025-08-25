@@ -1,17 +1,17 @@
 ---
 title: 'Quickstart'
-description: 'Deploy your first autonomous agent in under 60 seconds'
+description: 'Deploy your first multi-chain agent in under 60 seconds'
 ---
 
-# Deploy Your First Agent
+# Deploy Your First Multi-Chain Agent
 
-Get started with c0gni in under 60 seconds. This guide will walk you through deploying a Sniper agent that automatically detects and trades new token launches.
+Get started with c0gni in under 60 seconds. This guide will walk you through deploying a Cross-Chain Arbitrage agent that finds price differences across EVM chains and rotates profits to Ethereum DeFi.
 
 <Info>
 **Prerequisites:**
-- Phantom, Solflare, or compatible Solana wallet
-- 0.5-10 SOL for agent funding
-- Basic understanding of trading concepts
+- MetaMask or any EVM-compatible wallet
+- 0.1-1 ETH worth of tokens (ETH, MATIC, ARB, or USDC)
+- Basic understanding of DeFi concepts
 </Info>
 
 ## Step 1: Connect Your Wallet
@@ -20,110 +20,134 @@ Get started with c0gni in under 60 seconds. This guide will walk you through dep
   <Step title="Visit the Platform">
     Go to [app.cognilabs.com](https://app.cognilabs.com) and click "Connect Wallet"
   </Step>
-  <Step title="Select Wallet">
-    Choose your preferred Solana wallet (Phantom, Solflare, etc.)
+  <Step title="Select Network">
+    Choose your starting chain (Ethereum, Polygon, Arbitrum, Base, or BSC)
   </Step>
   <Step title="Approve Connection">
-    Confirm the connection in your wallet extension
+    Confirm the connection in MetaMask
   </Step>
 </Steps>
 
 <Warning>
-Never share your private keys. c0gni only needs wallet connection permissions to deploy and fund agents.
+Never share your private keys or seed phrase. c0gni only requires standard wallet connection permissions.
 </Warning>
 
 ## Step 2: Choose Agent Blueprint
 
-Navigate to the **Agent Factory** and select from pre-configured blueprints:
+Navigate to the **Agent Factory** and select from multi-chain optimized blueprints:
 
 <CardGroup cols={2}>
-  <Card title="Sniper Agent" icon="crosshairs">
-    **Best for beginners**
+  <Card title="Cross-Chain Arbitrage" icon="arrows-left-right">
+    **Best for steady returns**
     
-    Detects new token launches and executes entry trades within milliseconds.
+    Finds price differences between DEXs across different chains and executes profitable trades.
+    
+    - Risk Level: Low-Medium
+    - Success Rate: 89%
+    - Avg ROI: 0.5-2% daily
+    - Chains: All EVM
+  </Card>
+  
+  <Card title="DeFi Yield Farmer" icon="wheat">
+    **Best for passive income**
+    
+    Automatically farms yield across Aave, Compound, Curve on multiple chains.
+    
+    - Risk Level: Low
+    - APY: 8-15%
+    - Auto-compounds: Yes
+    - Chains: ETH, Polygon, Arbitrum
+  </Card>
+</CardGroup>
+
+<CardGroup cols={2}>
+  <Card title="Multi-Chain Sniper" icon="crosshairs">
+    **Best for high returns**
+    
+    Detects new token launches across all chains and executes early entry trades.
+    
+    - Risk Level: High
+    - Success Rate: 65%
+    - Avg ROI: 5-50x
+    - Chains: All EVM
+  </Card>
+  
+  <Card title="Liquidity Optimizer" icon="chart-line">
+    **Best for LPs**
+    
+    Manages liquidity positions across Uniswap V3, Curve, and Balancer for optimal fees.
     
     - Risk Level: Medium
-    - Success Rate: 73%
-    - Avg ROI: 2.3x
-  </Card>
-  
-  <Card title="Arbitrage Engine" icon="arrows-left-right">
-    **Steady returns**
-    
-    Finds price differences across DEXs and executes profitable arbitrage trades.
-    
-    - Risk Level: Low
-    - Success Rate: 94%
-    - Avg ROI: 1.2x
+    - APY: 15-40%
+    - IL Protection: Yes
+    - Chains: ETH, Arbitrum
   </Card>
 </CardGroup>
 
-<CardGroup cols={2}>
-  <Card title="LP Optimizer" icon="chart-line">
-    **Long-term growth**
-    
-    Automatically manages liquidity positions for optimal fee generation.
-    
-    - Risk Level: Low
-    - Success Rate: 89%
-    - Avg ROI: 15% APY
-  </Card>
-  
-  <Card title="Custom Agent" icon="code">
-    **For developers**
-    
-    Build your own strategy using our SDK and deploy as an autonomous agent.
-    
-    - Risk Level: Variable
-    - Success Rate: Variable
-    - ROI: Your strategy
-  </Card>
-</CardGroup>
+## Step 3: Configure Multi-Chain Settings
 
-## Step 3: Configure Agent Settings
-
-### Basic Configuration
+### Chain Selection
 
 ```json
 {
-  "agentType": "sniper",
-  "budget": "2.5 SOL",
-  "riskLevel": "medium",
-  "autoExit": true
+  "executionChains": ["polygon", "arbitrum", "base"],
+  "settlementChain": "ethereum",
+  "bridgeStrategy": "weekly",
+  "gasOptimization": "aggressive"
 }
 ```
 
 <Tabs>
-  <Tab title="Budget & Risk">
+  <Tab title="Execution Chains">
     <AccordionGroup>
-      <Accordion title="Initial Budget">
-        Set the amount of SOL your agent can use for trading (0.5-10 SOL recommended for first deployment)
+      <Accordion title="Polygon (MATIC)">
+        - Gas Cost: <$0.01 per transaction
+        - Block Time: 2 seconds
+        - Best For: High-frequency trading, small trades
       </Accordion>
       
-      <Accordion title="Risk Level">
-        - **Conservative**: Lower risk, slower returns
-        - **Balanced**: Medium risk for moderate gains  
-        - **Aggressive**: Higher risk for maximum alpha
+      <Accordion title="Arbitrum">
+        - Gas Cost: $0.01-0.05 per transaction
+        - Block Time: ~250ms
+        - Best For: DeFi interactions, complex strategies
       </Accordion>
       
-      <Accordion title="Position Sizing">
-        Maximum percentage of budget per trade (default: 20%)
+      <Accordion title="Base">
+        - Gas Cost: <$0.01 per transaction
+        - Block Time: 2 seconds
+        - Best For: New token launches, meme coins
+      </Accordion>
+      
+      <Accordion title="BSC">
+        - Gas Cost: $0.05-0.15 per transaction
+        - Block Time: 3 seconds
+        - Best For: PancakeSwap trades, yield farming
       </Accordion>
     </AccordionGroup>
   </Tab>
   
-  <Tab title="Auto-Exit Rules">
+  <Tab title="Settlement Strategy">
     <AccordionGroup>
-      <Accordion title="Take Profit">
-        Automatically sell when profit reaches target (default: 100%)
+      <Accordion title="Ethereum DeFi Allocation">
+        Configure how profits are deployed on Ethereum:
+        - **Aave**: 30% - Lending for stable 3-5% APY
+        - **Compound**: 20% - Interest generation
+        - **Curve**: 30% - Stablecoin yields (8-12% APY)
+        - **Convex**: 20% - Boosted CRV rewards
       </Accordion>
       
-      <Accordion title="Stop Loss">
-        Exit position when loss reaches threshold (default: -30%)
+      <Accordion title="Bridge Timing">
+        - **Daily**: For high-volume traders ($10k+ daily)
+        - **Weekly**: Optimal gas efficiency (recommended)
+        - **Monthly**: For long-term accumulation
+        - **Threshold**: Bridge when profits exceed 0.1 ETH
       </Accordion>
       
-      <Accordion title="Time Limits">
-        Maximum time to hold a position (default: 30 minutes)
+      <Accordion title="Risk Parameters">
+        - Maximum position size: 10% of portfolio per trade
+        - Stop loss: -5% per position
+        - Daily loss limit: -10% of portfolio
+        - Slippage tolerance: 1-3% depending on chain
       </Accordion>
     </AccordionGroup>
   </Tab>
@@ -131,137 +155,173 @@ Navigate to the **Agent Factory** and select from pre-configured blueprints:
   <Tab title="Advanced Settings">
     <AccordionGroup>
       <Accordion title="MEV Protection">
-        Enable Jito bundle protection against frontrunning (recommended: ON)
+        Enable Flashbots Protect for Ethereum transactions (recommended: ON)
       </Accordion>
       
-      <Accordion title="Slippage Tolerance">
-        Maximum acceptable slippage for trades (default: 5%)
+      <Accordion title="Cross-Chain Routing">
+        - Use 1inch for aggregation
+        - Paraswap for backup routing
+        - Direct DEX integration when optimal
       </Accordion>
       
-      <Accordion title="Priority Fees">
-        Extra fees for faster transaction confirmation (default: AUTO)
+      <Accordion title="Gas Optimization">
+        - **Conservative**: Wait for low gas periods
+        - **Standard**: Execute within reasonable limits
+        - **Aggressive**: Prioritize speed over cost
       </Accordion>
     </AccordionGroup>
   </Tab>
 </Tabs>
 
-## Step 4: Deploy Agent
+## Step 4: Fund Your Agent
 
 <Steps>
-  <Step title="Review Configuration">
-    Double-check your settings and budget allocation
+  <Step title="Choose Funding Method">
+    - **Direct Transfer**: Send ETH/MATIC/ARB to agent wallet
+    - **Cross-Chain**: Bridge from any supported chain
+    - **Stablecoin**: Fund with USDC/USDT/DAI
   </Step>
-  <Step title="Fund Agent Wallet">
-    Transfer SOL to your agent's dedicated wallet address
+  <Step title="Set Budget Allocation">
+    - Trading Capital: 70% - Active trading on L2s
+    - Reserve: 20% - Gas and bridge fees
+    - DeFi Allocation: 10% - Initial Ethereum positions
   </Step>
-  <Step title="Deploy">
-    Click "Deploy Agent" and confirm the transaction
+  <Step title="Confirm Funding">
+    Review gas estimates and approve transaction in MetaMask
   </Step>
-  <Step title="Activate">
-    Your agent will begin monitoring for opportunities immediately
+  <Step title="Activate Agent">
+    Agent begins monitoring all configured chains immediately
   </Step>
 </Steps>
 
-### Transaction Flow
+### Multi-Chain Wallet Architecture
 
 ```mermaid
 graph LR
-    A[User] --> B[Agent Factory]
-    B --> C[Generate Agent Keypair]
-    C --> D[Deploy Agent Program]
-    D --> E[Fund Agent Wallet]
-    E --> F[Activate Monitoring]
-    F --> G[Agent Active]
+    A[Master Wallet] --> B[Polygon Trading Wallet]
+    A --> C[Arbitrum Trading Wallet]
+    A --> D[Base Trading Wallet]
+    B --> E[Ethereum Settlement Vault]
+    C --> E
+    D --> E
+    E --> F[DeFi Positions]
 ```
 
-## Step 5: Monitor Performance
+## Step 5: Monitor Cross-Chain Performance
 
-Your agent is now active! Monitor its performance through the dashboard:
+Your agent is now active across multiple chains! Monitor its performance through the unified dashboard:
 
-### Real-Time Metrics
+### Real-Time Analytics
 
 <Info>
-**Live Dashboard Features:**
-- Trade execution history
-- Current positions and PnL
-- Risk metrics and exposure  
-- Agent decision logs
-- Performance analytics
+**Multi-Chain Dashboard Features:**
+- Combined P&L across all chains
+- Gas costs per chain breakdown
+- Bridge transaction history
+- DeFi position tracking
+- APY calculations with auto-compounding
 </Info>
 
-### Key Metrics to Watch
+### Key Metrics by Chain
 
-| Metric | Description | Good Performance |
-|--------|-------------|------------------|
-| **Success Rate** | Percentage of profitable trades | >70% |
-| **Avg ROI** | Average return on investment | >50% |
-| **Max Drawdown** | Largest loss from peak | <20% |
-| **Execution Speed** | Time from signal to execution | <400ms |
+| Chain | Avg Gas Cost | Trades/Day | Success Rate | ROI |
+|-------|--------------|------------|--------------|-----|
+| **Polygon** | $0.005 | 50-200 | 92% | 0.3-1% |
+| **Arbitrum** | $0.03 | 20-100 | 88% | 0.5-1.5% |
+| **Base** | $0.008 | 30-150 | 85% | 0.4-2% |
+| **Ethereum** | $15-50 | 1-5 (settlements) | 95% | 5-15% APY |
 
 ## What Happens Next?
 
-Your agent will now:
+Your multi-chain agent will now:
 
-1. **Monitor markets** 24/7 for opportunities matching its strategy
-2. **Execute trades** automatically when conditions are met
-3. **Learn from results** to improve future performance
-4. **Report activity** through the dashboard and notifications
+1. **Monitor all chains** simultaneously for arbitrage opportunities
+2. **Execute trades** on the most profitable chain with lowest gas
+3. **Accumulate profits** in stablecoins on each chain
+4. **Bridge weekly** to Ethereum when gas is optimal
+5. **Deploy to DeFi** automatically for compound yields
+6. **Rebalance monthly** to optimize APY
 
 <Tip>
-**Pro Tip:** Start with a smaller budget (0.5-1 SOL) to get familiar with how your agent behaves before scaling up.
+**Pro Tips for Multi-Chain Success:**
+- Start with 2-3 chains to understand the dynamics
+- Keep 0.1 ETH on Ethereum for settlement gas
+- Enable auto-compounding for maximum returns
+- Monitor bridge costs vs. profit ratios
 </Tip>
+
+## Example Strategy: Cross-Chain Arbitrage
+
+<Steps>
+  <Step title="Detection">
+    Agent detects USDC/USDT price: 0.998 on Polygon, 1.002 on Arbitrum
+  </Step>
+  <Step title="Execution">
+    Buy USDT with 10,000 USDC on Polygon ($0.005 gas)
+  </Step>
+  <Step title="Bridge">
+    Use Synapse to bridge USDT to Arbitrum ($2 fee)
+  </Step>
+  <Step title="Profit">
+    Sell USDT for USDC on Arbitrum: 10,040 USDC ($0.03 gas)
+    Net profit: ~$38 (0.38% return)
+  </Step>
+  <Step title="Compound">
+    Weekly bridge to Ethereum, deposit in Curve 3pool for 8% APY
+  </Step>
+</Steps>
 
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Dashboard Walkthrough" icon="chart-mixed" href="/guides/dashboard-walkthrough">
-    Learn to navigate and interpret your agent's performance
+  <Card title="Chain Analysis" icon="chart-mixed" href="/guides/chain-selection">
+    Learn which chains are best for different strategies
   </Card>
   
-  <Card title="Risk Management" icon="shield-check" href="/guides/risk-management">
-    Set up advanced safety controls and alerts
+  <Card title="DeFi Strategies" icon="coins" href="/guides/defi-optimization">
+    Maximize yields with advanced DeFi strategies
   </Card>
   
-  <Card title="Agent Types" icon="robot" href="/agents/types">
-    Explore different agent specializations and strategies
+  <Card title="Bridge Optimization" icon="bridge" href="/guides/bridge-strategies">
+    Minimize costs when moving between chains
   </Card>
   
-  <Card title="SDK Development" icon="code" href="/sdk/introduction">
-    Build custom agents with our Python/TypeScript SDK
+  <Card title="Risk Management" icon="shield-check" href="/guides/multi-chain-risk">
+    Protect your capital across multiple chains
   </Card>
 </CardGroup>
 
 ## Troubleshooting
 
 <AccordionGroup>
-  <Accordion title="Agent not deploying">
+  <Accordion title="MetaMask not connecting">
     **Common causes:**
-    - Insufficient SOL for deployment fees (~0.01 SOL)
-    - Wallet connection issues
-    - Network congestion
+    - Wrong network selected
+    - Insufficient ETH for gas
+    - Browser extension conflicts
     
-    **Solution:** Check wallet balance and try reconnecting
+    **Solution:** Switch to Ethereum mainnet, ensure you have ETH, disable other wallet extensions
   </Accordion>
   
-  <Accordion title="No trading activity">
-    **Possible reasons:**
-    - Market conditions don't match strategy criteria
-    - Risk parameters too conservative
-    - Insufficient liquidity in target tokens
+  <Accordion title="High gas fees on Ethereum">
+    **Strategy:**
+    - Execute trades on L2s only
+    - Bridge during weekend low-gas periods
+    - Batch multiple profits before bridging
     
-    **Solution:** Review strategy settings or try different agent type
+    **Tools:** Use [gasNow](https://gasnow.org) to monitor gas prices
   </Accordion>
   
-  <Accordion title="High losses">
-    **Safety measures:**
-    - Activate stop-loss protection
-    - Reduce position sizing
-    - Switch to conservative risk mode
+  <Accordion title="Bridge transaction stuck">
+    **Steps:**
+    - Check bridge explorer for status
+    - May take 10-30 minutes for finality
+    - Contact bridge support if >1 hour
     
-    **Remember:** All trading involves risk. Never invest more than you can afford to lose.
+    **Prevention:** Always use reputable bridges with insurance
   </Accordion>
 </AccordionGroup>
 
-<Card title="Need Help?" icon="life-ring" href="/support/troubleshooting">
-  Check our full troubleshooting guide or join the Discord community
+<Card title="Need Help?" icon="life-ring" href="/support/discord">
+  Join our Discord for 24/7 community support and strategy discussions
 </Card>

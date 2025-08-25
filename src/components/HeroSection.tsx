@@ -71,9 +71,9 @@ export default function HeroSection() {
             }}
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-white leading-tight tracking-tighter mb-6 sm:mb-8 px-4"
           >
-            Your last trade
+            Trade fast on any chain
             <br />
-            <span className="font-medium">was too slow.</span>
+            <span className="font-medium">Build wealth on Ethereum.</span>
           </motion.h1>
 
           <motion.p 
@@ -90,8 +90,8 @@ export default function HeroSection() {
             }}
             className="text-lg sm:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed mb-8 sm:mb-12 px-4"
           >
-            Stop building bots that react. Start deploying agents that decide.<br />
-            The best alpha is captured in &lt;1 second. Humans can&apos;t move that fast.
+            AI agents execute on Polygon, Arbitrum, Base for &lt;$0.01 fees.<br />
+            Rotate profits into Ethereum blue-chips and yield pools for stable income.
           </motion.p>
 
           <motion.div 

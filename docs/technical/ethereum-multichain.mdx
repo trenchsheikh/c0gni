@@ -1,0 +1,735 @@
+---
+title: 'Multi-Chain Architecture'
+description: 'Deep dive into c0gni\'s Ethereum-based multi-chain integration'
+---
+
+# Multi-Chain Architecture
+
+c0gni leverages Ethereum as the settlement layer while executing trades across low-gas EVM chains. This architecture enables high-frequency trading without gas drain, while building long-term wealth through Ethereum's DeFi ecosystem.
+
+## Why Multi-Chain?
+
+<CardGroup cols={2}>
+  <Card title="Low Gas Execution" icon="zap">
+    **<$0.01 per Transaction**
+    
+    Trade on Polygon, Arbitrum, Base with minimal fees vs $20-100 on Ethereum
+  </Card>
+  
+  <Card title="Cross-Chain Arbitrage" icon="arrows-left-right">
+    **Price Differences = Profit**
+    
+    Exploit price gaps between chains for consistent returns
+  </Card>
+  
+  <Card title="Ethereum Settlement" icon="bank">
+    **Blue-Chip DeFi**
+    
+    Consolidate profits on Ethereum for stable yields in Aave, Compound, Curve
+  </Card>
+  
+  <Card title="Risk Distribution" icon="shield">
+    **Chain Diversification**
+    
+    Spread risk across multiple chains, avoid single points of failure
+  </Card>
+</CardGroup>
+
+## Supported Chains & Infrastructure
+
+### Execution Chains (Fast & Cheap)
+
+<Tabs>
+  <Tab title="Polygon">
+    **Ultra-Low Cost Trading**
+    - Gas: <$0.01 per transaction
+    - Block Time: 2 seconds
+    - TPS: 7,000+
+    - DEXs: QuickSwap, SushiSwap, Balancer
+    - Bridge Time: 10-30 minutes to Ethereum
+  </Tab>
+  
+  <Tab title="Arbitrum">
+    **Ethereum L2 Leader**
+    - Gas: $0.01-0.05 per transaction
+    - Block Time: ~250ms
+    - TPS: 40,000+
+    - DEXs: Uniswap, Camelot, GMX
+    - Bridge Time: 7 days (fast bridge: 10 min)
+  </Tab>
+  
+  <Tab title="Base">
+    **Coinbase L2**
+    - Gas: <$0.01 per transaction
+    - Block Time: 2 seconds
+    - TPS: 2,000+
+    - DEXs: Aerodrome, BaseSwap, Uniswap
+    - Bridge Time: 7 days (fast bridge: 15 min)
+  </Tab>
+  
+  <Tab title="BSC">
+    **High Volume Chain**
+    - Gas: $0.05-0.15 per transaction
+    - Block Time: 3 seconds
+    - TPS: 160
+    - DEXs: PancakeSwap, BiSwap
+    - Bridge Time: 15-30 minutes
+  </Tab>
+</Tabs>
+
+### Settlement Chain (Wealth Building)
+
+**Ethereum Mainnet** - The home of DeFi:
+- Aave: $10B+ TVL, 3-5% stable yields
+- Compound: $2B+ TVL, automated interest
+- Curve: $3B+ TVL, 8-15% stablecoin yields
+- Convex: Boosted Curve rewards
+- Yearn: Automated yield strategies
+
+## Core Smart Contract Architecture
+
+### Multi-Chain Agent Registry
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@layerzerolabs/contracts/lzApp/NonblockingLzApp.sol";
+
+contract MultiChainAgentRegistry is NonblockingLzApp {
+    
+    struct Agent {
+        address owner;
+        uint256 stakedCOGNI;
+        bytes32 agentId;
+        uint16[] activeChains;
+        mapping(uint16 => address) chainAddresses;
+        uint256 totalProfitUSD;
+        uint256 lastSettlement;
+    }
+    
+    mapping(bytes32 => Agent) public agents;
+    mapping(address => bytes32[]) public userAgents;
+    
+    // Chain IDs (LayerZero)
+    uint16 constant ETHEREUM = 101;
+    uint16 constant POLYGON = 109;
+    uint16 constant ARBITRUM = 110;
+    uint16 constant BASE = 184;
+    uint16 constant BSC = 102;
+    
+    event AgentDeployed(
+        bytes32 indexed agentId,
+        address indexed owner,
+        uint16[] chains
+    );
+    
+    event ProfitsSettled(
+        bytes32 indexed agentId,
+        uint256 amount,
+        uint16 fromChain
+    );
+    
+    function deployAgent(
+        uint256 _stakeAmount,
+        uint16[] memory _targetChains,
+        bytes memory _config
+    ) external {
+        require(_stakeAmount >= 1000 * 10**18, "Min 1000 COGNI");
+        
+        // Transfer COGNI stake
+        IERC20(cogniToken).transferFrom(msg.sender, address(this), _stakeAmount);
+        
+        bytes32 agentId = keccak256(abi.encodePacked(msg.sender, block.timestamp));
+        
+        Agent storage agent = agents[agentId];
+        agent.owner = msg.sender;
+        agent.stakedCOGNI = _stakeAmount;
+        agent.agentId = agentId;
+        agent.activeChains = _targetChains;
+        agent.lastSettlement = block.timestamp;
+        
+        // Deploy to each chain via LayerZero
+        for (uint i = 0; i < _targetChains.length; i++) {
+            _deployToChain(agentId, _targetChains[i], _config);
+        }
+        
+        userAgents[msg.sender].push(agentId);
+        emit AgentDeployed(agentId, msg.sender, _targetChains);
+    }
+    
+    function _deployToChain(
+        bytes32 _agentId,
+        uint16 _chainId,
+        bytes memory _config
+    ) internal {
+        bytes memory payload = abi.encode(_agentId, msg.sender, _config);
+        
+        _lzSend(
+            _chainId,
+            payload,
+            payable(msg.sender),
+            address(0x0),
+            bytes(""),
+            msg.value
+        );
+    }
+    
+    function settleProfits(bytes32 _agentId) external {
+        Agent storage agent = agents[_agentId];
+        require(agent.owner == msg.sender, "Not owner");
+        require(block.timestamp >= agent.lastSettlement + 7 days, "Too soon");
+        
+        // Aggregate profits from all chains
+        uint256 totalProfits = 0;
+        
+        for (uint i = 0; i < agent.activeChains.length; i++) {
+            uint256 chainProfit = _getChainProfits(_agentId, agent.activeChains[i]);
+            totalProfits += chainProfit;
+        }
+        
+        // Distribute to DeFi protocols
+        _distributeToDeFi(totalProfits);
+        
+        agent.totalProfitUSD += totalProfits;
+        agent.lastSettlement = block.timestamp;
+        
+        emit ProfitsSettled(_agentId, totalProfits, ETHEREUM);
+    }
+    
+    function _distributeToDeFi(uint256 _amount) internal {
+        // 30% to Aave
+        uint256 aaveAmount = (_amount * 30) / 100;
+        IAave(aavePool).deposit(USDC, aaveAmount, address(this), 0);
+        
+        // 30% to Curve
+        uint256 curveAmount = (_amount * 30) / 100;
+        ICurve(curve3Pool).add_liquidity([curveAmount, 0, 0], 0);
+        
+        // 20% to Compound
+        uint256 compoundAmount = (_amount * 20) / 100;
+        ICompound(cUSDC).mint(compoundAmount);
+        
+        // 20% remains liquid for withdrawals
+    }
+}
+```
+
+### Cross-Chain Execution Engine
+
+```solidity
+contract CrossChainExecutor {
+    using SafeMath for uint256;
+    
+    struct TradeOrder {
+        address tokenIn;
+        address tokenOut;
+        uint256 amountIn;
+        uint256 minAmountOut;
+        address[] routers; // Multiple DEX support
+        bytes routerCalldata;
+        uint256 deadline;
+    }
+    
+    // Optimized for each chain's DEXs
+    mapping(uint256 => address[]) public chainRouters;
+    
+    constructor() {
+        // Polygon routers
+        chainRouters[137] = [
+            0x a5E0829CaCEd8fFDD4De3c43696c57F7D6A678ff, // QuickSwap
+            0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506  // SushiSwap
+        ];
+        
+        // Arbitrum routers
+        chainRouters[42161] = [
+            0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45, // Uniswap V3
+            0xc873fEcbd354f5A56E00E710B90EF4201db8d1d7  // Camelot
+        ];
+        
+        // Base routers
+        chainRouters[8453] = [
+            0x2626664c2603336E57B48C6b0B7d90F7FAae0d4C, // Aerodrome
+            0x4752ba5DBc5EEE45538e0F6B2D87A9cd40972e4f  // BaseSwap
+        ];
+    }
+    
+    function executeMultiDexTrade(TradeOrder memory order) external returns (uint256) {
+        require(order.deadline >= block.timestamp, "Expired");
+        
+        IERC20(order.tokenIn).transferFrom(msg.sender, address(this), order.amountIn);
+        
+        uint256 bestOutput = 0;
+        address bestRouter;
+        
+        // Find best price across DEXs
+        for (uint i = 0; i < order.routers.length; i++) {
+            uint256 output = _getOutputAmount(
+                order.routers[i],
+                order.tokenIn,
+                order.tokenOut,
+                order.amountIn
+            );
+            
+            if (output > bestOutput) {
+                bestOutput = output;
+                bestRouter = order.routers[i];
+            }
+        }
+        
+        require(bestOutput >= order.minAmountOut, "Slippage");
+        
+        // Execute on best DEX
+        IERC20(order.tokenIn).approve(bestRouter, order.amountIn);
+        
+        (bool success, bytes memory result) = bestRouter.call(order.routerCalldata);
+        require(success, "Trade failed");
+        
+        uint256 actualOutput = abi.decode(result, (uint256));
+        
+        // Send output to user
+        IERC20(order.tokenOut).transfer(msg.sender, actualOutput);
+        
+        emit TradeExecuted(
+            msg.sender,
+            order.tokenIn,
+            order.tokenOut,
+            order.amountIn,
+            actualOutput,
+            bestRouter
+        );
+        
+        return actualOutput;
+    }
+    
+    function executeCrossChainArbitrage(
+        uint16 buyChain,
+        uint16 sellChain,
+        address token,
+        uint256 amount
+    ) external {
+        // Buy on chain with lower price
+        bytes memory buyPayload = abi.encode(token, amount, true);
+        _lzSend(buyChain, buyPayload, payable(msg.sender), address(0x0), bytes(""), msg.value);
+        
+        // Bridge to sell chain
+        _bridgeTokens(token, amount, buyChain, sellChain);
+        
+        // Sell on chain with higher price
+        bytes memory sellPayload = abi.encode(token, amount, false);
+        _lzSend(sellChain, sellPayload, payable(msg.sender), address(0x0), bytes(""), 0);
+    }
+}
+```
+
+### DeFi Yield Optimizer
+
+```solidity
+contract DeFiYieldOptimizer {
+    
+    struct YieldPosition {
+        address protocol;
+        address asset;
+        uint256 amount;
+        uint256 apy;
+        uint256 lastHarvest;
+    }
+    
+    mapping(address => YieldPosition[]) public userPositions;
+    
+    // Protocol interfaces
+    IAave public constant aave = IAave(0x87870Bca3F3fD6335C3F4ce8392D9Abb5095f709);
+    ICompound public constant compound = ICompound(0x3d9819210A31b4961b30EF54bE4a771dE2D3234);
+    ICurve public constant curve = ICurve(0xbEbc44782C6d0DeF8E0c603F308d76991e2C2710);
+    IConvex public constant convex = IConvex(0xF403C135812408BFa7D3B6E31551DCb23B09F12);
+    
+    function optimizeYield(uint256 amount) external {
+        IERC20(USDC).transferFrom(msg.sender, address(this), amount);
+        
+        // Get current APYs
+        uint256 aaveAPY = getAaveAPY();
+        uint256 compoundAPY = getCompoundAPY();
+        uint256 curveAPY = getCurveAPY();
+        uint256 convexAPY = getConvexAPY();
+        
+        // Allocate based on risk-adjusted returns
+        uint256 aaveAlloc = (amount * 25) / 100;  // 25% - lowest risk
+        uint256 compoundAlloc = (amount * 20) / 100; // 20% - low risk
+        uint256 curveAlloc = (amount * 35) / 100; // 35% - medium risk
+        uint256 convexAlloc = (amount * 20) / 100; // 20% - higher risk
+        
+        // Deploy to protocols
+        _depositAave(aaveAlloc);
+        _depositCompound(compoundAlloc);
+        _depositCurve(curveAlloc);
+        _depositConvex(convexAlloc);
+        
+        // Track positions
+        _trackPosition(msg.sender, address(aave), aaveAlloc, aaveAPY);
+        _trackPosition(msg.sender, address(compound), compoundAlloc, compoundAPY);
+        _trackPosition(msg.sender, address(curve), curveAlloc, curveAPY);
+        _trackPosition(msg.sender, address(convex), convexAlloc, convexAPY);
+    }
+    
+    function autoCompound() external {
+        YieldPosition[] storage positions = userPositions[msg.sender];
+        
+        for (uint i = 0; i < positions.length; i++) {
+            if (block.timestamp >= positions[i].lastHarvest + 7 days) {
+                uint256 rewards = _harvestRewards(positions[i].protocol);
+                
+                // Reinvest rewards
+                if (rewards > 0) {
+                    _reinvest(positions[i].protocol, rewards);
+                    positions[i].amount += rewards;
+                    positions[i].lastHarvest = block.timestamp;
+                }
+            }
+        }
+    }
+    
+    function emergencyWithdraw() external {
+        // Withdraw from all protocols
+        YieldPosition[] storage positions = userPositions[msg.sender];
+        
+        uint256 totalWithdrawn = 0;
+        
+        for (uint i = 0; i < positions.length; i++) {
+            uint256 withdrawn = _withdrawFromProtocol(
+                positions[i].protocol,
+                positions[i].amount
+            );
+            totalWithdrawn += withdrawn;
+        }
+        
+        // Send all funds back to user
+        IERC20(USDC).transfer(msg.sender, totalWithdrawn);
+        
+        // Clear positions
+        delete userPositions[msg.sender];
+    }
+}
+```
+
+## Bridge Infrastructure
+
+### Supported Bridges
+
+<AccordionGroup>
+  <Accordion title="LayerZero">
+    **Omnichain Messaging**
+    - All EVM chains supported
+    - Message + token bridging
+    - 10-30 minute finality
+    - Gas efficient batching
+  </Accordion>
+  
+  <Accordion title="Hop Protocol">
+    **Optimized L2 Bridge**
+    - Fast transfers between L2s
+    - 5-10 minute transfers
+    - Automatic market making
+    - Low slippage
+  </Accordion>
+  
+  <Accordion title="Synapse">
+    **Cross-Chain Swaps**
+    - Bridge + swap in one transaction
+    - 20+ chains supported
+    - Stablecoin optimization
+    - Insurance fund
+  </Accordion>
+  
+  <Accordion title="Stargate">
+    **Unified Liquidity**
+    - Instant guaranteed finality
+    - Native asset bridging
+    - No slippage on stables
+    - LayerZero powered
+  </Accordion>
+</AccordionGroup>
+
+### Bridge Optimization Strategy
+
+```typescript
+class BridgeOptimizer {
+  private bridges = {
+    hop: new HopBridge(),
+    synapse: new SynapseBridge(),
+    stargate: new StargateBridge(),
+    across: new AcrossBridge()
+  };
+  
+  async findOptimalBridge(
+    fromChain: string,
+    toChain: string,
+    token: string,
+    amount: BigNumber
+  ): Promise<BridgeRoute> {
+    const quotes = await Promise.all([
+      this.bridges.hop.getQuote(fromChain, toChain, token, amount),
+      this.bridges.synapse.getQuote(fromChain, toChain, token, amount),
+      this.bridges.stargate.getQuote(fromChain, toChain, token, amount),
+      this.bridges.across.getQuote(fromChain, toChain, token, amount)
+    ]);
+    
+    // Sort by total cost (fees + gas + slippage)
+    const sortedQuotes = quotes
+      .filter(q => q !== null)
+      .sort((a, b) => {
+        const costA = a.bridgeFee.add(a.gasCost).add(a.slippage);
+        const costB = b.bridgeFee.add(b.gasCost).add(b.slippage);
+        return costA.lt(costB) ? -1 : 1;
+      });
+    
+    const optimal = sortedQuotes[0];
+    
+    // Check if bridging is profitable
+    const bridgeCost = optimal.bridgeFee.add(optimal.gasCost);
+    const minProfit = amount.mul(5).div(1000); // 0.5% minimum
+    
+    if (bridgeCost.gt(minProfit)) {
+      throw new Error("Bridge cost exceeds minimum profit threshold");
+    }
+    
+    return optimal;
+  }
+  
+  async executeBridge(route: BridgeRoute): Promise<string> {
+    const bridge = this.bridges[route.bridge];
+    
+    // Approve token
+    await this.approveToken(route.token, bridge.address, route.amount);
+    
+    // Execute bridge transaction
+    const tx = await bridge.bridge({
+      fromChain: route.fromChain,
+      toChain: route.toChain,
+      token: route.token,
+      amount: route.amount,
+      recipient: route.recipient,
+      slippage: route.maxSlippage
+    });
+    
+    // Monitor bridge status
+    this.monitorBridge(tx.hash, route);
+    
+    return tx.hash;
+  }
+  
+  private async monitorBridge(txHash: string, route: BridgeRoute) {
+    const checkInterval = 60000; // 1 minute
+    const maxChecks = 60; // 1 hour timeout
+    
+    for (let i = 0; i < maxChecks; i++) {
+      const status = await this.bridges[route.bridge].getStatus(txHash);
+      
+      if (status === 'completed') {
+        await this.onBridgeComplete(route);
+        break;
+      } else if (status === 'failed') {
+        await this.onBridgeFailed(route);
+        break;
+      }
+      
+      await sleep(checkInterval);
+    }
+  }
+}
+```
+
+## Gas Optimization
+
+### Multi-Chain Gas Management
+
+```typescript
+class GasManager {
+  private gasPrices: Map<ChainId, GasPrice> = new Map();
+  
+  async optimizeGasAcrossChains(trades: Trade[]): Promise<OptimizedTrades> {
+    // Get current gas prices
+    await this.updateGasPrices();
+    
+    // Sort trades by urgency and profit
+    const prioritizedTrades = trades.sort((a, b) => {
+      const scoreA = this.calculateTradeScore(a);
+      const scoreB = this.calculateTradeScore(b);
+      return scoreB - scoreA;
+    });
+    
+    // Allocate to chains based on gas costs
+    const optimized: OptimizedTrades = {
+      polygon: [],
+      arbitrum: [],
+      base: [],
+      ethereum: []
+    };
+    
+    for (const trade of prioritizedTrades) {
+      const bestChain = this.selectOptimalChain(trade);
+      optimized[bestChain].push(trade);
+    }
+    
+    // Batch transactions where possible
+    return this.batchTransactions(optimized);
+  }
+  
+  private selectOptimalChain(trade: Trade): ChainId {
+    const chains = ['polygon', 'arbitrum', 'base'];
+    let bestChain = null;
+    let lowestCost = Infinity;
+    
+    for (const chain of chains) {
+      const gasPrice = this.gasPrices.get(chain);
+      const estimatedGas = this.estimateGas(trade, chain);
+      const cost = gasPrice.mul(estimatedGas);
+      
+      // Factor in bridge costs if profit needs to move to Ethereum
+      const bridgeCost = this.estimateBridgeCost(trade.expectedProfit, chain);
+      const totalCost = cost.add(bridgeCost);
+      
+      if (totalCost.lt(lowestCost)) {
+        lowestCost = totalCost;
+        bestChain = chain;
+      }
+    }
+    
+    return bestChain;
+  }
+  
+  private async batchTransactions(trades: OptimizedTrades): Promise<BatchedTrades> {
+    const batched: BatchedTrades = {};
+    
+    for (const [chain, chainTrades] of Object.entries(trades)) {
+      // Group by similar operations
+      const grouped = this.groupSimilarTrades(chainTrades);
+      
+      // Create multicall batches
+      batched[chain] = grouped.map(group => ({
+        calls: group.map(t => this.encodeTradeCall(t)),
+        estimatedGas: this.estimateBatchGas(group),
+        deadline: Math.min(...group.map(t => t.deadline))
+      }));
+    }
+    
+    return batched;
+  }
+}
+```
+
+## Monitoring & Analytics
+
+### Cross-Chain Performance Tracking
+
+```typescript
+class MultiChainMonitor {
+  private providers: Map<string, ethers.Provider> = new Map();
+  private indexers: Map<string, GraphQLClient> = new Map();
+  
+  constructor() {
+    // Initialize providers
+    this.providers.set('ethereum', new AlchemyProvider('mainnet'));
+    this.providers.set('polygon', new AlchemyProvider('matic'));
+    this.providers.set('arbitrum', new AlchemyProvider('arbitrum'));
+    this.providers.set('base', new InfuraProvider('base'));
+    
+    // Initialize Graph Protocol indexers
+    this.indexers.set('ethereum', new GraphQLClient(ETHEREUM_GRAPH_URL));
+    this.indexers.set('polygon', new GraphQLClient(POLYGON_GRAPH_URL));
+    this.indexers.set('arbitrum', new GraphQLClient(ARBITRUM_GRAPH_URL));
+  }
+  
+  async getAggregatedMetrics(agentId: string): Promise<AgentMetrics> {
+    const metrics: ChainMetrics[] = [];
+    
+    // Collect metrics from each chain
+    for (const [chain, provider] of this.providers) {
+      const chainMetrics = await this.getChainMetrics(agentId, chain);
+      metrics.push(chainMetrics);
+    }
+    
+    // Aggregate results
+    return {
+      totalVolume: metrics.reduce((sum, m) => sum.add(m.volume), BigNumber.from(0)),
+      totalProfits: metrics.reduce((sum, m) => sum.add(m.profits), BigNumber.from(0)),
+      totalGasCosts: metrics.reduce((sum, m) => sum.add(m.gasCosts), BigNumber.from(0)),
+      successRate: this.calculateWeightedSuccessRate(metrics),
+      chainBreakdown: metrics,
+      defiPositions: await this.getDeFiPositions(agentId),
+      bridgeHistory: await this.getBridgeHistory(agentId)
+    };
+  }
+  
+  async monitorArbitrageOpportunities(): Promise<ArbitrageAlert[]> {
+    const alerts: ArbitrageAlert[] = [];
+    const tokens = ['USDC', 'USDT', 'ETH', 'WBTC'];
+    
+    for (const token of tokens) {
+      const prices = await this.getTokenPricesAcrossChains(token);
+      
+      for (const [chain1, price1] of prices) {
+        for (const [chain2, price2] of prices) {
+          if (chain1 !== chain2) {
+            const priceDiff = price2.sub(price1);
+            const percentDiff = priceDiff.mul(10000).div(price1);
+            
+            // Alert if price difference > 0.5%
+            if (percentDiff.gt(50)) {
+              alerts.push({
+                token,
+                buyChain: chain1,
+                sellChain: chain2,
+                priceDifference: percentDiff.toNumber() / 100,
+                estimatedProfit: this.calculateArbitrageProfit(
+                  token,
+                  chain1,
+                  chain2,
+                  priceDiff
+                )
+              });
+            }
+          }
+        }
+      }
+    }
+    
+    return alerts;
+  }
+}
+```
+
+## Performance Metrics
+
+<CardGroup cols={2}>
+  <Card title="Execution Speed" icon="timer">
+    **Multi-Chain Performance**
+    
+    - Polygon: 2-5 second finality
+    - Arbitrum: 1-2 second finality
+    - Base: 2-4 second finality
+    - Batch processing: 10-50 txs/second
+  </Card>
+  
+  <Card title="Cost Efficiency" icon="coins">
+    **Gas Savings vs Ethereum**
+    
+    - Polygon: 99.95% cheaper
+    - Arbitrum: 99.8% cheaper
+    - Base: 99.9% cheaper
+    - Bridge costs: $2-10 per transfer
+  </Card>
+</CardGroup>
+
+### Typical Returns Profile
+
+| Strategy | Daily Return | Risk Level | Best Chains |
+|----------|-------------|------------|-------------|
+| **Cross-Chain Arbitrage** | 0.5-2% | Medium | All chains |
+| **DeFi Yield Farming** | 0.02-0.05% (8-20% APY) | Low | Ethereum |
+| **New Token Sniping** | 5-50% | High | Base, Polygon |
+| **Liquidity Provision** | 0.05-0.15% | Medium | Ethereum, Arbitrum |
+
+<Card title="Architecture Deep Dive" icon="microscope" href="/technical/smart-contracts">
+  Explore the full smart contract architecture and integration details
+</Card>

@@ -16,8 +16,8 @@ export default function Footer() {
           <div className="md:col-span-2">
             <h3 className="text-2xl font-medium text-white mb-4">c0gni</h3>
             <p className="text-white/60 max-w-md leading-relaxed">
-              AI-powered trading agents optimized for Solana&apos;s speed.
-              Capturing alpha in &lt;1 second.
+              AI-powered multi-chain trading agents. Execute on low-gas chains,
+              build wealth on Ethereum&apos;s DeFi ecosystem.
             </p>
           </div>
 

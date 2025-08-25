@@ -12,12 +12,12 @@ interface ServiceType {
 }
 
 const services = [
-  { icon: Bot, title: "Agent Factory", description: "Zero to Autonomy in <60 Seconds. Deploy autonomous agents with pre-composed blueprints, on-chain wallet binding, and built-in risk guardrails. Agents don't just run—they evolve." },
-  { icon: Code, title: "Agent Studio", description: "Code-First SDK for Elite Builders. Python/TypeScript SDK with local simulation, LLM integration, and custom reward functions. This isn't AI scripting. It's AI engineering." },
-  { icon: Layers, title: "Agent Cloud", description: "Orchestration Layer with Swarm Intelligence. Multi-agent teams that collaborate, compete, and compound. Scout, analyze, trade, hedge—this is how AI runs a hedge fund." },
-  { icon: BarChartBig, title: "Agent Marketplace", description: "Network Effect Engine. Rent/buy agent strategies with verified on-chain PnL. No backtesting fakes. Only real execution data. AI labor becomes tradable assets." },
-  { icon: Eye, title: "Performance Proof", description: "On-chain verified PnL. Real agents running. Actual transactions, not backtests. Weekly reports with full transaction logs. Performance becomes product." },
-  { icon: BrainCircuit, title: "Swarm Intelligence", description: "Multi-agent coordination through structured messaging. Consensus logic, auto-scaling, profit pooling. The first platform where agents inherit persistent memory and learning loops." }
+  { icon: Bot, title: "Agent Factory", description: "Zero to Autonomy in <60 Seconds. Deploy EVM-compatible agents across Polygon, Arbitrum, Base. Smart contract wallets with cross-chain capabilities. Agents execute on low-gas chains, settle on Ethereum." },
+  { icon: Code, title: "Agent Studio", description: "Code-First SDK for Elite Builders. Web3.js/Ethers.js SDK with Hardhat simulation, cross-chain routing, and yield optimization strategies. Build agents that farm, lend, and compound across DeFi." },
+  { icon: Layers, title: "Agent Cloud", description: "Multi-Chain Orchestration Layer. Agents coordinate across Ethereum L2s, find arbitrage between chains, and rotate profits into stable yield pools. This is institutional-grade DeFi automation." },
+  { icon: BarChartBig, title: "Agent Marketplace", description: "Cross-Chain Strategy Engine. Deploy proven strategies across any EVM chain. Verified on-chain PnL from Ethereum, Polygon, Arbitrum. Real yields, real returns, real wealth building." },
+  { icon: Eye, title: "Performance Proof", description: "Multi-chain verified PnL. Track performance across all EVM chains. Ethereum mainnet settlement for transparency. See how profits flow from fast chains to stable yields." },
+  { icon: BrainCircuit, title: "Swarm Intelligence", description: "Cross-chain agent coordination. Arbitrage on Polygon, yield farm on Arbitrum, settle on Ethereum. Agents share intel across chains, compound returns, and optimize for long-term wealth." }
 ];
 
 const Circle = forwardRef<
@@ -301,15 +301,15 @@ export default function ServicesSection() {
             transition={{ delay: 0.2 }}
             className="text-sm font-medium text-white/60 tracking-wider uppercase"
           >
-            Agent Operating System
+            Multi-Chain Agent Operating System
           </motion.span>
           <h2 className="mt-4 text-5xl md:text-6xl font-light text-white tracking-tighter">
-            Not a Bot Platform—<br />
-            <span className="font-medium">An Agent OS</span>
+            Not Just Trading—<br />
+            <span className="font-medium">Wealth Building</span>
           </h2>
           <p className="mt-6 text-lg text-white/60 max-w-2xl mx-auto leading-relaxed">
-            Competitors sell tools. c0gni sells autonomy.<br />
-            Solana-native execution layer optimized for &lt;400ms decision-to-transaction speed.
+            Execute on low-gas chains. Build wealth on Ethereum.<br />
+            EVM-native agents that trade fast, rotate profits to blue-chips, and compound yields automatically.
           </p>
         </motion.div>
 

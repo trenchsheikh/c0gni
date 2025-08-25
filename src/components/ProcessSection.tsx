@@ -4,23 +4,23 @@ import { motion, useInView } from "framer-motion";
 const processSteps = [
   {
     number: "01",
-    title: "Deploy in <60 Seconds",
-    description: "Select pre-composed agent blueprints (Sniper, Arbitrageur, LP Optimizer). Bind your wallet. Auto-fund with 0.5-10 SOL. Built-in risk guardrails activate immediately."
+    title: "Deploy Across Multiple Chains",
+    description: "Select EVM-compatible agent blueprints (Cross-Chain Arbitrage, Yield Optimizer, DeFi Farmer). Connect MetaMask. Fund with ETH/MATIC/ARB. Deploy simultaneously on multiple chains."
   },
   {
     number: "02",
-    title: "Agents Execute at Machine Speed",
-    description: "<400ms from detection to execution. Jito-optimized priority transactions. Real-time event detection via Helius. Faster than bots, smarter than humans."
+    title: "Execute on Low-Gas Chains",
+    description: "<$0.01 transaction fees on Polygon, Arbitrum, Base. Flashbots MEV protection. Real-time indexing via The Graph. Trade at scale without gas drain."
   },
   {
     number: "03",
-    title: "On-Chain Memory & Learning",
-    description: "Persistent agent state via Solana accounts. Post-trade feedback loops influence future decisions. Each agent evolves with a unique on-chain identity and reputation."
+    title: "Rotate Profits to Ethereum",
+    description: "Automatic bridging to Ethereum mainnet. Deploy into blue-chip DeFi: Aave, Compound, Curve. Convert volatile gains into stable yield-bearing positions."
   },
   {
     number: "04",
-    title: "Swarm Intelligence & Compound",
-    description: "Multi-agent collaboration through structured messaging. Scout → Analyze → Trade → Hedge → Compound. Performance-based profit sharing across the swarm."
+    title: "Compound & Build Wealth",
+    description: "Multi-chain coordination for maximum yield. Fast trades on L2s → Stable yields on Ethereum. Reinvest earnings automatically. Long-term wealth accumulation strategy."
   }
 ];
 

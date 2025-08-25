@@ -29,18 +29,18 @@ export default function AboutSection() {
           className="text-center"
         >
           <span className="text-sm font-medium text-white/60 tracking-wider uppercase">
-            Solana as the AI Execution Layer
+            Multi-Chain Execution, Ethereum Settlement
           </span>
           <h2 className="mt-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white tracking-tighter px-4">
-            Ethereum is for settlement.<br />
-            <span className="font-medium">Solana is for action.</span>
+            Fast trades on low-gas chains.<br />
+            <span className="font-medium">Wealth preservation on Ethereum.</span>
           </h2>
           <p className="mt-6 text-base sm:text-lg text-white/60 max-w-3xl mx-auto leading-relaxed px-4">
-            400ms blocks = AI reaction speed. Sub-cent fees = high-frequency experimentation.<br />
-            Jito = priority execution. Helius = real-time event stream.<br />
+            Polygon, Arbitrum, Base = &lt;$0.01 transaction fees. High-frequency trading without the cost.<br />
+            Flashbots = MEV protection. The Graph = real-time indexing across all chains.<br />
             <br />
-            c0gni isn&apos;t on Solana. It&apos;s optimized for Solana&apos;s physics.<br />
-            The platform gets smarter as it scales.
+            c0gni executes where fees are lowest, then rotates profits to Ethereum&apos;s blue-chip DeFi.<br />
+            Compound yields. Aave lending. Curve pools. Building long-term wealth, not just quick trades.
           </p>
         </motion.div>
       </div>
