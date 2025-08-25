@@ -1,10 +1,12 @@
 import type { Config } from "tailwindcss";
 
-export default {
+const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
@@ -14,10 +16,6 @@ export default {
       },
       animation: {
         'blob': 'blob 7s infinite',
-      },
-      animationDelay: {
-        '2000': '2s',
-        '4000': '4s',
       },
       keyframes: {
         blob: {
@@ -38,4 +36,6 @@ export default {
     },
   },
   plugins: [],
-} satisfies Config;
+};
+
+export default config;
