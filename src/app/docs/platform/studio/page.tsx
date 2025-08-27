@@ -137,7 +137,7 @@ class AdvancedSniperStrategy(Strategy):
         super().__init__()
         self.rsi = RSI(period=14)
         self.macd = MACD(fast=12, slow=26, signal=9)
-        self.min_liquidity = 50  # SOL
+        self.min_liquidity = 10  # ETH
         self.confidence_threshold = 0.8
         
     async def on_new_token(self, token_data):
@@ -249,7 +249,7 @@ def test_sniper_strategy_backtest():
     engine = BacktestEngine(
         start_date=datetime(2024, 1, 1),
         end_date=datetime(2024, 1, 31),
-        initial_balance=10.0  # SOL
+        initial_balance=2.0  # ETH
     )
     
     strategy = AdvancedSniperStrategy()
@@ -374,7 +374,7 @@ spec:
         cpu: "1.0"
   
   configuration:
-    budget: "10.0 SOL"
+    budget: "2.0 ETH"
     risk_level: "medium" 
     max_position_size: 0.2
     
@@ -387,9 +387,9 @@ spec:
         threshold: "drawdown > 0.15"
         
   scaling:
-    initial_capital: "1.0 SOL"  # Start small
+    initial_capital: "0.2 ETH"  # Start small
     scale_up_trigger: "win_rate > 0.7 AND trades > 50"
-    max_capital: "10.0 SOL"`}
+    max_capital: "2.0 ETH"`}
               </CodeBlock>
             </div>
           </Tab>
@@ -416,7 +416,7 @@ spec:
             <div className="space-y-3">
               <p>Trade across different asset classes:</p>
               <ul className="space-y-1 text-white/70">
-                <li>• SPL tokens on Solana</li>
+                <li>• ERC-20 tokens on Ethereum</li>
                 <li>• NFT collections</li>
                 <li>• Liquidity pool tokens</li>
                 <li>• Cross-chain assets (coming soon)</li>

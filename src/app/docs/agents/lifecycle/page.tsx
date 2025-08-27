@@ -145,7 +145,7 @@ export default function AgentLifecyclePage() {
     "version": "1.0.0",
     "created_at": "2024-01-15T10:30:00Z",
     "parameters": {
-      "budget": "5.0 SOL",
+      "budget": "1.0 ETH",
       "max_position_size": 0.2,
       "stop_loss": -0.3,
       "take_profit": 2.0,

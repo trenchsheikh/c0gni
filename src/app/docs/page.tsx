@@ -53,11 +53,11 @@ export default function DocsIntroduction() {
       </div>
 
       <CardGroup cols={2}>
-        <Card title="<400ms Execution" icon={<Zap />} href="/docs/technical/solana">
-          From detection to execution faster than human reaction time
+        <Card title="Multi-Chain Execution" icon={<Zap />} href="/docs/technical/ethereum-multichain">
+          Execute on low-gas L2s while building wealth on Ethereum
         </Card>
-        <Card title="On-Chain Memory" icon={<Brain />} href="/docs/technical/memory">
-          Persistent agent state and learning stored on Solana
+        <Card title="Collective Memory" icon={<Brain />} href="/docs/technical/collective-memory">
+          Shared knowledge base where all agents learn from each other
         </Card>
         <Card title="Swarm Intelligence" icon={<Network />} href="/docs/agents/swarms">
           Multi-agent coordination that compounds performance
@@ -201,8 +201,8 @@ export default function DocsIntroduction() {
               </div>
               
               <p className="text-white/80 leading-relaxed">
-                <strong>Sub-400ms execution time</strong> from opportunity detection to on-chain execution. 
-                Powered by Jito bundles and optimized RPC connections.
+                <strong>Multi-chain execution</strong> on gas-optimized L2s with automatic profit rotation to Ethereum DeFi. 
+                Powered by Flashbots protection and cross-chain bridges.
               </p>
             </div>
           </Tab>
@@ -229,14 +229,14 @@ export default function DocsIntroduction() {
               <div className="bg-white/5 border border-white/10 rounded-xl p-6">
                 <div className="text-center">
                   <Database className="w-12 h-12 text-green-400 mx-auto mb-4" />
-                  <h4 className="text-white font-medium mb-2">On-Chain Learning</h4>
-                  <p className="text-white/70 text-sm">Persistent memory stored on Solana blockchain</p>
+                  <h4 className="text-white font-medium mb-2">Collective Intelligence</h4>
+                  <p className="text-white/70 text-sm">Shared memory across all EVM chains with network effects</p>
                 </div>
               </div>
             
             <p className="text-white/80 leading-relaxed">
-              <strong>Persistent learning</strong> with agent state stored on-chain. Each trade informs 
-              future decisions with verifiable memory.
+              <strong>Collective learning</strong> where every agent contributes to shared knowledge. 
+              The more agents join, the smarter the entire network becomes.
             </p>
             </div>
           </Tab>
@@ -248,13 +248,13 @@ export default function DocsIntroduction() {
 
         <Steps>
           <Step title="Connect Your Wallet">
-            Link your Solana wallet to start deploying agents
+            Connect MetaMask or any EVM wallet to start deploying agents
           </Step>
           <Step title="Choose Agent Type">
-            Select from Scout, Trader, Arbitrage, or LP Optimizer blueprints
+            Select from Cross-Chain Arbitrage, DeFi Yield Farmer, or Multi-Chain Sniper
           </Step>
-          <Step title="Deploy & Fund">
-            Deploy with 0.5-10 SOL and activate built-in risk guardrails
+          <Step title="Deploy & Stake">
+            Stake 1,000-10,000 COGNI tokens and activate cross-chain trading
           </Step>
           <Step title="Monitor Performance">
             Watch your agents execute at machine speed through the dashboard

@@ -37,16 +37,16 @@ export default function QuickstartPage() {
         <h1 className="text-4xl font-light text-white">Deploy Your First Agent</h1>
         <p className="text-xl text-white/80">
           Get started with c0gni in under 60 seconds. This guide will walk you through deploying 
-          a Sniper agent that automatically detects and trades new token launches.
+          a Cross-Chain Arbitrage agent that finds opportunities across EVM chains and builds wealth on Ethereum.
         </p>
       </div>
 
       <Info>
         <strong>Prerequisites:</strong>
         <ul className="mt-2 space-y-1">
-          <li>• Phantom, Solflare, or compatible Solana wallet</li>
-          <li>• 0.5-10 SOL for agent funding</li>
-          <li>• Basic understanding of trading concepts</li>
+          <li>• MetaMask or compatible EVM wallet</li>
+          <li>• 1,000-10,000 COGNI tokens for staking</li>
+          <li>• Basic understanding of DeFi concepts</li>
         </ul>
       </Info>
 
@@ -57,8 +57,8 @@ export default function QuickstartPage() {
           <Step title="Visit the Platform">
             Go to <a href="https://app.cognilabs.com" className="text-blue-400 hover:text-blue-300 underline">app.cognilabs.com</a> and click "Connect Wallet"
           </Step>
-          <Step title="Select Wallet">
-            Choose your preferred Solana wallet (Phantom, Solflare, etc.)
+          <Step title="Select Network">
+            Choose your starting chain (Ethereum, Polygon, Arbitrum, Base)
           </Step>
           <Step title="Approve Connection">
             Confirm the connection in your wallet extension
@@ -66,7 +66,7 @@ export default function QuickstartPage() {
         </Steps>
 
         <Warning>
-          Never share your private keys. c0gni only needs wallet connection permissions to deploy and fund agents.
+          Never share your private keys or seed phrase. c0gni only requires standard wallet connection permissions.
         </Warning>
       </div>
 
@@ -77,40 +77,40 @@ export default function QuickstartPage() {
         </p>
 
         <CardGroup cols={2}>
-          <Card title="Sniper Agent" icon={<Crosshair />}>
+          <Card title="Cross-Chain Arbitrage" icon={<ArrowLeftRight />}>
             <div className="space-y-2">
-              <p className="text-green-400 text-sm font-medium">Best for beginners</p>
-              <p>Detects new token launches and executes entry trades within milliseconds.</p>
+              <p className="text-green-400 text-sm font-medium">Best for steady returns</p>
+              <p>Finds price differences across EVM chains and executes profitable trades.</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
-                <div>• Risk Level: Medium</div>
-                <div>• Success Rate: 73%</div>
-                <div>• Avg ROI: 2.3x</div>
+                <div>• Risk Level: Low-Medium</div>
+                <div>• Success Rate: 89%</div>
+                <div>• Avg ROI: 0.5-2% daily</div>
               </div>
             </div>
           </Card>
           
-          <Card title="Arbitrage Engine" icon={<ArrowLeftRight />}>
+          <Card title="DeFi Yield Farmer" icon={<TrendingUp />}>
             <div className="space-y-2">
-              <p className="text-blue-400 text-sm font-medium">Steady returns</p>
-              <p>Finds price differences across DEXs and executes profitable arbitrage trades.</p>
+              <p className="text-blue-400 text-sm font-medium">Best for passive income</p>
+              <p>Automatically farms yield across Aave, Compound, Curve on multiple chains.</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
                 <div>• Risk Level: Low</div>
-                <div>• Success Rate: 94%</div>
-                <div>• Avg ROI: 1.2x</div>
+                <div>• APY: 8-15%</div>
+                <div>• Auto-compounds: Yes</div>
               </div>
             </div>
           </Card>
         </CardGroup>
 
         <CardGroup cols={2}>
-          <Card title="LP Optimizer" icon={<BarChart3 />}>
+          <Card title="Multi-Chain Sniper" icon={<Crosshair />}>
             <div className="space-y-2">
-              <p className="text-purple-400 text-sm font-medium">Long-term growth</p>
-              <p>Automatically manages liquidity positions for optimal fee generation.</p>
+              <p className="text-purple-400 text-sm font-medium">Best for high returns</p>
+              <p>Detects new token launches across all chains and executes early entry trades.</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
-                <div>• Risk Level: Low</div>
-                <div>• Success Rate: 89%</div>
-                <div>• Avg ROI: 15% APY</div>
+                <div>• Risk Level: High</div>
+                <div>• Success Rate: 65%</div>
+                <div>• Avg ROI: 5-50x</div>
               </div>
             </div>
           </Card>
@@ -136,18 +136,19 @@ export default function QuickstartPage() {
         
         <CodeBlock language="json">
 {`{
-  "agentType": "sniper",
-  "budget": "2.5 SOL",
+  "agentType": "cross-chain-arbitrage",
+  "stakeAmount": "5000 COGNI",
+  "chains": ["polygon", "arbitrum", "base"],
   "riskLevel": "medium",
-  "autoExit": true
+  "bridgeToEthereum": true
 }`}
         </CodeBlock>
 
         <Tabs>
           <Tab title="Budget & Risk">
             <AccordionGroup>
-              <Accordion title="Initial Budget">
-                Set the amount of SOL your agent can use for trading (0.5-10 SOL recommended for first deployment)
+              <Accordion title="COGNI Stake">
+                Amount of COGNI tokens to stake for agent activation (1,000-10,000 recommended for first deployment)
               </Accordion>
               
               <Accordion title="Risk Level">
@@ -183,7 +184,7 @@ export default function QuickstartPage() {
           <Tab title="Advanced Settings">
             <AccordionGroup>
               <Accordion title="MEV Protection">
-                Enable Jito bundle protection against frontrunning (recommended: ON)
+                Enable Flashbots protection on Ethereum, fast execution on L2s (recommended: ON)
               </Accordion>
               
               <Accordion title="Slippage Tolerance">
@@ -205,8 +206,8 @@ export default function QuickstartPage() {
           <Step title="Review Configuration">
             Double-check your settings and budget allocation
           </Step>
-          <Step title="Fund Agent Wallet">
-            Transfer SOL to your agent's dedicated wallet address
+          <Step title="Stake COGNI">
+            Lock COGNI tokens to activate your agent across selected chains
           </Step>
           <Step title="Deploy">
             Click "Deploy Agent" and confirm the transaction
@@ -229,8 +230,8 @@ export default function QuickstartPage() {
             <div className="flex items-center gap-4">
               <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm">2</div>
               <div>
-                <p className="text-white">Generate Agent Keypair</p>
-                <p className="text-white/60 text-sm">Create dedicated wallet for agent</p>
+                <p className="text-white">Generate Agent Wallets</p>
+                <p className="text-white/60 text-sm">Create EVM addresses for each chain</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -345,7 +346,7 @@ export default function QuickstartPage() {
         </div>
 
         <Tip>
-          <strong>Pro Tip:</strong> Start with a smaller budget (0.5-1 SOL) to get familiar with how your agent behaves before scaling up.
+          <strong>Pro Tip:</strong> Start with a smaller stake (1,000-2,000 COGNI) to get familiar with how your agent behaves before scaling up.
         </Tip>
       </div>
 
@@ -379,7 +380,7 @@ export default function QuickstartPage() {
             <div className="space-y-3">
               <p><strong>Common causes:</strong></p>
               <ul className="space-y-1 text-white/70">
-                <li>• Insufficient SOL for deployment fees (~0.01 SOL)</li>
+                <li>• Insufficient COGNI for staking (minimum 1,000)</li>
                 <li>• Wallet connection issues</li>
                 <li>• Network congestion</li>
               </ul>

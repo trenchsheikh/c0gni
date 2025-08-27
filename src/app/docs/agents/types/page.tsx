@@ -319,26 +319,26 @@ export default function AgentTypesPage() {
                   <tbody>
                     <tr className="border-b border-white/5">
                       <td className="py-3 px-4 text-white">Sniper</td>
-                      <td className="py-3 px-4 text-white/70">0.5 SOL</td>
-                      <td className="py-3 px-4 text-green-400">2-5 SOL</td>
+                      <td className="py-3 px-4 text-white/70">0.1 ETH</td>
+                      <td className="py-3 px-4 text-green-400">0.5-1 ETH</td>
                       <td className="py-3 px-4 text-yellow-400">Medium</td>
                     </tr>
                     <tr className="border-b border-white/5">
                       <td className="py-3 px-4 text-white">Arbitrage</td>
-                      <td className="py-3 px-4 text-white/70">1 SOL</td>
-                      <td className="py-3 px-4 text-green-400">5-10 SOL</td>
+                      <td className="py-3 px-4 text-white/70">0.2 ETH</td>
+                      <td className="py-3 px-4 text-green-400">1-2 ETH</td>
                       <td className="py-3 px-4 text-green-400">High</td>
                     </tr>
                     <tr className="border-b border-white/5">
                       <td className="py-3 px-4 text-white">LP Optimizer</td>
-                      <td className="py-3 px-4 text-white/70">5 SOL</td>
-                      <td className="py-3 px-4 text-green-400">20+ SOL</td>
+                      <td className="py-3 px-4 text-white/70">1 ETH</td>
+                      <td className="py-3 px-4 text-green-400">5+ ETH</td>
                       <td className="py-3 px-4 text-green-400">High</td>
                     </tr>
                     <tr>
                       <td className="py-3 px-4 text-white">Scout</td>
-                      <td className="py-3 px-4 text-white/70">0.1 SOL</td>
-                      <td className="py-3 px-4 text-green-400">0.5 SOL</td>
+                      <td className="py-3 px-4 text-white/70">0.02 ETH</td>
+                      <td className="py-3 px-4 text-green-400">0.1 ETH</td>
                       <td className="py-3 px-4 text-blue-400">N/A</td>
                     </tr>
                   </tbody>

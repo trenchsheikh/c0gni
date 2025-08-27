@@ -57,10 +57,10 @@ export default function FAQPage() {
             <div className="space-y-3">
               <p>Minimum requirements vary by agent type:</p>
               <ul className="space-y-2 text-white/70">
-                <li><strong>Scout Agent:</strong> 0.1 SOL (monitoring only, no trading)</li>
-                <li><strong>Sniper Agent:</strong> 0.5 SOL minimum, 2-5 SOL recommended</li>
-                <li><strong>Arbitrage Engine:</strong> 1 SOL minimum, 5-10 SOL recommended</li>
-                <li><strong>LP Optimizer:</strong> 5 SOL minimum, 20+ SOL for optimal performance</li>
+                <li><strong>Scout Agent:</strong> 0.02 ETH (monitoring only, no trading)</li>
+                <li><strong>Cross-Chain Arbitrage:</strong> 0.1 ETH minimum, 0.5-1 ETH recommended</li>
+                <li><strong>Multi-Chain Sniper:</strong> 0.2 ETH minimum, 1-2 ETH recommended</li>
+                <li><strong>DeFi Yield Farmer:</strong> 1 ETH minimum, 5+ ETH for optimal performance</li>
               </ul>
               <p className="mt-3"><strong>Pro Tip:</strong> Start small to understand agent behavior before scaling up.</p>
             </div>
@@ -190,15 +190,15 @@ export default function FAQPage() {
         <AccordionGroup>
           <Accordion title="What blockchain does c0gni use?">
             <div className="space-y-3">
-              <p><strong>c0gni is built on Solana</strong> for several key reasons:</p>
+              <p><strong>c0gni operates across multiple EVM chains</strong> for maximum opportunities:</p>
               <ul className="space-y-2 text-white/70">
-                <li><strong>Speed:</strong> ~400ms block times enable sub-second trading</li>
-                <li><strong>Low Costs:</strong> Transaction fees &lt;$0.01 per trade</li>
-                <li><strong>Throughput:</strong> 65,000+ TPS capacity</li>
-                <li><strong>DeFi Ecosystem:</strong> Rich ecosystem of DEXs and protocols</li>
-                <li><strong>Finality:</strong> Single-slot finality for immediate settlement</li>
+                <li><strong>Ethereum:</strong> Main base for wealth building and high-value trades</li>
+                <li><strong>Layer 2s:</strong> Polygon, Arbitrum, Base for low-cost execution</li>
+                <li><strong>Cross-Chain:</strong> BSC for additional market opportunities</li>
+                <li><strong>Bridge Optimization:</strong> Automatic profit routing between chains</li>
+                <li><strong>Collective Memory:</strong> Shared intelligence across all EVM chains</li>
               </ul>
-              <p className="mt-3"><strong>Cross-chain support</strong> is planned for Q3 2024 (Ethereum, BSC).</p>
+              <p className="mt-3"><strong>Multi-chain execution</strong> enables agents to find opportunities anywhere while building wealth on Ethereum.</p>
             </div>
           </Accordion>
           
@@ -206,7 +206,7 @@ export default function FAQPage() {
             <div className="space-y-3">
               <p><strong>c0gni protects against MEV (Maximum Extractable Value) attacks:</strong></p>
               <ul className="space-y-2 text-white/70">
-                <li><strong>Jito Bundles:</strong> Private mempool routing prevents front-running</li>
+                <li><strong>Flashbots Bundles:</strong> Private mempool routing prevents front-running</li>
                 <li><strong>Anti-Sandwich:</strong> Detection and avoidance of sandwich attacks</li>
                 <li><strong>Priority Fees:</strong> Dynamic fee adjustment for transaction ordering</li>
                 <li><strong>Swarm Coordination:</strong> Multiple agents working together can detect manipulation</li>
@@ -215,17 +215,17 @@ export default function FAQPage() {
             </div>
           </Accordion>
           
-          <Accordion title="What happens if Solana network goes down?">
+          <Accordion title="What happens if a blockchain network goes down?">
             <div className="space-y-3">
-              <p><strong>Network outage contingency measures:</strong></p>
+              <p><strong>Multi-chain redundancy and failover measures:</strong></p>
               <ul className="space-y-2 text-white/70">
-                <li><strong>Automatic Pause:</strong> Agents pause trading during network issues</li>
-                <li><strong>Position Monitoring:</strong> Existing positions remain but can't be modified</li>
-                <li><strong>Retry Logic:</strong> Agents automatically resume when network recovers</li>
-                <li><strong>Fallback RPCs:</strong> Multiple RPC endpoints for redundancy</li>
-                <li><strong>Manual Override:</strong> Emergency controls available via different endpoints</li>
+                <li><strong>Chain Switching:</strong> Agents automatically switch to available chains</li>
+                <li><strong>Position Monitoring:</strong> Existing positions tracked across all chains</li>
+                <li><strong>Cross-Chain Recovery:</strong> Resume trading on functioning networks</li>
+                <li><strong>Multiple RPCs:</strong> Redundant endpoints for each supported chain</li>
+                <li><strong>Emergency Controls:</strong> Multi-chain override capabilities</li>
               </ul>
-              <p className="mt-3">Solana network uptime is typically &gt;99.9%, but we're prepared for edge cases.</p>
+              <p className="mt-3">Multi-chain architecture provides inherent redundancy - if one chain has issues, agents continue on others.</p>
             </div>
           </Accordion>
           
@@ -267,8 +267,8 @@ export default function FAQPage() {
               </div>
               <p><strong>Additional costs:</strong></p>
               <ul className="space-y-1 text-white/70">
-                <li>• Trading fees: 0.15% per trade (vs 0.3% paying with SOL)</li>
-                <li>• Network fees: ~0.0001 SOL per transaction</li>
+                <li>• Trading fees: 0.15% per trade (vs 0.3% paying with ETH)</li>
+                <li>• Network fees: Variable by chain (L2s much cheaper)</li>
                 <li>• No monthly subscriptions or hidden fees</li>
               </ul>
             </div>
@@ -278,7 +278,7 @@ export default function FAQPage() {
             <div className="space-y-3">
               <p><strong>Multiple ways to acquire CGNI tokens:</strong></p>
               <ul className="space-y-2 text-white/70">
-                <li><strong>DEX Trading:</strong> Buy on Jupiter, Raydium, or Orca</li>
+                <li><strong>DEX Trading:</strong> Buy on Uniswap, SushiSwap, or Balancer</li>
                 <li><strong>CEX Trading:</strong> Available on major centralized exchanges</li>
                 <li><strong>Agent Earnings:</strong> Earn rewards from successful trading</li>
                 <li><strong>Staking Rewards:</strong> Stake tokens for yield</li>

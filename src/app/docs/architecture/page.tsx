@@ -370,24 +370,24 @@ class SwarmOrchestrator {
         <h2 className="text-3xl font-light text-white">Integration Points</h2>
         
         <CardGroup cols={2}>
-          <Card title="Solana Blockchain" icon={<Database />}>
+          <Card title="Multi-Chain EVM" icon={<Database />}>
             <div className="space-y-2">
-              <p>Native integration with Solana's high-performance blockchain</p>
+              <p>Native integration across Ethereum, Polygon, Arbitrum, Base, and BSC</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
-                <div>• SPL Token support</div>
-                <div>• Program interaction</div>
-                <div>• Account state management</div>
+                <div>• ERC-20 Token support</div>
+                <div>• Smart contract interaction</div>
+                <div>• Cross-chain state management</div>
               </div>
             </div>
           </Card>
           
           <Card title="DEX Aggregators" icon={<GitBranch />}>
             <div className="space-y-2">
-              <p>Connected to all major Solana DEXs for optimal pricing</p>
+              <p>Connected to all major EVM DEXs for optimal cross-chain pricing</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
-                <div>• Jupiter Protocol</div>
-                <div>• Raydium</div>
-                <div>• Orca</div>
+                <div>• Uniswap V3</div>
+                <div>• Curve Finance</div>
+                <div>• Balancer</div>
               </div>
             </div>
           </Card>

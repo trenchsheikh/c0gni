@@ -114,7 +114,7 @@ pip install c0gni-sdk[ml]`}
 
 class SniperStrategy(Strategy):
     def __init__(self):
-        self.min_liquidity = 10  # SOL
+        self.min_liquidity = 2  # ETH
         self.max_market_cap = 100000  # USD
         
     async def on_new_token(self, token_data):
@@ -136,7 +136,7 @@ class SniperStrategy(Strategy):
 # Create and configure agent
 agent = Agent(
     strategy=SniperStrategy(),
-    budget=5.0,  # 5 SOL
+    budget=1.0,  # 1 ETH
     risk_level='medium'
 )
 
@@ -183,16 +183,16 @@ yarn add @c0gni/sdk`}
 // Initialize client
 const client = new C0gniClient({
   apiKey: process.env.C0GNI_API_KEY,
-  network: 'mainnet-beta'
+  network: 'mainnet'
 });
 
 // Create arbitrage strategy
 class CustomArbitrageStrategy extends ArbitrageStrategy {
   async findOpportunities() {
     const opportunities = await this.scanDEXs([
-      'jupiter',
-      'raydium', 
-      'orca'
+      'uniswap',
+      'sushiswap', 
+      'balancer'
     ]);
     
     // Filter profitable opportunities
@@ -218,7 +218,7 @@ class CustomArbitrageStrategy extends ArbitrageStrategy {
 // Deploy agent
 const agent = new AgentBuilder()
   .setStrategy(new CustomArbitrageStrategy())
-  .setBudget(10) // 10 SOL
+  .setBudget(2) // 2 ETH
   .setRiskLevel('conservative')
   .build();
 
@@ -305,7 +305,7 @@ from c0gni import LocalSimulator
 simulator = LocalSimulator(
     start_date='2024-01-01',
     end_date='2024-01-31',
-    initial_balance=10.0
+    initial_balance=2.0
 )
 
 results = await simulator.run(agent)
@@ -412,12 +412,12 @@ class MLSniperStrategy(Strategy):
 
 // Create specialized agents
 const scout = new ScoutAgent({
-  markets: ['jupiter', 'raydium'],
+  markets: ['uniswap', 'sushiswap'],
   scanInterval: 100 // ms
 });
 
 const trader = new TraderAgent({
-  budget: 5.0,
+  budget: 1.0,
   riskLevel: 'medium'
 });
 

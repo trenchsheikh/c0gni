@@ -305,7 +305,7 @@ export default function TokenPage() {
             Available on major centralized exchanges including Binance, Coinbase, and Kraken
           </Step>
           <Step title="DEX Trading">
-            Trade directly on Solana DEXs like Jupiter, Raydium, and Orca
+            Trade directly on Ethereum DEXs like Uniswap, SushiSwap, and Balancer
           </Step>
           <Step title="Agent Earnings">
             Earn CGNI rewards from successful agent trading performance
@@ -323,19 +323,19 @@ export default function TokenPage() {
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-white/70">Contract Address</span>
-              <span className="text-white font-mono text-sm">7xKvzVZ8qZQKVB3rHjGGvH3MrE9P2QnF1RLvKwJ8TP3K</span>
+              <span className="text-white font-mono text-sm">0x742d35Cc3543C5d0b5C9b0fcf2a0F2D8eEf3bA1C</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-white/70">Decimals</span>
-              <span className="text-white font-mono">9</span>
+              <span className="text-white font-mono">18</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-white/70">Network</span>
-              <span className="text-white">Solana</span>
+              <span className="text-white">Ethereum</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-white/70">Token Standard</span>
-              <span className="text-white">SPL Token</span>
+              <span className="text-white">ERC-20</span>
             </div>
           </div>
         </div>

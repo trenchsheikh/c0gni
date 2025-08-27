@@ -164,10 +164,10 @@ flowchart TD
 ### On-Chain Deployment
 
 <Steps>
-  <Step title="Keypair Generation">
-    Create dedicated keypair for agent operations with security measures
+  <Step title="Wallet Generation">
+    Create dedicated EVM wallet addresses for agent operations across chains
     
-    ```rust
+    ```typescript
     import { ethers } from 'ethers';
     import { Web3 } from 'web3';
     
@@ -191,7 +191,7 @@ flowchart TD
   <Step title="Memory Account Creation">
     Initialize persistent memory storage for learning and adaptation
     
-    ```rust
+    ```javascript
     const memoryAccount = {
         agentId: agentAddress,
         owner: userAddress,

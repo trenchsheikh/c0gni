@@ -164,8 +164,8 @@ async def main():
     agent = Agent(
         name="My First Agent",
         strategy=strategy,
-        initial_balance=5.0,  # 5 SOL
-        network="devnet"  # Start with testnet
+        initial_balance=1.0,  # 1 ETH
+        network="sepolia"  # Start with testnet
     )
     
     # Start paper trading
@@ -199,8 +199,8 @@ if __name__ == "__main__":
 agent = Agent(
     name="Advanced Trader",
     strategy=my_strategy,
-    initial_balance=10.0,
-    network="mainnet-beta",
+    initial_balance=2.0,
+    network="mainnet",
     risk_management={
         'max_position_size': 0.3,
         'stop_loss': -0.25,
@@ -231,8 +231,8 @@ positions = await agent.get_open_positions()`}
                   <div className="space-y-2">
                     <div>• <strong>name:</strong> Human-readable agent identifier</div>
                     <div>• <strong>strategy:</strong> Trading strategy implementation</div>
-                    <div>• <strong>initial_balance:</strong> Starting capital in SOL</div>
-                    <div>• <strong>network:</strong> Solana network (devnet/mainnet-beta)</div>
+                    <div>• <strong>initial_balance:</strong> Starting capital in ETH</div>
+                    <div>• <strong>network:</strong> Ethereum network (sepolia/mainnet)</div>
                     <div>• <strong>risk_management:</strong> Risk control parameters</div>
                   </div>
                 </Accordion>
@@ -241,7 +241,7 @@ positions = await agent.get_open_positions()`}
                   <div className="space-y-2">
                     <div>• <strong>slippage_tolerance:</strong> Max acceptable slippage</div>
                     <div>• <strong>priority_fee:</strong> Extra fee for faster execution</div>
-                    <div>• <strong>use_jito_bundles:</strong> Enable MEV protection</div>
+                    <div>• <strong>use_flashbots:</strong> Enable MEV protection</div>
                     <div>• <strong>max_retries:</strong> Transaction retry attempts</div>
                   </div>
                 </Accordion>
@@ -345,12 +345,12 @@ import pandas as pd
 data_provider = MarketDataProvider()
 
 # Get real-time data
-current_price = await data_provider.get_current_price("SOL/USDC")
-orderbook = await data_provider.get_orderbook("SOL/USDC", depth=10)
+current_price = await data_provider.get_current_price("ETH/USDC")
+orderbook = await data_provider.get_orderbook("ETH/USDC", depth=10)
 
 # Historical data for backtesting
 historical = await data_provider.get_historical_data(
-    symbol="SOL/USDC",
+    symbol="ETH/USDC",
     interval="1m",
     start_date="2024-01-01",
     end_date="2024-01-31"
@@ -551,7 +551,7 @@ class TestTechnicalAnalysisStrategy:
         results = await self.tester.backtest(
             start_date="2024-01-01",
             end_date="2024-01-31",
-            initial_balance=10.0
+            initial_balance=2.0
         )
         
         # Performance assertions

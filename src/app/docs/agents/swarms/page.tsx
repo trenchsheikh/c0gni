@@ -145,7 +145,7 @@ const opportunityMessage: SwarmMessage = {
   messageType: MessageType.OPPORTUNITY_DISCOVERY,
   priority: 'high',
   payload: {
-    token: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    token: '0xA0b86a33E6E6C0cf7e72A8D9A0C5D6E6D6B2F2F4',  // USDC on Ethereum
     opportunity_type: 'price_arbitrage',
     confidence: 0.87,
     expected_profit: 0.23,
@@ -344,22 +344,22 @@ const opportunityMessage: SwarmMessage = {
       {
         "type": "scout",
         "specialization": "new_token_detection",
-        "allocation": "0.5 SOL"
+        "allocation": "0.1 ETH"
       },
       {
         "type": "analyzer", 
         "specialization": "risk_assessment",
-        "allocation": "1.0 SOL"
+        "allocation": "0.2 ETH"
       },
       {
         "type": "trader",
         "specialization": "execution",
-        "allocation": "8.0 SOL"
+        "allocation": "1.5 ETH"
       },
       {
         "type": "hedger",
         "specialization": "position_protection",
-        "allocation": "0.5 SOL"
+        "allocation": "0.1 ETH"
       }
     ],
     "communication": {

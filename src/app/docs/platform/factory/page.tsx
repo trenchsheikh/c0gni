@@ -110,7 +110,7 @@ export default function AgentFactoryPage() {
             Set budget, risk level, and strategy-specific settings through the intuitive interface
           </Step>
           <Step title="Fund Agent Wallet">
-            Transfer SOL to your agent's dedicated wallet for autonomous trading
+            Stake CGNI tokens to power your agent and begin autonomous trading
           </Step>
           <Step title="Deploy & Activate">
             Deploy your agent to the network and begin autonomous trading immediately
@@ -131,18 +131,18 @@ export default function AgentFactoryPage() {
               <AccordionGroup>
                 <Accordion title="Budget Allocation" icon={<DollarSign />}>
                   <div className="space-y-3">
-                    <p>Set the total amount of SOL your agent can use for trading:</p>
+                    <p>Set the amount of CGNI tokens to stake for your agent:</p>
                     <ul className="space-y-1 text-white/70">
-                      <li>• <strong>Minimum:</strong> 0.5 SOL (recommended for testing)</li>
-                      <li>• <strong>Optimal:</strong> 2-10 SOL (balanced risk/reward)</li>
-                      <li>• <strong>Advanced:</strong> 10+ SOL (experienced traders)</li>
+                      <li>• <strong>Minimum:</strong> 1,000 CGNI (recommended for testing)</li>
+                      <li>• <strong>Optimal:</strong> 5,000-25,000 CGNI (balanced performance)</li>
+                      <li>• <strong>Advanced:</strong> 25,000+ CGNI (experienced traders)</li>
                     </ul>
                     <CodeBlock language="json">
 {`{
   "budget": {
-    "totalAmount": "5.0 SOL",
+    "stakedCGNI": "10,000 CGNI",
     "maxPositionSize": "20%",
-    "reserveBuffer": "0.5 SOL"
+    "tradingBalance": "1.0 ETH"
   }
 }`}
                     </CodeBlock>
@@ -164,9 +164,9 @@ export default function AgentFactoryPage() {
                   <div className="space-y-3">
                     <p>Priority fee settings for transaction speed:</p>
                     <ul className="space-y-1 text-white/70">
-                      <li>• <strong>Standard:</strong> 0.0001 SOL priority fee</li>
-                      <li>• <strong>Fast:</strong> 0.001 SOL priority fee</li>
-                      <li>• <strong>Ultra:</strong> Dynamic priority fees</li>
+                      <li>• <strong>Standard:</strong> Normal gas fees</li>
+                      <li>• <strong>Fast:</strong> 10% gas premium</li>
+                      <li>• <strong>Ultra:</strong> Dynamic gas optimization</li>
                     </ul>
                   </div>
                 </Accordion>
@@ -185,7 +185,7 @@ export default function AgentFactoryPage() {
                   <div className="space-y-2">
                     <p>Protect against front-running and sandwich attacks</p>
                     <div className="text-sm text-white/60 mt-3 space-y-1">
-                      <div>• Jito bundle integration</div>
+                      <div>• Flashbots bundle integration</div>
                       <div>• Private mempool routing</div>
                       <div>• Anti-MEV strategies</div>
                     </div>
@@ -212,7 +212,7 @@ export default function AgentFactoryPage() {
 {`// Custom Sniper Configuration
 const sniperConfig = {
   detectionSpeed: "ultra",
-  minLiquidity: 10, // SOL
+  minLiquidity: 2, // ETH
   maxMarketCap: 100000, // USD
   rugDetection: {
     enabled: true,
@@ -295,7 +295,7 @@ const sniperConfig = {
               <h4 className="text-white font-medium mb-3">Beginner Setup</h4>
               <div className="space-y-2 text-sm">
                 <div>• <strong>Agent:</strong> Arbitrage Engine</div>
-                <div>• <strong>Budget:</strong> 1-2 SOL</div>
+                <div>• <strong>Stake:</strong> 5,000-10,000 CGNI</div>
                 <div>• <strong>Risk:</strong> Conservative</div>
                 <div>• <strong>Duration:</strong> 24 hours trial</div>
               </div>
@@ -312,7 +312,7 @@ const sniperConfig = {
               <h4 className="text-white font-medium mb-3">Advanced Setup</h4>
               <div className="space-y-2 text-sm">
                 <div>• <strong>Agent:</strong> Multi-agent swarm</div>
-                <div>• <strong>Budget:</strong> 10+ SOL</div>
+                <div>• <strong>Stake:</strong> 25,000+ CGNI</div>
                 <div>• <strong>Risk:</strong> Balanced to Aggressive</div>
                 <div>• <strong>Features:</strong> Custom strategies enabled</div>
               </div>

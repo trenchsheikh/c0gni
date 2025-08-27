@@ -315,7 +315,7 @@ export default function AgentPerformancePage() {
             <div className="space-y-2">
               <p>Compare agent performance against market benchmarks</p>
               <div className="text-sm text-white/60 mt-3 space-y-1">
-                <div>• SOL price performance</div>
+                <div>• ETH price performance</div>
                 <div>• DeFi index comparison</div>
                 <div>• Peer agent analysis</div>
                 <div>• Risk-adjusted comparisons</div>
