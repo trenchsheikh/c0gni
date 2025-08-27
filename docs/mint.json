@@ -95,10 +95,7 @@
     {
       "group": "Technical Integration",
       "pages": [
-        "technical/solana-integration",
-        "technical/jito-integration",
-        "technical/on-chain-memory",
-        "technical/mev-protection"
+        "technical/ethereum-multichain"
       ]
     },
     {

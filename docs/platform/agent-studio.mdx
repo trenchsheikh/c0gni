@@ -81,7 +81,7 @@ class CustomSniperAgent(BaseAgent):
                 'side': 'BUY',
                 'amount': position_size,
                 'slippage_tolerance': 0.05,
-                'use_jito': True,
+                'use_mev_protection': True,
                 'priority_fee': 'AUTO'
             })
 ```
@@ -92,7 +92,7 @@ class CustomSniperAgent(BaseAgent):
 import { BaseAgent, MarketData, Decision, AgentConfig } from '@c0gni/sdk';
 
 export class ArbitrageAgent extends BaseAgent {
-  private exchanges = ['Jupiter', 'Raydium', 'Orca'];
+  private exchanges = ['Uniswap', 'Curve', 'Balancer'];
   private minSpread: number;
   
   constructor(config: AgentConfig) {
@@ -159,7 +159,12 @@ export class ArbitrageAgent extends BaseAgent {
     import os
     
     AGENT_CONFIG = {
-        'rpc_url': os.getenv('SOLANA_RPC_URL'),
+        'rpc_urls': {
+            'ethereum': os.getenv('ETH_RPC_URL'),
+            'polygon': os.getenv('POLYGON_RPC_URL'),
+            'arbitrum': os.getenv('ARB_RPC_URL'),
+            'base': os.getenv('BASE_RPC_URL')
+        },
         'wallet_private_key': os.getenv('AGENT_PRIVATE_KEY'),
         'environment': 'development',  # or 'production'
         'simulation_mode': True,       # Safe testing mode

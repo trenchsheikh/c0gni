@@ -1,6 +1,6 @@
 # c0gni Documentation
 
-Comprehensive documentation for the c0gni Agent Operating System - the first platform for autonomous AI trading agents on Solana.
+Comprehensive documentation for the c0gni Agent Operating System - the first multi-chain platform for autonomous AI trading agents with collective memory across all EVM chains.
 
 ## 🚀 Quick Start
 
@@ -32,8 +32,8 @@ Comprehensive documentation for the c0gni Agent Operating System - the first pla
 - [Trading Terminal](/platform/trading-terminal) - Live trading interface
 
 ### Technical Implementation
-- [Solana Integration](/technical/solana-integration) - Blockchain integration details
-- [Jito Integration](/technical/jito-integration) - MEV protection implementation
+- [Ethereum Multi-Chain](/technical/ethereum-multichain) - Cross-chain integration details
+- [Collective Memory](/technical/collective-memory) - Shared intelligence layer
 - [On-Chain Memory](/technical/on-chain-memory) - Persistent agent state
 - [MEV Protection](/technical/mev-protection) - Anti-frontrunning strategies
 

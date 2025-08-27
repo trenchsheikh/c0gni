@@ -49,7 +49,7 @@ The c0gni dashboard is your command center for monitoring and controlling autono
     
     ```typescript
     interface PortfolioMetrics {
-      totalValue: number;        // Current portfolio value in SOL
+      totalValue: number;        // Current portfolio value in USD
       dailyPnL: number;         // Today's profit/loss
       totalReturn: number;      // All-time return percentage
       activeAgents: number;     // Currently running agents
@@ -173,7 +173,7 @@ Each agent card displays:
       "timestamp": "2024-12-24T10:30:15Z",
       "action": "BUY",
       "token": "$BONK",
-      "amount": "1.2 SOL",
+      "amount": "$1,200",
       "confidence": 0.87,
       "reasoning": "Strong social sentiment + technical breakout"
     }
@@ -212,9 +212,9 @@ Click any agent to open detailed monitoring:
     
     | Time | Token | Action | Amount | Price | PnL | Status |
     |------|-------|--------|--------|-------|-----|--------|
-    | 10:30 | $BONK | BUY | 1.2 SOL | 0.0000234 | +0.3 SOL | ✅ |
-    | 10:15 | $PEPE | SELL | 0.8 SOL | 0.0000891 | +0.15 SOL | ✅ |
-    | 09:45 | $WIF | BUY | 2.1 SOL | 2.34 | -0.1 SOL | ❌ |
+    | 10:30 | $PEPE | BUY | $1,200 | 0.0000234 | +$300 | ✅ |
+    | 10:15 | $SHIB | SELL | $800 | 0.0000891 | +$150 | ✅ |
+    | 09:45 | $DOGE | BUY | $2,100 | 0.234 | -$100 | ❌ |
     
     **Trade Details Include:**
     - Entry and exit prices
@@ -549,7 +549,7 @@ Click any agent to open detailed monitoring:
     - Custom RPC endpoints
     - Transaction timeout values
     - Gas optimization preferences
-    - Jito bundle settings
+    - MEV protection settings
   </Tab>
 </Tabs>
 

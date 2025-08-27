@@ -48,7 +48,7 @@ The Agent Factory enables anyone to deploy sophisticated trading agents without 
       "strategy": {
         "detection_speed": "<5 seconds",
         "safety_analysis": "Advanced contract scanning",
-        "execution_method": "Jito bundles with MEV protection",
+        "execution_method": "MEV protection via Flashbots on Ethereum, fast L2 execution",
         "position_sizing": "Dynamic based on liquidity"
       },
       "performance": {
@@ -58,8 +58,8 @@ The Agent Factory enables anyone to deploy sophisticated trading agents without 
         "trades_per_day": "8-15"
       },
       "risk_level": "Medium-High",
-      "minimum_capital": "1 SOL",
-      "recommended_capital": "5-10 SOL"
+      "minimum_capital": "1,000 COGNI tokens",
+      "recommended_capital": "5,000-10,000 COGNI tokens"
     }
     ```
     
@@ -110,18 +110,18 @@ The Agent Factory enables anyone to deploy sophisticated trading agents without 
     interface ArbitrageBlueprint {
       name: "Cross-DEX Arbitrage V2";
       
-      exchanges: ["Jupiter", "Raydium", "Orca", "Phoenix"];
+      exchanges: ["Uniswap", "Curve", "Balancer", "1inch"];
       
       detection: {
         min_spread: 0.5%;           // 0.5% minimum profit
-        max_trade_size: 50_SOL;     // Per arbitrage trade
+        max_trade_size: 50_000;     // $50k per arbitrage trade
         execution_timeout: 30_sec;   // Max time to complete
       };
       
       execution: {
         simultaneous_trades: true;   // Buy and sell together
         flash_loans: true;          // Use flash loans when beneficial
-        mev_protection: true;       // Jito bundle execution
+        mev_protection: true;       // Flashbots on Ethereum
         retry_attempts: 3;          // Failed trade retries
       };
       
@@ -140,12 +140,12 @@ The Agent Factory enables anyone to deploy sophisticated trading agents without 
     
     Exploits price inefficiencies across trading pairs:
     
-    - **Route Discovery**: SOL → TOKEN → USDC → SOL
+    - **Route Discovery**: ETH → TOKEN → USDC → ETH across chains
     - **Cycle Optimization**: Find most profitable paths
     - **Atomic Execution**: All trades in single transaction
     - **Risk Management**: Account for fees and slippage
     
-    **Best For**: Large capital amounts (10+ SOL)
+    **Best For**: Large capital amounts ($10,000+)
   </Tab>
 </Tabs>
 
@@ -161,9 +161,9 @@ The Agent Factory enables anyone to deploy sophisticated trading agents without 
     class YieldMaximizerConfig:
         def __init__(self):
             self.target_pools = [
-                'SOL/USDC',     # Stable, high volume
-                'RAY/SOL',      # Native DEX token
-                'JUP/SOL',      # High APY potential
+                'ETH/USDC',     # Stable, high volume
+                'MATIC/USDC',   # Polygon native
+                'ARB/ETH',      # Arbitrum governance
             ]
             
             self.rebalance_triggers = {
@@ -255,7 +255,7 @@ The Agent Factory enables anyone to deploy sophisticated trading agents without 
     ```typescript
     interface BlueprintFilter {
       riskLevel: 'LOW' | 'MEDIUM' | 'HIGH';
-      minCapital: number;           // Minimum SOL required
+      minCapital: number;           // Minimum COGNI stake required
       strategyType: 'SNIPER' | 'ARBITRAGE' | 'LP' | 'TREND';
       successRate: number;          // Minimum success rate
       timeCommitment: 'PASSIVE' | 'ACTIVE';
@@ -278,7 +278,7 @@ The Agent Factory enables anyone to deploy sophisticated trading agents without 
     ```json
     {
       "capital_allocation": {
-        "total_budget": 5.0,          // SOL
+        "total_budget": 5000,         // COGNI tokens
         "max_position_size": 0.2,     // 20% per trade
         "reserve_buffer": 0.1         // 10% emergency reserve
       },
@@ -293,7 +293,7 @@ The Agent Factory enables anyone to deploy sophisticated trading agents without 
       "execution_preferences": {
         "slippage_tolerance": 0.05,   // 5% max slippage
         "priority_fees": "AUTO",      // Dynamic fee optimization
-        "mev_protection": true,       // Use Jito bundles
+        "mev_protection": true,       // Use Flashbots/L2 speed
         "partial_fills": true         // Accept partial execution
       }
     }
@@ -333,9 +333,9 @@ The Agent Factory enables anyone to deploy sophisticated trading agents without 
     
     Final deployment process:
     
-    1. **Generate Agent Wallet**: Create dedicated keypair
-    2. **Deploy Smart Contract**: Deploy agent program on-chain
-    3. **Fund Agent**: Transfer SOL to agent wallet
+    1. **Generate Agent Wallet**: Create EVM addresses for each chain
+    2. **Deploy Smart Contract**: Deploy across selected chains
+    3. **Stake COGNI**: Lock tokens to activate agent
     4. **Activate Monitoring**: Start market surveillance
     5. **Begin Operations**: Agent starts trading automatically
   </Step>
@@ -632,7 +632,7 @@ graph TD
   </Step>
   
   <Step title="Start Small">
-    Deploy your first agent with 1-2 SOL to learn the platform
+    Deploy your first agent with 1,000-2,000 COGNI to learn the platform
   </Step>
   
   <Step title="Monitor & Learn">

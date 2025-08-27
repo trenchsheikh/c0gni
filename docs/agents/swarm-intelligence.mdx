@@ -533,27 +533,34 @@ interface CoordinationRules {
 
 ### Collective Memory
 
-```rust
-#[account]
-pub struct SwarmMemory {
-    pub swarm_id: Pubkey,
-    pub member_agents: Vec<Pubkey>,
-    pub shared_patterns: Vec<Pattern>,
-    pub collective_performance: PerformanceHistory,
-    pub consensus_history: Vec<ConsensusDecision>,
-    pub learned_strategies: Vec<Strategy>,
-    pub coordination_rules: CoordinationRules,
-}
+```solidity
+pragma solidity ^0.8.19;
 
-#[derive(AnchorSerialize, AnchorDeserialize)]
-pub struct Pattern {
-    pub pattern_type: PatternType,
-    pub conditions: Vec<MarketCondition>,
-    pub success_rate: u8,
-    pub confidence_level: u8,
-    pub discovered_by: Pubkey,        // Which agent found it
-    pub validated_by: Vec<Pubkey>,    // Which agents confirmed it
-    pub usage_count: u64,
+contract SwarmMemory {
+    struct SwarmData {
+        bytes32 swarmId;
+        address[] memberAgents;
+        Pattern[] sharedPatterns;
+        PerformanceHistory collectivePerformance;
+        ConsensusDecision[] consensusHistory;
+        Strategy[] learnedStrategies;
+        CoordinationRules coordinationRules;
+    }
+    
+    struct Pattern {
+        PatternType patternType;
+        MarketCondition[] conditions;
+        uint8 successRate;
+        uint8 confidenceLevel;
+        address discoveredBy;        // Which agent found it
+        address[] validatedBy;       // Which agents confirmed it
+        uint256 usageCount;
+        uint256 chainId;             // Chain where pattern works best
+    }
+    
+    // Collective memory advantage - all patterns shared across chains
+    mapping(bytes32 => SwarmData) public swarms;
+    mapping(bytes32 => Pattern) public globalPatterns;
 }
 ```
 

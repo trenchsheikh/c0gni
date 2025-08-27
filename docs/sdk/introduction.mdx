@@ -124,7 +124,7 @@ The c0gni SDK enables developers to build custom autonomous trading agents with 
     if __name__ == "__main__":
         config = {
             'name': 'SMA Agent',
-            'initial_capital': 5.0,  # 5 SOL
+            'initial_capital': 5000,  # 5000 COGNI tokens
             'short_window': 10,
             'long_window': 30,
             'risk_level': 'medium'
@@ -280,7 +280,7 @@ class BaseAgent:
     @dataclass
     class MarketData:
         token: str                    # Token address
-        price: float                  # Current price in SOL
+        price: float                  # Current price in USD
         volume_24h: float            # 24h trading volume
         liquidity: float             # Available liquidity
         price_change_24h: float      # 24h price change %
@@ -618,7 +618,7 @@ class BacktestRunner:
         
         # Load historical market data
         market_data = await self.data_provider.load_data(
-            tokens=config.get('tokens', ['SOL/USDC']),
+            tokens=config.get('tokens', ['ETH/USDC']),
             start_date=start_date,
             end_date=end_date,
             interval='5m'
