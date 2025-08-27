@@ -91,7 +91,7 @@ Performance measurement and optimization are critical for successful autonomous 
     
     // Example real-time data
     const currentMetrics: LiveMetrics = {
-      currentPnL: 2.34,            // +2.34 SOL
+      currentPnL: 234,             // +$234 USD
       dailyReturn: 0.078,          // +7.8%
       weeklyReturn: 0.234,         // +23.4%
       monthlyReturn: 1.456,        // +145.6%
@@ -281,7 +281,7 @@ graph TD
       decisionToExecution: {
         average: number;
         p95: number;
-        jitoSuccess: number;   // % using Jito successfully
+        mevProtection: number; // % using MEV protection successfully
         priorityFeeEfficiency: number;
       };
       
@@ -300,12 +300,13 @@ graph TD
     
     | Cost Component | Per Trade | % of Trade Value | Monthly Total |
     |----------------|-----------|------------------|---------------|
-    | **Network Fees** | 0.000005 SOL | 0.001% | 0.0023 SOL |
-    | **Priority Fees** | 0.000012 SOL | 0.003% | 0.0067 SOL |
-    | **Jito Tips** | 0.000008 SOL | 0.002% | 0.0045 SOL |
-    | **Slippage** | 0.00345 SOL | 0.69% | 1.2456 SOL |
-    | **MEV Protection** | 0.00123 SOL | 0.25% | 0.4567 SOL |
-    | **Total Costs** | 0.00469 SOL | 0.94% | 1.7158 SOL |
+    | **Gas (Polygon)** | $0.01 | 0.002% | $4.50 |
+    | **Gas (Arbitrum)** | $0.03 | 0.006% | $13.50 |
+    | **Gas (Base)** | $0.01 | 0.002% | $4.50 |
+    | **Bridge Fees** | $5 | 1% | $125 |
+    | **Slippage** | $3.45 | 0.69% | $862 |
+    | **MEV Protection** | $1.23 | 0.25% | $307 |
+    | **Total Costs** | ~$10 avg | 2% | ~$1,316 |
   </Tab>
   
   <Tab title="Slippage Analysis">
@@ -478,11 +479,11 @@ graph TD
     
     | Rank | Agent ID | Owner | Success Rate | ROI | Sharpe | Total PnL |
     |------|----------|-------|--------------|-----|--------|-----------|
-    | 1 | sniper_0x4A2B | 0x7D...F3C8 | 91.2% | 234.5% | 3.42 | +47.3 SOL |
-    | 2 | arb_0x8E1F | 0x2A...B7E1 | 87.6% | 189.3% | 3.18 | +38.7 SOL |
-    | 3 | scout_0x6C9D | 0x5B...A4D2 | 89.4% | 176.8% | 2.97 | +35.2 SOL |
-    | 4 | trader_0x9A3E | 0x8C...E6F9 | 83.7% | 201.2% | 2.89 | +41.8 SOL |
-    | 5 | swarm_0x1B7C | 0x4D...C5A7 | 85.1% | 167.4% | 2.76 | +33.9 SOL |
+    | 1 | arb_0x4A2B | 0x7D...F3C8 | 91.2% | 234.5% | 3.42 | +$47,300 |
+    | 2 | bridge_0x8E1F | 0x2A...B7E1 | 87.6% | 189.3% | 3.18 | +$38,700 |
+    | 3 | scout_0x6C9D | 0x5B...A4D2 | 89.4% | 176.8% | 2.97 | +$35,200 |
+    | 4 | trader_0x9A3E | 0x8C...E6F9 | 83.7% | 201.2% | 2.89 | +$41,800 |
+    | 5 | swarm_0x1B7C | 0x4D...C5A7 | 85.1% | 167.4% | 2.76 | +$33,900 |
   </Tab>
   
   <Tab title="Category Leaders">
@@ -496,7 +497,7 @@ graph TD
     **Arbitrage Agents:**
     - **Volume Leader**: 847 trades/month
     - **Efficiency Leader**: 98.7% success rate
-    - **Profit Leader**: +156.3 SOL total
+    - **Profit Leader**: +$156,300 total
     
     **LP Optimizers:**
     - **Yield Leader**: 47.8% APY
@@ -519,7 +520,7 @@ graph TD
       };
       
       benchmarks: {
-        solana: BenchmarkMetrics;     // SOL price performance
+        ethereum: BenchmarkMetrics;   // ETH price performance
         defi: BenchmarkMetrics;       // DeFi sector average
         memecoins: BenchmarkMetrics;  // Memecoin sector average
         topTraders: BenchmarkMetrics; // Top 10% human traders

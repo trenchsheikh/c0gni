@@ -5,17 +5,17 @@ description: 'Understanding autonomous agents in the c0gni ecosystem'
 
 # Agent System Overview
 
-c0gni agents are autonomous entities that operate with persistent memory, machine-speed execution, and coordinated intelligence. Unlike traditional bots, agents learn, adapt, and evolve their strategies based on market conditions and performance feedback.
+c0gni agents are autonomous entities that operate with collective memory, cross-chain execution, and coordinated intelligence. Unlike traditional bots, agents learn from shared blockchain data, adapt across multiple EVM chains, and evolve their strategies through collective knowledge accumulated by the entire agent network.
 
 ## What Makes an Agent Autonomous?
 
-Traditional bots are reactive scripts that execute predetermined logic. c0gni agents are fundamentally different:
+Traditional bots are reactive scripts that execute predetermined logic. c0gni agents leverage collective intelligence across EVM chains:
 
 <CardGroup cols={2}>
-  <Card title="Persistent Memory" icon="brain">
-    **On-Chain Learning**
+  <Card title="Collective Memory" icon="brain">
+    **Shared Knowledge Base**
     
-    Every trade, every decision, every outcome is permanently stored on Solana. Agents build experience that influences future decisions.
+    Every trade, every decision, every outcome contributes to our collective memory layer. Agents learn from the entire network's experience across all EVM chains.
   </Card>
   
   <Card title="Adaptive Behavior" icon="arrows-spin">
@@ -25,15 +25,15 @@ Traditional bots are reactive scripts that execute predetermined logic. c0gni ag
   </Card>
   
   <Card title="Swarm Coordination" icon="network-wired">
-    **Collective Intelligence**
+    **Network Intelligence**
     
-    Multiple agents work together, sharing information and coordinating actions for compound performance.
+    Multiple agents work together across chains, sharing patterns through collective memory for exponentially better performance.
   </Card>
   
-  <Card title="Real-Time Execution" icon="bolt">
-    **Sub-400ms Response**
+  <Card title="Cross-Chain Execution" icon="bolt">
+    **Gas-Optimized Trading**
     
-    From opportunity detection to on-chain execution in less than human reaction time.
+    Execute on low-gas L2s (<$0.01) while building wealth on Ethereum's DeFi ecosystem.
   </Card>
 </CardGroup>
 
@@ -72,16 +72,17 @@ graph TD
     
     1. **Select Blueprint**: Choose from pre-configured strategies
     2. **Set Parameters**: Risk tolerance, budget, targets
-    3. **Fund Wallet**: Transfer SOL to agent's dedicated wallet
-    4. **Deploy**: Create agent program on Solana
+    3. **Stake COGNI**: Lock COGNI tokens to activate agent
+    4. **Deploy**: Launch agent across selected EVM chains
     5. **Activate**: Begin market monitoring
     
     ```typescript
     const agent = await AgentFactory.deploy({
-      blueprint: 'sniper_v2',
-      budget: 5.0, // SOL
+      blueprint: 'cross_chain_arbitrage',
+      stake: 1000, // COGNI tokens
+      chains: ['polygon', 'arbitrum', 'base'],
       riskLevel: 'medium',
-      autoExit: true
+      bridgeToEthereum: true
     })
     ```
   </Tab>
@@ -103,7 +104,7 @@ graph TD
         
         def execute_trade(self, token, amount):
             # Custom execution strategy
-            return self.submit_jito_bundle(token, amount)
+            return self.execute_with_mev_protection(token, amount)
     ```
   </Tab>
 </Tabs>
@@ -141,7 +142,7 @@ graph TD
   <Accordion title="Execution Strategy">
     Trade execution optimized for speed and MEV protection:
     
-    - **Jito Bundle Preparation**: Private mempool submission
+    - **MEV Protection**: Flashbots for Ethereum, fast execution on L2s
     - **Priority Fee Optimization**: Dynamic fee calculation
     - **Slippage Protection**: Real-time price impact analysis
     - **Retry Logic**: Intelligent resubmission on failure
@@ -235,36 +236,41 @@ graph TD
 
 ## Memory & Learning System
 
-### On-Chain Memory Structure
+### Collective Memory Structure
 
-```rust
-#[account]
-pub struct AgentMemory {
-    // Identity and ownership
-    pub agent_id: Pubkey,
-    pub owner: Pubkey,
-    pub agent_type: AgentType,
-    
-    // Trade history for learning
-    pub trade_history: Vec<TradeRecord>,
-    pub success_patterns: Vec<SuccessPattern>,
-    pub failure_patterns: Vec<FailurePattern>,
-    
-    // Performance tracking
-    pub total_trades: u64,
-    pub profitable_trades: u64,
-    pub total_pnl: i64, // in lamports
-    pub best_trade: i64,
-    pub worst_trade: i64,
-    
-    // Learning parameters
-    pub risk_tolerance: u8,
-    pub confidence_threshold: u8,
-    pub position_size_multiplier: u8,
-    
-    // Metadata
-    pub last_updated: i64,
-    pub version: u8,
+```solidity
+pragma solidity ^0.8.19;
+
+contract CollectiveMemory {
+    struct AgentMemory {
+        // Identity and ownership
+        bytes32 agentId;
+        address owner;
+        AgentType agentType;
+        uint256[] activeChains;
+        
+        // Shared learning from collective
+        TradeRecord[] tradeHistory;
+        Pattern[] successPatterns;
+        Pattern[] failurePatterns;
+        uint256 collectiveContribution;
+        
+        // Cross-chain performance
+        uint256 totalTrades;
+        uint256 profitableTrades;
+        int256 totalPnlUSD;
+        int256 bestTrade;
+        int256 worstTrade;
+        
+        // Dynamic parameters from collective insights
+        uint8 riskTolerance;
+        uint8 confidenceThreshold;
+        uint8 positionMultiplier;
+        
+        // Network effect bonus
+        uint256 networkScore;
+        uint256 lastUpdated;
+    }
 }
 ```
 
@@ -305,23 +311,34 @@ pub struct AgentMemory {
     - **Exit Strategy**: Stop-loss and take-profit levels auto-tuned
   </Accordion>
   
-  <Accordion title="Knowledge Sharing">
-    Agents can learn from swarm collective memory:
+  <Accordion title="Collective Knowledge Network">
+    The revolutionary advantage - all agents contribute to and learn from shared blockchain intelligence:
     
     ```mermaid
     graph TD
-        A[Agent A Experience] --> D[Swarm Memory Pool]
-        B[Agent B Experience] --> D
-        C[Agent C Experience] --> D
+        A[Agent A (Polygon)] --> D[Collective Memory Layer]
+        B[Agent B (Arbitrum)] --> D
+        C[Agent C (Base)] --> D
+        E[Agent D (Ethereum)] --> D
         
-        D --> E[Pattern Aggregation]
-        E --> F[Consensus Formation]
-        F --> G[Knowledge Distribution]
+        D --> F[Cross-Chain Pattern Recognition]
+        F --> G[Network Intelligence Synthesis]
+        G --> H[Validated Strategies]
         
-        G --> A
-        G --> B
-        G --> C
+        H --> A
+        H --> B
+        H --> C
+        H --> E
+        
+        style D fill:#e1f5fe
+        style G fill:#c8e6c9
     ```
+    
+    **Network Effects:**
+    - Each new agent makes the entire network smarter
+    - Patterns discovered on one chain benefit all chains
+    - Collective validation prevents individual agent errors
+    - Exponential learning acceleration with network growth
   </Accordion>
 </AccordionGroup>
 
