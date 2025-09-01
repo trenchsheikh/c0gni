@@ -7,7 +7,9 @@ import { Menu, X, ArrowRight } from "lucide-react";
 const sections = [
   { id: "hero", label: "Home" },
   { id: "research", label: "Research", isLink: true, href: "/research" },
-  { id: "docs", label: "Docs", isLink: true, href: "/docs" }
+  { id: "docs", label: "Docs", isLink: true, href: "/docs" },
+  { id: "chat", label: "Chat", isLink: true, href: "/chat" },
+  { id: "memories", label: "Memory Map", isLink: true, href: "/memories" }
 ];
 
 export default function ScrollNavigation() {

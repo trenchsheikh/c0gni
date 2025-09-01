@@ -1,0 +1,322 @@
+// Production-ready Prisma schema with pgvector support
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  extensions = [pgvector(map: "vector", schema: "public")]
+}
+
+// ============================================================================
+// USER MANAGEMENT
+// ============================================================================
+
+model User {
+  id        String   @id @default(cuid())
+  email     String?  @unique
+  username  String?  @unique
+  publicKey String?  @unique // For crypto wallet authentication
+  
+  // Profile information
+  avatar    String?
+  bio       String?
+  timezone  String?
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  chats           Chat[]
+  messages        Message[]
+  memories        UserMemory[]
+  embeddings      UserEmbedding[]
+  contexts        UserContext[]
+  subscriptions   Subscription[]
+  apiKeys         ApiKey[]
+
+  @@map("users")
+}
+
+// ============================================================================
+// CHAT SYSTEM
+// ============================================================================
+
+model Chat {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  description String?
+  
+  // Chat settings
+  model       String?  @default("openai/gpt-4o")
+  temperature Float?   @default(0.7)
+  maxTokens   Int?     @default(4000)
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages    Message[]
+
+  @@map("chats")
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  chatId    String
+  userId    String
+  
+  // Message content
+  role      String   // "user" | "assistant" | "system" | "tool"
+  content   String
+  
+  // Message metadata
+  metadata  Json?    // Tool calls, thinking process, etc.
+  tokens    Int?     // Token count for this message
+  model     String?  // Model used to generate this message
+  
+  // Processing information
+  toolCalls Json?    // Tools used in this message
+  thinking  String?  // AI thinking process (stored separately)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+// ============================================================================
+// MEMORY SYSTEM - Blockchain-focused, non-personal memories
+// ============================================================================
+
+model UserMemory {
+  id          String   @id @default(cuid())
+  userId      String
+  
+  // Memory classification
+  type        String   // "preference" | "fact" | "context" | "skill" | "blockchain_knowledge"
+  category    String   // "trading" | "defi" | "technical_analysis" | "market_sentiment" | etc.
+  
+  // Memory content
+  key         String   // Descriptive key (e.g., "preferred_trading_strategy")
+  value       String   // Actual value or description
+  confidence  Float    @default(1.0) // Confidence level 0.0 - 1.0
+  
+  // Source and verification
+  source      String   @default("conversation") // "conversation" | "explicit" | "inferred" | "blockchain_data"
+  messageId   String?  // Reference to source message if applicable
+  verified    Boolean  @default(false) // Whether memory has been verified by user
+  
+  // Blockchain-specific fields
+  chainId     Int?     // Blockchain network ID if applicable
+  tokenAddress String? // Token contract address if memory is token-specific
+  protocol    String?  // DeFi protocol if applicable (e.g., "uniswap", "compound")
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  lastUsed    DateTime @default(now())
+  
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, key])
+  @@index([userId, type])
+  @@index([userId, category])
+  @@index([tokenAddress])
+  @@index([protocol])
+  @@map("user_memories")
+}
+
+// User context and communication patterns
+model UserContext {
+  id                     String   @id @default(cuid())
+  userId                 String
+  
+  // Communication preferences
+  communicationStyle     String?  // "formal" | "casual" | "technical" | "friendly"
+  preferredResponseStyle String?  // "detailed" | "concise" | "examples" | "step-by-step"
+  
+  // Interest areas (blockchain-focused)
+  topicsOfInterest       String[] @default([])
+  expertiseAreas         String[] @default([])
+  tradingExperience      String?  // "beginner" | "intermediate" | "advanced" | "professional"
+  
+  // Technical preferences
+  preferredChains        String[] @default([]) // ["ethereum", "solana", "polygon"]
+  riskTolerance         String?  // "conservative" | "moderate" | "aggressive"
+  
+  // Analysis patterns
+  conversationPattern    Json?    // Detailed conversation analysis
+  timezone              String?
+  
+  // Timestamps
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  // Relations
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId])
+  @@map("user_contexts")
+}
+
+// ============================================================================
+// VECTOR EMBEDDINGS FOR SEMANTIC SEARCH
+// ============================================================================
+
+model UserEmbedding {
+  id               String                     @id @default(cuid())
+  userId           String
+  
+  // Content and embedding
+  content          String                     // Original text content
+  embedding        Float[]                    // Embedding array for fallback
+  vectorEmbedding  Unsupported("vector")?     // pgvector embedding for similarity search
+  
+  // Classification
+  type             String                     // "memory" | "message" | "blockchain_data" | "market_analysis"
+  category         String?                    // Additional categorization
+  
+  // Blockchain-specific metadata
+  metadata         Json?                      // Additional structured data
+  chainId          Int?                       // Blockchain network ID
+  blockNumber      BigInt?                   // Block number for blockchain data
+  transactionHash  String?                   // Transaction hash if applicable
+  tokenAddress     String?                   // Token contract address
+  
+  // Source tracking
+  sourceId         String?                   // ID of source (message, memory, etc.)
+  sourceType       String?                   // Type of source
+  
+  // Quality and relevance
+  confidence       Float    @default(1.0)    // Confidence in embedding quality
+  relevanceScore   Float?                    // User feedback on relevance
+  
+  // Timestamps
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  lastUsed         DateTime @default(now())
+  
+  // Relations
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, type])
+  @@index([userId, category])
+  @@index([chainId])
+  @@index([tokenAddress])
+  @@map("user_embeddings")
+}
+
+// ============================================================================
+// SUBSCRIPTION AND BILLING
+// ============================================================================
+
+model Subscription {
+  id           String   @id @default(cuid())
+  userId       String
+  
+  // Subscription details
+  planType     String   // "free" | "pro" | "enterprise"
+  status       String   // "active" | "canceled" | "past_due" | "unpaid"
+  
+  // Billing
+  stripeId     String?  @unique
+  priceId      String?
+  
+  // Usage limits
+  monthlyMessageLimit Int? @default(100)
+  currentMonthUsage   Int  @default(0)
+  
+  // Timestamps
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  periodStart  DateTime @default(now())
+  periodEnd    DateTime?
+  canceledAt   DateTime?
+  
+  // Relations
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId])
+  @@map("subscriptions")
+}
+
+// ============================================================================
+// API KEYS AND AUTHENTICATION
+// ============================================================================
+
+model ApiKey {
+  id          String   @id @default(cuid())
+  userId      String
+  
+  // Key details
+  name        String
+  keyHash     String   @unique // Hashed version of the actual key
+  keyPreview  String   // Last 4 characters for display
+  
+  // Permissions and limits
+  permissions String[] @default([]) // ["chat", "memory", "tools"]
+  rateLimit   Int?     @default(1000) // Requests per hour
+  
+  // Usage tracking
+  lastUsed    DateTime?
+  usageCount  Int      @default(0)
+  
+  // Status
+  active      Boolean  @default(true)
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  expiresAt   DateTime?
+  
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("api_keys")
+}
+
+// ============================================================================
+// BLOCKCHAIN DATA CACHE (for correlation analysis)
+// ============================================================================
+
+model BlockchainDataCache {
+  id            String   @id @default(cuid())
+  
+  // Data identification
+  dataType      String   // "token_price" | "pool_info" | "transaction" | "market_data"
+  identifier    String   // Token address, pool ID, etc.
+  chainId       Int
+  
+  // Data content
+  data          Json
+  hash          String   @unique // Hash of the data for deduplication
+  
+  // Metadata
+  source        String   // "gecko_terminal" | "pump_fun" | "sonar_pro"
+  confidence    Float    @default(1.0)
+  
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  expiresAt     DateTime? // When this cache entry expires
+  lastAccessed  DateTime @default(now())
+  
+  @@unique([dataType, identifier, chainId])
+  @@index([chainId])
+  @@index([dataType])
+  @@index([expiresAt])
+  @@map("blockchain_data_cache")
+}
