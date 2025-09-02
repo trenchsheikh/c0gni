@@ -1,177 +1,158 @@
-# c0gni - Multi-Chain AI Trading Platform
+# c0gni - Collective Crypto Intelligence Network
 
-## Trade Fast on Any Chain. Build Wealth on Ethereum.
+## Where Every Conversation Makes Everyone Smarter
 
-c0gni is an Ethereum-based AI platform that executes trades across low-gas EVM chains (Polygon, Arbitrum, Base) and automatically rotates profits into stable DeFi yields on Ethereum mainnet.
+c0gni is a revolutionary collective intelligence platform where thousands of crypto conversations create a shared knowledge base that benefits all users. Access instant insights, discover validated patterns, and explore the crypto ecosystem through our visual knowledge graph.
 
-## Key Features
+## Core Innovation
 
-### 🚀 Multi-Chain Execution
-- **Ultra-Low Fees**: Execute on Polygon, Arbitrum, Base for <$0.01 per transaction
-- **Cross-Chain Arbitrage**: Find price differences across all EVM chains
-- **Smart Routing**: AI selects optimal chain for each trade
-- **Batch Processing**: Execute 100s of trades for the cost of 1 Ethereum transaction
+### 🧠 Collective Intelligence Network
+- **Shared Knowledge Base**: Every conversation contributes to collective wisdom
+- **Sub-30ms Responses**: Lightning-fast access to accumulated insights
+- **No Personal Data**: Pure blockchain facts - tokens, prices, protocols, strategies
+- **Network Effects**: Each new user makes everyone smarter
 
-### 💰 Ethereum Wealth Building
-- **Automatic Profit Rotation**: Weekly bridging to Ethereum mainnet
-- **Blue-Chip DeFi Integration**: Deploy to Aave, Compound, Curve, Convex
-- **Compound Yields**: 8-20% APY on stablecoins
-- **Risk Management**: Diversified across multiple protocols
+### 🌐 Visual Knowledge Exploration  
+- **Interactive Memory Graph**: See how tokens, protocols, and markets connect
+- **Pattern Recognition**: Discover trends from thousands of conversations
+- **Real-Time Growth**: Watch knowledge expand as users interact
+- **Relationship Mapping**: Understand crypto ecosystem connections
 
-### 🤖 AI Agent Technology
-- **Autonomous Trading**: Agents operate 24/7 without human intervention
-- **Cross-Chain Coordination**: Agents communicate across all chains
-- **Machine Learning**: Improve strategies based on performance
-- **MEV Protection**: Flashbots integration on Ethereum
+### 🤖 Agent-Powered Analysis
+- **Knowledge Extraction**: Automatically capture valuable crypto insights
+- **Pattern Analysis**: Identify trends across all user interactions  
+- **Memory Synthesis**: Combine individual discoveries into collective wisdom
+- **Scanner Integration**: Real-time data feeds enriching the knowledge base
 
-## Supported Chains
+## What Users Get
 
-### Execution Chains (Fast & Cheap)
-- **Polygon**: <$0.01 fees, 2 sec blocks
-- **Arbitrum**: $0.01-0.05 fees, 250ms blocks
-- **Base**: <$0.01 fees, Coinbase L2
-- **BSC**: $0.05-0.15 fees, high volume
+### 🔍 Instant Crypto Intelligence
+- Ask about any token, get immediate insights from collective knowledge
+- Access trading patterns discovered by the entire network
+- See risk assessments validated by thousands of conversations
+- Get DeFi protocol comparisons from real user experiences
 
-### Settlement Chain (Wealth Building)
-- **Ethereum**: Aave, Compound, Curve, Convex, Yearn
+### 📊 Memory Graph Visualization
+- Interactive map showing connections between tokens and protocols
+- Visual exploration of DeFi yields and trading strategies
+- Watch knowledge clusters form and evolve
+- Discover hidden relationships in the crypto ecosystem
 
-## Getting Started
+### 🚀 Getting Started
 
-### Prerequisites
-- Node.js 18+
-- MetaMask or any EVM wallet
-- 0.1 ETH worth of tokens for initial funding
-
-### Installation
+1. **Start Chatting**: Ask any crypto question - no signup required
+2. **Explore the Graph**: Visualize knowledge connections and patterns  
+3. **Contribute Wisdom**: Your insights help everyone learn faster
+4. **Access Premium**: Stake $COGNI for enhanced features and agent swarms
 
 ```bash
-# Clone the repository
+# For developers interested in the codebase
 git clone https://github.com/cognilabs/c0gni.git
 cd c0gni
-
-# Install dependencies
 npm install
-
-# Set up environment variables
-cp .env.example .env
-# Add your RPC endpoints and API keys
-
-# Run development server
 npm run dev
 ```
 
-### Deploy Your First Agent
-
-1. Connect MetaMask to [app.cognilabs.com](https://app.cognilabs.com)
-2. Choose agent type (Cross-Chain Arbitrage, DeFi Farmer, etc.)
-3. Select execution chains
-4. Fund with ETH/MATIC/ARB
-5. Monitor performance across all chains
-
-## Architecture
+## How It Works
 
 ```
-┌─────────────────────────────────────────┐
-│           Ethereum Mainnet              │
-│  (Settlement, DeFi, Governance)         │
-└────────────────┬────────────────────────┘
-                 │
-        ┌────────┴────────┐
-        │  Bridge Layer   │
-        │ (LayerZero, Hop)│
-        └────────┬────────┘
-                 │
-    ┌────────────┼────────────┐
-    │            │            │
-┌───▼───┐  ┌────▼────┐  ┌────▼────┐
-│Polygon│  │Arbitrum │  │  Base   │
-│Trading│  │Trading  │  │Trading  │
-└───────┘  └─────────┘  └─────────┘
+User Question → Chat Agent → Knowledge Search (<30ms) → 
+Memory Extraction → Shared Knowledge Base → Benefits All Users
 ```
 
-## Smart Contracts
-
-### Core Contracts (Ethereum)
-- `MultiChainAgentRegistry.sol` - Agent deployment and management
-- `COGNIToken.sol` - ERC-20 governance token
-- `DeFiYieldOptimizer.sol` - Automated yield strategies
-- `CrossChainBridge.sol` - Profit consolidation
-
-### Chain-Specific Contracts
-- Each chain has optimized execution contracts
-- Native DEX integrations (Uniswap, QuickSwap, etc.)
-- Gas-optimized for each network
-
-## Token ($COGNI)
-
-- **Standard**: ERC-20 on Ethereum
-- **Supply**: 1,000,000,000 COGNI
-- **Utility**: Governance, agent deployment, fee sharing
-- **Staking**: Earn 8-15% APY + trading fee share
-
-## Development
-
-### Tech Stack
-- **Frontend**: Next.js 14, TypeScript, Tailwind CSS
-- **Smart Contracts**: Solidity 0.8.19, Hardhat
-- **Multi-Chain**: LayerZero, Web3.js, Ethers.js
-- **Indexing**: The Graph Protocol
-- **Infrastructure**: Alchemy, Infura, Flashbots
-
-### Testing
-
-```bash
-# Run frontend tests
-npm test
-
-# Run smart contract tests
-npx hardhat test
-
-# Test multi-chain deployment
-npm run test:multichain
+### The Network Effect
+```
+More Users → More Knowledge → Better Insights → 
+Attracts More Users → Exponential Growth
 ```
 
-### Deployment
+## The c0gni Advantage
 
-```bash
-# Deploy to testnet
-npm run deploy:testnet
+### **Traditional Platforms**
+- Siloed information per user
+- No knowledge sharing between accounts  
+- Limited to individual research
+- Static data without community validation
 
-# Deploy to mainnet (requires confirmation)
-npm run deploy:mainnet
-```
+### **c0gni Network**
+- Collective intelligence from thousands of users
+- Every conversation improves everyone's experience
+- Dynamic patterns emerging from mass behavior
+- Community-validated insights and risk assessments
 
-## Documentation
+## $COGNI Token - Your Access Key
 
-Full documentation available at [docs.cognilabs.com](https://docs.cognilabs.com)
+### **Access Tiers**
+- **Free**: Basic chat and knowledge graph viewing
+- **COGNI Holders**: Unlimited queries, priority responses, custom clusters  
+- **Stakers**: Agent swarm connections, private knowledge repos, scanner alerts
+- **Governance**: Vote on knowledge curation and network expansion
 
-- [Introduction](./docs/introduction.mdx)
-- [Quick Start](./docs/quickstart.mdx)
-- [Multi-Chain Architecture](./docs/technical/ethereum-multichain.mdx)
-- [Token Overview](./docs/token-overview.mdx)
-- [Agent Development](./docs/agents/overview.mdx)
+### **Network Growth Rewards**
+- Contribute valuable insights → Earn COGNI tokens
+- Quality knowledge validation → Token rewards
+- Help onboard new users → Referral bonuses
+- Build on collective intelligence → Developer incentives
 
-## Security
+## Vision: The Future of Collective Intelligence
 
-- Audited by [Audit Firm]
-- Bug bounty program: [security@cognilabs.com](mailto:security@cognilabs.com)
-- Multi-sig treasury on Ethereum
-- Time-locked governance
+### **Phase 1: Knowledge Network** ✅ (Current)
+- Shared crypto intelligence from community conversations
+- Visual knowledge graph exploration  
+- Agent-powered insight extraction
+- Sub-30ms response times
+
+### **Phase 2: Scanner Integration** 🔄 (In Progress)
+- Real-time price and volume data feeds
+- New token/pool detection alerts
+- Market sentiment aggregation
+- Pattern recognition from live data
+
+### **Phase 3: Agent Swarms** 📋 (Planned)
+- Coordinated multi-agent analysis
+- Specialized scanners for different protocols
+- Advanced pattern validation
+- Predictive trend identification
+
+### **Phase 4: Autonomous Evolution** 🔮 (Vision)  
+- Self-improving knowledge validation
+- Community-governed algorithm updates
+- Cross-platform intelligence sharing
+- Decentralized collective decision making
+
+## Experience the Revolution
+
+**Ready to tap into collective crypto intelligence?**
+
+🌐 **[Start Exploring →](https://c0gnilabs.xyz)**  
+Chat with the network and discover what thousands of users have learned
+
+📊 **[View Knowledge Graph →](https://c0gnilabs.xyz/graph)**  
+See the crypto ecosystem mapped out in real-time
+
+📚 **[Read the Docs →](./docs/introduction.mdx)**  
+Learn how collective intelligence transforms crypto research
 
 ## Community
 
-- Discord: [discord.gg/cognilabs](https://discord.gg/cognilabs)
-- Twitter: [@cognilabs](https://twitter.com/cognilabs)
-- Telegram: [t.me/cognilabs](https://t.me/cognilabs)
+Join thousands of users building the future of shared intelligence:
+
+- **Discord**: [discord.gg/cognilabs](https://discord.gg/cognilabs)
+- **Twitter**: [@cognilabs](https://twitter.com/cognilabs)  
+- **Telegram**: [t.me/cognilabs](https://t.me/cognilabs)
+
+## Contributing
+
+Help build the collective intelligence network:
+- Share quality crypto insights through conversations
+- Validate community knowledge discoveries
+- Contribute to open-source development
+- Participate in governance decisions
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) file for details
-
-## Disclaimer
-
-Trading cryptocurrency involves risk. Past performance does not guarantee future results. c0gni agents are autonomous but not infallible. Never invest more than you can afford to lose.
+MIT License - Building open collective intelligence
 
 ---
 
-Built with ❤️ for the multi-chain future of DeFi
+**c0gni**: Where every conversation makes everyone smarter ✨

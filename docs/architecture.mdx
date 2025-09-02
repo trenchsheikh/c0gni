@@ -1,124 +1,117 @@
 ---
 title: 'Platform Architecture'
-description: 'Technical overview of the c0gni Multi-Chain Agent Operating System'
+description: 'Technical overview of the c0gni Collective Intelligence Network'
 ---
 
-# Platform Architecture
+# Collective Intelligence Architecture
 
-c0gni is built as a distributed Multi-Chain Agent Operating System across EVM chains, enabling autonomous agents to operate with collective memory, cross-chain coordination, and ultra-low gas execution on Layer 2s while building wealth on Ethereum.
+c0gni is built as a distributed knowledge network that transforms individual crypto conversations into shared intelligence. The system captures insights from thousands of users, validates them collectively, and makes this wisdom accessible in real-time.
 
 ## High-Level Architecture
 
 ```mermaid
 graph TB
-    subgraph "User Layer"
-        UI[Web Dashboard]
-        SDK[Python/TS SDK]
-        API[REST/WebSocket APIs]
+    subgraph "User Interface Layer"
+        Chat[Chat Interface]
+        Graph[Knowledge Graph Viewer]
+        Explorer[Intelligence Explorer]
     end
     
-    subgraph "Agent Operating System"
-        Factory[Agent Factory]
-        Cloud[Agent Cloud]
-        Studio[Agent Studio]
-        Market[Marketplace]
+    subgraph "Collective Intelligence Core"
+        Agents[Knowledge Agents]
+        Extraction[Insight Extraction]
+        Validation[Community Validation]
+        Synthesis[Intelligence Synthesis]
     end
     
-    subgraph "Execution Layer"
-        Swarm[Swarm Coordinator]
-        Memory[Collective Memory Layer]
-        Executor[Multi-Chain Executor]
-        Monitor[Performance Monitor]
+    subgraph "Knowledge Storage Layer"
+        Memory[Shared Memory Base]
+        Embeddings[Vector Embeddings]
+        Patterns[Pattern Recognition]
+        Search[Semantic Search]
     end
     
-    subgraph "Infrastructure"
-        Ethereum[Ethereum Mainnet]
-        L2s[Polygon/Arbitrum/Base]
-        Flashbots[MEV Protection]
-        Graph[The Graph Protocol]
-        Bridge[LayerZero/Hop/Synapse]
+    subgraph "Network Infrastructure"
+        Scanners[Market Scanners]
+        Oracles[Data Oracles]
+        Community[User Network]
+        Growth[Network Effects]
     end
     
-    UI --> Factory
-    SDK --> Cloud
-    API --> Studio
+    Chat --> Agents
+    Graph --> Memory
+    Explorer --> Patterns
     
-    Factory --> Swarm
-    Cloud --> Memory
-    Studio --> Executor
-    Market --> Monitor
+    Agents --> Extraction
+    Extraction --> Validation
+    Validation --> Synthesis
+    Synthesis --> Memory
     
-    Swarm --> L2s
-    Memory --> Graph
-    Executor --> Flashbots
-    Monitor --> Ethereum
+    Memory --> Search
+    Scanners --> Memory
+    Community --> Growth
+    Oracles --> Patterns
 ```
 
 ## Core Components
 
-### 1. Agent Operating System Layer
+### 1. Collective Intelligence Core
 
-The heart of c0gni that manages agent lifecycle, coordination, and cross-chain execution:
+The heart of c0gni that transforms individual conversations into shared knowledge:
 
 <Tabs>
-  <Tab title="Agent Factory">
-    **No-Code Multi-Chain Deployment**
+  <Tab title="Knowledge Agents">
+    **Conversation Intelligence Extraction**
     
     ```typescript
-    interface AgentFactory {
-      deploy(blueprint: AgentBlueprint, chains: ChainConfig[]): Promise<AgentInstance>
-      configure(settings: AgentConfig): void
-      activate(agentId: string, chain: string): Promise<boolean>
-      bridgeProfits(agentId: string, toChain: string): Promise<TxHash>
+    interface KnowledgeAgent {
+      extractInsights(conversation: string): Promise<CryptoInsight[]>
+      validatePattern(pattern: Pattern): Promise<ValidationResult>
+      synthesizeKnowledge(insights: CryptoInsight[]): SharedKnowledge
+      searchSimilar(query: string): Promise<KnowledgeMatch[]>
     }
     ```
     
-    - Pre-built multi-chain templates
-    - Visual configuration interface
-    - One-click deployment across EVM chains
-    - Automatic profit consolidation to Ethereum
+    - Automatic insight extraction from conversations
+    - Pattern recognition across user interactions
+    - Community knowledge validation
+    - Semantic similarity matching
   </Tab>
   
-  <Tab title="Agent Cloud">
-    **Cross-Chain Orchestration**
+  <Tab title="Memory Network">
+    **Collective Intelligence Storage**
     
     ```typescript
-    interface SwarmCoordinator {
-      createSwarm(agents: AgentId[], chains: string[]): Promise<SwarmId>
-      coordinate(message: SwarmMessage): void
-      consensus(decision: Decision): Promise<boolean>
-      distributeAcrossChains(profits: TokenAmount): void
+    interface MemoryNetwork {
+      storeInsight(insight: CryptoInsight, source: string): Promise<MemoryId>
+      buildConnections(memories: Memory[]): ConnectionGraph
+      searchSemanticMemory(query: string): Promise<MemoryMatch[]>
+      validateCommunity(insight: CryptoInsight): Promise<ValidationScore>
     }
     ```
     
-    - Cross-chain agent messaging
-    - Multi-chain consensus mechanisms
-    - Profit optimization across chains
-    - Gas-optimized load balancing
+    - Shared knowledge base across all users
+    - Vector embeddings for semantic search
+    - Community-driven validation system
+    - Real-time pattern emergence
   </Tab>
   
-  <Tab title="Agent Studio">
-    **Code-First Development**
+  <Tab title="Scanner Agents">
+    **Market Intelligence Feeds**
     
-    ```python
-    class CustomAgent(BaseAgent):
-        def __init__(self, config: AgentConfig):
-            super().__init__(config)
-            self.chains = config.supported_chains
-            
-        async def analyze(self, data: CrossChainData) -> Decision:
-            # Analyze opportunities across chains
-            return self.find_best_chain_opportunity(data)
-            
-        async def execute(self, decision: Decision) -> Transaction:
-            # Execute on optimal chain for gas
-            return self.execute_on_chain(decision.chain, decision)
+    ```typescript
+    interface ScannerAgent {
+      monitorPrices(tokens: string[]): Promise<PriceUpdate[]>
+      detectNewTokens(chains: string[]): Promise<TokenDiscovery[]>
+      trackVolumeSpikes(threshold: number): Promise<VolumeAlert[]>
+      aggregateMarketSentiment(): Promise<SentimentAnalysis>
+    }
     ```
     
-    - Web3.js/Ethers.js integration
-    - Multi-chain simulation environment
-    - Cross-chain strategy development
-    - Collective memory access
+    - Real-time market data integration
+    - New opportunity detection
+    - Volume and price movement alerts
+    - Market sentiment aggregation
   </Tab>
 </Tabs>
 
