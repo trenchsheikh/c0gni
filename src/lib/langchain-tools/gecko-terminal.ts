@@ -39,7 +39,7 @@ export const listSupportedNetworksTool = new DynamicStructuredTool({
   name: "listSupportedNetworks",
   description: "Get a list of all supported blockchain networks on GeckoTerminal. Use this to discover which chains are available for analysis.",
   schema: z.object({
-    page: z.number().optional().describe("Page number for pagination (default: 1)")
+    page: z.number().nullable().describe("Page number for pagination (default: 1)")
   }),
   func: async ({ page = 1 }) => {
     const data = await geckoterminalFetch('/networks', { page })
@@ -52,8 +52,8 @@ export const searchPoolsTool = new DynamicStructuredTool({
   description: "Search for trading pools across multiple networks. Useful for finding specific tokens or trading pairs.",
   schema: z.object({
     query: z.string().describe("Search query (token name, symbol, or address)"),
-    network: z.string().optional().describe("Specific network to search in (e.g., 'eth', 'solana')"),
-    page: z.number().optional().describe("Page number (default: 1)")
+    network: z.string().nullable().describe("Specific network to search in (e.g., 'eth', 'solana')"),
+    page: z.number().nullable().describe("Page number (default: 1)")
   }),
   func: async ({ query, network, page = 1 }) => {
     const params: any = { query, page }
@@ -95,7 +95,7 @@ export const getDexesOnNetworkTool = new DynamicStructuredTool({
   description: "Get list of decentralized exchanges (DEXs) available on a specific network.",
   schema: z.object({
     network: z.string().describe("Network identifier (e.g., 'eth', 'solana')"),
-    page: z.number().optional().describe("Page number (default: 1)")
+    page: z.number().nullable().describe("Page number (default: 1)")
   }),
   func: async ({ network, page = 1 }) => {
     const data = await geckoterminalFetch(`/networks/${network}/dexes`, { page })
@@ -107,8 +107,8 @@ export const getTrendingPoolsTool = new DynamicStructuredTool({
   name: "getTrendingPools",
   description: "Get trending pools across all networks or on a specific network. Great for discovering hot trading pairs.",
   schema: z.object({
-    network: z.string().optional().describe("Network identifier (e.g., 'eth', 'solana'). If not specified, returns trending across all networks"),
-    include: z.string().optional().describe("Additional data to include (e.g., 'base_token,quote_token')")
+    network: z.string().nullable().describe("Network identifier (e.g., 'eth', 'solana'). If not specified, returns trending across all networks"),
+    include: z.string().nullable().describe("Additional data to include (e.g., 'base_token,quote_token')")
   }),
   func: async ({ network, include }) => {
     const endpoint = network ? `/networks/${network}/trending_pools` : '/trending_pools'
@@ -138,7 +138,7 @@ export const getTopPoolsOnNetworkTool = new DynamicStructuredTool({
   description: "Get top pools by volume or other metrics on a specific network.",
   schema: z.object({
     network: z.string().describe("Network identifier (e.g., 'eth', 'solana')"),
-    page: z.number().optional().describe("Page number (default: 1)")
+    page: z.number().nullable().describe("Page number (default: 1)")
   }),
   func: async ({ network, page = 1 }) => {
     const data = await geckoterminalFetch(`/networks/${network}/pools`, { page })
@@ -152,7 +152,7 @@ export const getTopPoolsOnDexTool = new DynamicStructuredTool({
   schema: z.object({
     network: z.string().describe("Network identifier (e.g., 'eth', 'solana')"),
     dex: z.string().describe("DEX identifier (e.g., 'uniswap_v3', 'sushiswap')"),
-    page: z.number().optional().describe("Page number (default: 1)")
+    page: z.number().nullable().describe("Page number (default: 1)")
   }),
   func: async ({ network, dex, page = 1 }) => {
     const data = await geckoterminalFetch(`/networks/${network}/dexes/${dex}/pools`, { page })
@@ -165,7 +165,7 @@ export const getNewPoolsTool = new DynamicStructuredTool({
   description: "Get recently created pools on a network. Useful for finding new trading opportunities.",
   schema: z.object({
     network: z.string().describe("Network identifier (e.g., 'eth', 'solana')"),
-    page: z.number().optional().describe("Page number (default: 1)")
+    page: z.number().nullable().describe("Page number (default: 1)")
   }),
   func: async ({ network, page = 1 }) => {
     const data = await geckoterminalFetch(`/networks/${network}/new_pools`, { page })
@@ -179,7 +179,7 @@ export const getTopPoolsForTokenTool = new DynamicStructuredTool({
   schema: z.object({
     network: z.string().describe("Network identifier (e.g., 'eth', 'solana')"),
     tokenAddress: z.string().describe("Token contract address"),
-    page: z.number().optional().describe("Page number (default: 1)")
+    page: z.number().nullable().describe("Page number (default: 1)")
   }),
   func: async ({ network, tokenAddress, page = 1 }) => {
     const data = await geckoterminalFetch(`/networks/${network}/tokens/${tokenAddress}/pools`, { page })
@@ -244,7 +244,7 @@ export const getRecentlyUpdatedTokenInfoTool = new DynamicStructuredTool({
   description: "Get information about tokens that were recently updated on a network.",
   schema: z.object({
     network: z.string().describe("Network identifier (e.g., 'eth', 'solana')"),
-    page: z.number().optional().describe("Page number (default: 1)")
+    page: z.number().nullable().describe("Page number (default: 1)")
   }),
   func: async ({ network, page = 1 }) => {
     const data = await geckoterminalFetch(`/networks/${network}/tokens/info`, { page })
@@ -258,7 +258,7 @@ export const getPoolTradesTool = new DynamicStructuredTool({
   schema: z.object({
     network: z.string().describe("Network identifier (e.g., 'eth', 'solana')"),
     poolAddress: z.string().describe("Pool contract address"),
-    page: z.number().optional().describe("Page number (default: 1)")
+    page: z.number().nullable().describe("Page number (default: 1)")
   }),
   func: async ({ network, poolAddress, page = 1 }) => {
     const data = await geckoterminalFetch(`/networks/${network}/pools/${poolAddress}/trades`, { page })

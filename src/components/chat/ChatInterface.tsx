@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Send, 
@@ -8,18 +8,77 @@ import {
   Database,
   Sparkles,
   CheckCircle,
-  Loader2
+  Loader2,
+  MessageSquare,
+  History,
+  Settings,
+  Download,
+  Bookmark,
+  BookmarkCheck,
+  ThumbsUp,
+  ThumbsDown,
+  Clock,
+  TrendingUp,
+  Brain,
+  Mic,
+  MicOff,
+  Volume2,
+  VolumeX,
+  Sun,
+  Moon,
+  MoreHorizontal,
+  Archive,
+  Trash2,
+  Edit3,
+  BarChart3
 } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import Image from 'next/image'
 
+// Enhanced interfaces for session-based chat
 interface Message {
   id: string
-  role: 'user' | 'assistant'
+  role: 'user' | 'assistant' | 'system'
   content: string
   timestamp: Date
+  messageType?: 'text' | 'voice' | 'image' | 'code' | 'system'
+  isEdited?: boolean
+  isBookmarked?: boolean
+  confidence?: number
+  processingTime?: number
+  extractedTopics?: string[]
+  sentiment?: 'positive' | 'negative' | 'neutral'
+  reactions?: MessageReaction[]
   metadata?: any
+}
+
+interface MessageReaction {
+  id: string
+  reaction: string
+  isHelpful?: boolean
+  accuracy?: number
+  relevance?: number
+  timestamp: Date
+}
+
+interface ChatSession {
+  id: string
+  title?: string
+  messageCount: number
+  lastActivity: Date
+  mainTopics: string[]
+  summary?: string
+  isActive: boolean
+  isPinned: boolean
+}
+
+interface SessionAnalytics {
+  totalMessages: number
+  avgResponseTime: number
+  topicDistribution: Record<string, number>
+  sentimentAnalysis: Record<string, number>
+  reactionStats: any
 }
 
 interface StreamEvent {
@@ -28,15 +87,31 @@ interface StreamEvent {
 }
 
 interface ChatInterfaceProps {
-  // Removed userId and chatId - this is now a stateless public chat
+  userId?: string // Optional user ID for personalized sessions
+  initialSessionId?: string // Start with specific session
+  sessionType?: 'private' | 'shared' | 'temporary'
+  className?: string
 }
 
-export default function ChatInterface({}: ChatInterfaceProps) {
+export default function ChatInterface({ 
+  userId, 
+  initialSessionId, 
+  sessionType = 'shared',
+  className = ''
+}: ChatInterfaceProps) {
+  // Enhanced state management
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [sessionId, setSessionId] = useState<string | undefined>()
+  const [currentSession, setCurrentSession] = useState<ChatSession | null>(null)
+  const [sessions, setSessions] = useState<ChatSession[]>([])
+  const [showSessionSidebar, setShowSessionSidebar] = useState(false)
+  const [sessionAnalytics, setSessionAnalytics] = useState<SessionAnalytics | null>(null)
+  
+  // AI interaction settings
   const [deepResearchMode, setDeepResearchMode] = useState(false)
+  const [contextWindow, setContextWindow] = useState(20)
+  const [autoSummarize, setAutoSummarize] = useState(true)
   
   // Streaming states
   const [isStreaming, setIsStreaming] = useState(false)
@@ -45,31 +120,127 @@ export default function ChatInterface({}: ChatInterfaceProps) {
   const [showThinking, setShowThinking] = useState(false)
   const [activeTools, setActiveTools] = useState<Record<string, string>>({})
   const [memoryAccess, setMemoryAccess] = useState<string[]>([])
-
+  const [firstTokenTime, setFirstTokenTime] = useState<number | null>(null)
+  const [processingStartTime, setProcessingStartTime] = useState<number | null>(null)
+  
+  // UI/UX enhancements
+  const [darkMode, setDarkMode] = useState(false)
+  const [voiceEnabled, setVoiceEnabled] = useState(false)
+  const [isListening, setIsListening] = useState(false)
+  const [showAnalytics, setShowAnalytics] = useState(false)
+  const [showBookmarkedOnly, setShowBookmarkedOnly] = useState(false)
+  const [selectedMessageForReaction, setSelectedMessageForReaction] = useState<string | null>(null)
+  
+  // Refs
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const streamingMessageRef = useRef('')
   const messageAddedRef = useRef(false)
+  const recognition = useRef<any>(null)
 
-  const scrollToBottom = () => {
+  // Utility functions
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
+  }, [])
+
+  // Initialize session and load chat history
+  const initializeSession = useCallback(async () => {
+    try {
+      if (initialSessionId) {
+        // Load existing session
+        const response = await fetch(`/api/chat/${initialSessionId}`)
+        if (response.ok) {
+          const sessionData = await response.json()
+          setCurrentSession(sessionData.session)
+          setMessages(sessionData.messages || [])
+          setSessionAnalytics(sessionData.analytics)
+        }
+      } else {
+        // Create new session
+        setCurrentSession({
+          id: 'temp_' + Date.now(),
+          messageCount: 0,
+          lastActivity: new Date(),
+          mainTopics: [],
+          isActive: true,
+          isPinned: false
+        })
+      }
+
+      // Load user sessions if userId provided
+      if (userId) {
+        const response = await fetch(`/api/chat?userId=${userId}&limit=10`)
+        if (response.ok) {
+          const data = await response.json()
+          setSessions(data.sessions || [])
+        }
+      }
+    } catch (error) {
+      console.error('Failed to initialize session:', error)
+    }
+  }, [initialSessionId, userId])
+
+  // Load session messages
+  const loadSessionMessages = useCallback(async (sessionId: string) => {
+    try {
+      const response = await fetch(`/api/chat/${sessionId}/messages`)
+      if (response.ok) {
+        const data = await response.json()
+        setMessages(data.messages || [])
+        setSessionAnalytics(data.analytics)
+      }
+    } catch (error) {
+      console.error('Failed to load session messages:', error)
+    }
+  }, [])
+
+  // Initialize voice recognition
+  const initializeVoiceRecognition = useCallback(() => {
+    if (typeof window !== 'undefined' && 'webkitSpeechRecognition' in window) {
+      recognition.current = new (window as any).webkitSpeechRecognition()
+      recognition.current.continuous = false
+      recognition.current.interimResults = true
+      recognition.current.lang = 'en-US'
+
+      recognition.current.onstart = () => {
+        setIsListening(true)
+      }
+
+      recognition.current.onresult = (event: any) => {
+        const transcript = Array.from(event.results)
+          .map((result: any) => result[0])
+          .map((result: any) => result.transcript)
+          .join('')
+
+        setInput(transcript)
+      }
+
+      recognition.current.onend = () => {
+        setIsListening(false)
+      }
+
+      recognition.current.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error)
+        setIsListening(false)
+      }
+    }
+  }, [])
+
+  // Effects
+  useEffect(() => {
+    initializeSession()
+    initializeVoiceRecognition()
+  }, [initializeSession, initializeVoiceRecognition])
 
   useEffect(() => {
     scrollToBottom()
-  }, [messages, streamingMessage, thinkingContent])
+  }, [messages, streamingMessage, thinkingContent, scrollToBottom])
 
+  // Enhanced send message with session support
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: input.trim(),
-      timestamp: new Date()
-    }
-
-    setMessages(prev => [...prev, userMessage])
+    const messageContent = input.trim()
     setInput('')
     setIsLoading(true)
     setIsStreaming(true)
@@ -80,6 +251,8 @@ export default function ChatInterface({}: ChatInterfaceProps) {
     setShowThinking(false)
     setActiveTools({})
     setMemoryAccess([])
+    setFirstTokenTime(null)
+    setProcessingStartTime(Date.now())
 
     try {
       const response = await fetch('/api/chat', {
@@ -88,8 +261,16 @@ export default function ChatInterface({}: ChatInterfaceProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: userMessage.content,
-          deepResearchMode
+          message: messageContent,
+          sessionId: currentSession?.id,
+          userId,
+          deepResearchMode,
+          sessionOptions: {
+            sessionType,
+            contextWindow,
+            autoSummarize,
+            title: currentSession?.title
+          }
         })
       })
 
@@ -112,13 +293,11 @@ export default function ChatInterface({}: ChatInterfaceProps) {
         buffer = lines.pop() || ''
 
         for (const line of lines) {
-          console.log('Raw line:', line)
           if (line.startsWith('data: ')) {
             try {
               const jsonStr = line.slice(6)
-              console.log('JSON to parse:', jsonStr)
               const data = JSON.parse(jsonStr) as StreamEvent
-              handleStreamEvent(data)
+              await handleEnhancedStreamEvent(data)
             } catch (error) {
               console.error('Parse error:', error, 'Line was:', line)
             }
@@ -127,27 +306,171 @@ export default function ChatInterface({}: ChatInterfaceProps) {
       }
     } catch (error) {
       console.error('Chat error:', error)
-      setMessages(prev => [...prev, {
+      // Add error message to current session
+      const errorMessage: Message = {
         id: Date.now().toString(),
         role: 'assistant',
         content: 'Sorry, I encountered an error processing your request. Please try again.',
-        timestamp: new Date()
-      }])
+        timestamp: new Date(),
+        messageType: 'system'
+      }
+      setMessages(prev => [...prev, errorMessage])
     } finally {
       setIsLoading(false)
       setIsStreaming(false)
       setShowThinking(false)
       setThinkingContent('')
-      // Don't clear streamingMessage here - let the complete event handle it
+      setProcessingStartTime(null)
     }
   }
 
-  const handleStreamEvent = (event: StreamEvent) => {
-    console.log('Received stream event:', event.type, event.data)
+  // Voice input functions
+  const startVoiceInput = useCallback(() => {
+    if (recognition.current && voiceEnabled) {
+      recognition.current.start()
+    }
+  }, [voiceEnabled])
+
+  const stopVoiceInput = useCallback(() => {
+    if (recognition.current && isListening) {
+      recognition.current.stop()
+    }
+  }, [isListening])
+
+  // Text-to-speech for AI responses
+  const speakMessage = useCallback((text: string) => {
+    if (voiceEnabled && 'speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text)
+      utterance.rate = 0.9
+      utterance.pitch = 1
+      utterance.volume = 0.8
+      speechSynthesis.speak(utterance)
+    }
+  }, [voiceEnabled])
+
+  // Message actions
+  const toggleMessageBookmark = useCallback(async (messageId: string) => {
+    try {
+      await fetch(`/api/messages/${messageId}/bookmark`, {
+        method: 'POST'
+      })
+      
+      setMessages(prev => prev.map(msg => 
+        msg.id === messageId 
+          ? { ...msg, isBookmarked: !msg.isBookmarked }
+          : msg
+      ))
+    } catch (error) {
+      console.error('Failed to toggle bookmark:', error)
+    }
+  }, [])
+
+  const addMessageReaction = useCallback(async (messageId: string, reaction: string, feedback?: { isHelpful?: boolean; accuracy?: number; relevance?: number }) => {
+    try {
+      await fetch(`/api/messages/${messageId}/reaction`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reaction,
+          ...feedback
+        })
+      })
+
+      // Update local state
+      setMessages(prev => prev.map(msg => {
+        if (msg.id === messageId) {
+          const newReaction: MessageReaction = {
+            id: Date.now().toString(),
+            reaction,
+            ...feedback,
+            timestamp: new Date()
+          }
+          return {
+            ...msg,
+            reactions: [...(msg.reactions || []), newReaction]
+          }
+        }
+        return msg
+      }))
+
+      setSelectedMessageForReaction(null)
+    } catch (error) {
+      console.error('Failed to add reaction:', error)
+    }
+  }, [])
+
+  // Session management functions
+  const createNewSession = useCallback(async () => {
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: '', // Empty message to just create session
+          userId,
+          sessionOptions: {
+            sessionType,
+            contextWindow,
+            autoSummarize
+          }
+        })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setCurrentSession(data.session)
+        setMessages([])
+        setSessionAnalytics(null)
+      }
+    } catch (error) {
+      console.error('Failed to create new session:', error)
+    }
+  }, [userId, sessionType, contextWindow, autoSummarize])
+
+  const switchToSession = useCallback(async (sessionId: string) => {
+    await loadSessionMessages(sessionId)
+    const session = sessions.find(s => s.id === sessionId)
+    if (session) {
+      setCurrentSession(session)
+    }
+    setShowSessionSidebar(false)
+  }, [loadSessionMessages, sessions])
+
+  const exportConversation = useCallback(async () => {
+    if (!currentSession) return
+
+    try {
+      const response = await fetch(`/api/chat/${currentSession.id}/export`)
+      if (response.ok) {
+        const blob = await response.blob()
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `conversation-${currentSession.id}-${new Date().toISOString().split('T')[0]}.json`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+      }
+    } catch (error) {
+      console.error('Failed to export conversation:', error)
+    }
+  }, [currentSession])
+
+  // Enhanced stream event handler with session support
+  const handleEnhancedStreamEvent = async (event: StreamEvent) => {
+    console.log('Received enhanced stream event:', event.type, event.data)
+    
     switch (event.type) {
       case 'session_info':
-        if (event.data.sessionId) {
-          setSessionId(event.data.sessionId)
+        if (event.data.sessionId && event.data.isNewSession) {
+          // Update current session with new session data
+          setCurrentSession(prev => ({
+            ...prev!,
+            id: event.data.sessionId,
+            messageCount: event.data.messageCount || 0,
+            mainTopics: event.data.mainTopics || []
+          }))
         }
         break
 
@@ -178,56 +501,120 @@ export default function ChatInterface({}: ChatInterfaceProps) {
         }
         break
 
+      case 'first_token':
+        if (!firstTokenTime && processingStartTime) {
+          setFirstTokenTime(event.data.timestamp - processingStartTime)
+        }
+        break
+
       case 'content':
         console.log('Content chunk received:', event.data.content)
         setStreamingMessage(prev => {
           const newContent = prev + (event.data.content || '')
           streamingMessageRef.current = newContent
-          console.log('Updated streaming message:', newContent)
-          console.log('streamingMessageRef.current is now:', streamingMessageRef.current)
           return newContent
         })
         break
 
       case 'complete':
-        console.log('Complete event received, message already added:', messageAddedRef.current)
+        console.log('Enhanced complete event received')
         
-        // Exit immediately if we've already processed a complete event
         if (messageAddedRef.current) {
           console.log('Already processed complete event, ignoring duplicate')
           return
         }
         
-        // Mark as processed immediately  
         messageAddedRef.current = true
         
-        // Delay processing slightly to ensure content event is processed first
-        setTimeout(() => {
+        // Process completion with enhanced data
+        setTimeout(async () => {
           const finalContent = streamingMessageRef.current
-          console.log('Delayed complete processing - final content:', `"${finalContent}"`)
+          console.log('Processing enhanced completion:', finalContent.substring(0, 100) + '...')
           
           if (finalContent.trim()) {
-            setMessages(prev => [...prev, {
+            const assistantMessage: Message = {
               id: Date.now().toString(),
               role: 'assistant', 
               content: finalContent,
-              timestamp: new Date()
-            }])
-            console.log('Final message added via delayed processing')
+              timestamp: new Date(),
+              messageType: 'text',
+              confidence: event.data.confidence,
+              processingTime: event.data.processingTime,
+              extractedTopics: await extractTopicsFromContent(finalContent),
+              metadata: {
+                toolsUsed: event.data.toolsUsed,
+                sessionId: event.data.sessionId
+              }
+            }
+
+            setMessages(prev => {
+              const userMessage: Message = {
+                id: (Date.now() - 1).toString(),
+                role: 'user',
+                content: prev[prev.length - 1]?.content || '',
+                timestamp: new Date(Date.now() - (event.data.processingTime || 1000)),
+                messageType: 'text'
+              }
+              return [...prev, userMessage, assistantMessage]
+            })
+
+            // Update session data
+            if (currentSession) {
+              setCurrentSession(prev => ({
+                ...prev!,
+                messageCount: event.data.messageCount || prev!.messageCount + 2,
+                lastActivity: new Date()
+              }))
+            }
+
+            // Update analytics
+            if (event.data.analytics) {
+              setSessionAnalytics(event.data.analytics)
+            }
+
+            // Auto-speak if voice enabled
+            if (voiceEnabled) {
+              speakMessage(finalContent)
+            }
+
+            console.log('Enhanced message processing complete')
           } else {
-            console.error('No content available even after delay!')
+            console.error('No content available after enhanced processing!')
           }
           
           // Clear streaming state
           setStreamingMessage('')
           streamingMessageRef.current = ''
-        }, 10) // Small delay to let content event process first
+        }, 10)
         break
 
       case 'error':
-        console.error('Stream error:', event.data)
+        console.error('Enhanced stream error:', event.data)
         break
     }
+  }
+
+  // Extract topics from content (client-side implementation)
+  const extractTopicsFromContent = async (content: string): Promise<string[]> => {
+    const lowerContent = content.toLowerCase()
+    const cryptoKeywords = {
+      'trading': ['trading', 'trade', 'buy', 'sell', 'position', 'profit', 'loss'],
+      'defi': ['defi', 'yield', 'farming', 'liquidity', 'pool', 'staking', 'lending'],
+      'analysis': ['analysis', 'technical', 'chart', 'trend', 'support', 'resistance'],
+      'tokens': ['bitcoin', 'btc', 'ethereum', 'eth', 'token', 'coin', 'price'],
+      'blockchain': ['blockchain', 'network', 'gas', 'transaction', 'smart contract'],
+      'market': ['market', 'volume', 'cap', 'pump', 'dump', 'bullish', 'bearish']
+    }
+
+    const foundTopics: string[] = []
+    
+    for (const [topic, keywords] of Object.entries(cryptoKeywords)) {
+      if (keywords.some(keyword => lowerContent.includes(keyword))) {
+        foundTopics.push(topic)
+      }
+    }
+
+    return foundTopics.slice(0, 3)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

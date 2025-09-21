@@ -5,25 +5,25 @@ import { motion } from 'framer-motion'
 import ScrollNavigation from '@/components/ScrollNavigation'
 import ChatInterface from '@/components/chat/ChatInterface'
 
-// Mock auth - replace with your actual auth system
-const mockUser = {
-  id: 'user_123',
-  email: 'demo@c0gni.com',
-  username: 'demo_user'
-}
+// No mock auth: rely on real auth integration if present
 
 export default function ChatPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [user, setUser] = useState<typeof mockUser | null>(null)
+  const [user, setUser] = useState<{ id: string } | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Simulate auth check - replace with real authentication
-    setTimeout(() => {
-      setUser(mockUser)
-      setIsAuthenticated(true)
-      setIsLoading(false)
-    }, 1000)
+    // Attempt real auth check here if available; otherwise show auth-required state
+    const checkAuth = async () => {
+      try {
+        // TODO: integrate with real auth endpoint/cookies
+        setIsAuthenticated(false)
+        setUser(null)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    checkAuth()
   }, [])
 
   if (isLoading) {

@@ -2,13 +2,18 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Home } from "lucide-react";
+import { Home, Brain, Activity, TrendingUp, BarChart3, ArrowRightLeft, Target } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
 const navItems = [
-  { id: "overview", label: "Overview", icon: Home, href: "/dashboard" }
+  { id: "overview", label: "Trading Overview", icon: Home, href: "/dashboard" },
+  { id: "polymarket", label: "Polymarket", icon: TrendingUp, href: "/dashboard/polymarket" },
+  { id: "hyperliquid", label: "Hyperliquid", icon: BarChart3, href: "/dashboard/hyperliquid" },
+  { id: "portfolio", label: "Portfolio", icon: Target, href: "/dashboard/portfolio" },
+  { id: "bridge", label: "Cross-Chain", icon: ArrowRightLeft, href: "/dashboard/bridge" },
+  { id: "agents", label: "AI Assistant", icon: Brain, href: "/dashboard/agents" }
 ];
 
 export default function DashboardSidebar() {

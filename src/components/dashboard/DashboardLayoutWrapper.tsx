@@ -18,3 +18,6 @@ export default function DashboardLayoutWrapper({
     </div>
   );
 }
+
+// Named export for backwards compatibility
+export { DashboardLayoutWrapper };

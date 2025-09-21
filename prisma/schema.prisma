@@ -19,32 +19,104 @@ model User {
   email     String?  @unique
   username  String?  @unique
   publicKey String?  @unique // For crypto wallet authentication
-  
+
   // Profile information
   avatar    String?
   bio       String?
   timezone  String?
-  
+
   // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   // Relations
   chats           Chat[]
+  chatSessions    ChatSession[]
   messages        Message[]
   memories        UserMemory[]
   embeddings      UserEmbedding[]
   contexts        UserContext[]
   subscriptions   Subscription[]
   apiKeys         ApiKey[]
+  messageReactions MessageReaction[]
+
+  // Polymarket relations
+  polymarketPositions PolymarketPosition[]
+  polymarketOrders    PolymarketOrder[]
+
+  // Hyperliquid relations
+  hyperliquidPositions HyperliquidPosition[]
+  hyperliquidOrders    HyperliquidOrder[]
+  hyperliquidEvents    HyperliquidEvent[]
+
+  // Wallet and cross-chain relations
+  embeddedWallets      EmbeddedWallet[]
+  walletSessions       WalletSession[]
+  crossChainTransactions CrossChainTransaction[]
+  lifiQuotes           LifiQuote[]
 
   @@map("users")
 }
 
 // ============================================================================
-// CHAT SYSTEM
+// CHAT SYSTEM - Enhanced for context and session management
 // ============================================================================
 
+model ChatSession {
+  id             String   @id @default(cuid())
+  userId         String?  // Optional for anonymous/shared sessions
+  sessionType    String   @default("private") // "private" | "shared" | "temporary"
+  
+  // Session metadata
+  title          String?
+  description    String?
+  tags           String[] @default([])
+  
+  // Chat settings
+  model          String?  @default("openai/gpt-4o")
+  temperature    Float?   @default(0.7)
+  maxTokens      Int?     @default(4000)
+  systemPrompt   String?  // Custom system prompt for this session
+  
+  // Context management
+  contextWindow  Int      @default(20) // Number of messages to keep in context
+  autoSummarize  Boolean  @default(true) // Auto-summarize old conversations
+  summary        String?  // Current conversation summary
+  lastSummaryAt  DateTime? // When conversation was last summarized
+  
+  // Session state
+  isActive       Boolean  @default(true)
+  isPinned       Boolean  @default(false)
+  isArchived     Boolean  @default(false)
+  lastActivity   DateTime @default(now())
+  
+  // Analytics
+  messageCount   Int      @default(0)
+  totalTokens    Int      @default(0)
+  avgResponseTime Float?  // Average AI response time
+  
+  // Conversation topic tracking
+  mainTopics     String[] @default([]) // Primary conversation topics
+  currentTopic   String?  // Current conversation focus
+  topicHistory   Json?    // Topic transition history
+  
+  // Timestamps
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  // Relations
+  user           User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages       Message[]
+  summaries      ConversationSummary[]
+  reactions      MessageReaction[]
+
+  @@index([userId, isActive])
+  @@index([userId, lastActivity])
+  @@index([sessionType, isActive])
+  @@map("chat_sessions")
+}
+
+// Legacy Chat model kept for backward compatibility
 model Chat {
   id          String   @id @default(cuid())
   userId      String
@@ -68,32 +140,128 @@ model Chat {
 }
 
 model Message {
-  id        String   @id @default(cuid())
-  chatId    String
-  userId    String
+  id          String   @id @default(cuid())
+  chatId      String?  // Legacy chat support
+  sessionId   String?  // New session support
+  userId      String
   
   // Message content
-  role      String   // "user" | "assistant" | "system" | "tool"
-  content   String
+  role        String   // "user" | "assistant" | "system" | "tool"
+  content     String
+  
+  // Enhanced message features
+  messageType String   @default("text") // "text" | "voice" | "image" | "code" | "system"
+  isEdited    Boolean  @default(false)
+  editHistory Json?    // Previous versions of the message
   
   // Message metadata
-  metadata  Json?    // Tool calls, thinking process, etc.
-  tokens    Int?     // Token count for this message
-  model     String?  // Model used to generate this message
+  metadata    Json?    // Tool calls, thinking process, etc.
+  tokens      Int?     // Token count for this message
+  model       String?  // Model used to generate this message
   
   // Processing information
-  toolCalls Json?    // Tools used in this message
-  thinking  String?  // AI thinking process (stored separately)
+  toolCalls   Json?    // Tools used in this message
+  thinking    String?  // AI thinking process (stored separately)
+  confidence  Float?   // AI confidence in response (0.0 - 1.0)
+  
+  // Response timing
+  processingTime Int?  // Time taken to generate response (ms)
+  firstTokenTime Int?  // Time to first token (ms)
+  
+  // Context and threading
+  parentId    String?  // For threaded conversations
+  threadDepth Int      @default(0) // Depth in conversation thread
+  contextUsed Json?    // Context that was used for this response
+  
+  // User interaction
+  isBookmarked Boolean @default(false)
+  isFlagged   Boolean  @default(false)
+  flagReason  String?  // Reason for flagging
+  
+  // Topic classification
+  extractedTopics String[] @default([])
+  sentiment      String?   // "positive" | "negative" | "neutral"
   
   // Timestamps
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   
   // Relations
-  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chat        Chat?        @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  session     ChatSession? @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reactions   MessageReaction[]
+  parent      Message?     @relation("MessageThread", fields: [parentId], references: [id])
+  replies     Message[]    @relation("MessageThread")
 
+  @@index([sessionId, createdAt])
+  @@index([userId, createdAt])
+  @@index([parentId])
   @@map("messages")
+}
+
+// ============================================================================
+// CONVERSATION ENHANCEMENTS
+// ============================================================================
+
+model ConversationSummary {
+  id          String   @id @default(cuid())
+  sessionId   String
+  
+  // Summary content
+  summary     String   // AI-generated conversation summary
+  keyTopics   String[] @default([]) // Main topics covered
+  keyInsights String[] @default([]) // Important insights extracted
+  
+  // Summary metadata
+  messageRange Json     // {start: messageId, end: messageId}
+  summaryType String   @default("auto") // "auto" | "manual" | "periodic"
+  model       String?  // Model used for summarization
+  confidence  Float?   // Confidence in summary quality
+  
+  // Context information
+  tokenCount  Int?     // Tokens in summarized content
+  messageCount Int     // Number of messages summarized
+  timeSpan    Int?     // Time span covered (minutes)
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  session     ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  @@index([sessionId, createdAt])
+  @@map("conversation_summaries")
+}
+
+model MessageReaction {
+  id         String   @id @default(cuid())
+  messageId  String
+  sessionId  String
+  userId     String
+  
+  // Reaction details
+  reaction   String   // "👍" | "👎" | "❤️" | "😄" | "🤔" | "🔥" | etc.
+  feedback   String?  // Optional text feedback
+  
+  // Reaction metadata
+  isHelpful  Boolean? // Whether user found response helpful
+  accuracy   Float?   // User rating of accuracy (0.0 - 1.0)
+  relevance  Float?   // User rating of relevance (0.0 - 1.0)
+  
+  // Timestamps
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  // Relations
+  message    Message     @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  session    ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([messageId, userId]) // One reaction per user per message
+  @@index([sessionId, createdAt])
+  @@map("message_reactions")
 }
 
 // ============================================================================
@@ -294,29 +462,648 @@ model ApiKey {
 
 model BlockchainDataCache {
   id            String   @id @default(cuid())
-  
+
   // Data identification
   dataType      String   // "token_price" | "pool_info" | "transaction" | "market_data"
   identifier    String   // Token address, pool ID, etc.
   chainId       Int
-  
+
   // Data content
   data          Json
   hash          String   @unique // Hash of the data for deduplication
-  
+
   // Metadata
   source        String   // "gecko_terminal" | "pump_fun" | "sonar_pro"
   confidence    Float    @default(1.0)
-  
+
   // Timestamps
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   expiresAt     DateTime? // When this cache entry expires
   lastAccessed  DateTime @default(now())
-  
+
   @@unique([dataType, identifier, chainId])
   @@index([chainId])
   @@index([dataType])
   @@index([expiresAt])
   @@map("blockchain_data_cache")
+}
+
+// ============================================================================
+// POLYMARKET PREDICTION MARKETS
+// ============================================================================
+
+model PredictionMarket {
+  id               String   @id @default(cuid())
+
+  // Polymarket identifiers
+  polymarketId     String   @unique // Polymarket's market ID
+  conditionId      String?  // Conditional token framework ID
+  questionId       String?  // Question ID from Polymarket
+
+  // Market details
+  question         String   // The prediction question
+  description      String?  // Detailed description
+  category         String?  // Market category (politics, sports, etc.)
+  series           String?  // Market series (election 2024, etc.)
+  tags             String[] @default([])
+
+  // Market state
+  status           String   @default("active") // "active" | "closed" | "resolved" | "suspended"
+  resolutionDate   DateTime? // When the market resolves
+  closingDate      DateTime? // When betting closes
+
+  // Current pricing (YES/NO tokens)
+  yesPrice         Float?   // Current YES token price (0-1)
+  noPrice          Float?   // Current NO token price (0-1)
+  impliedOdds      Float?   // Implied probability from pricing
+
+  // Market statistics
+  volume24h        Float?   // 24h trading volume in USDC
+  volumeTotal      Float?   // Total volume since creation
+  liquidityTotal   Float?   // Total liquidity available
+  openInterest     Float?   // Total open interest
+
+  // Resolution information
+  outcome          String?  // Final outcome: "YES" | "NO" | "INVALID"
+  resolvedAt       DateTime?
+  resolvedBy       String?  // Resolver address or identifier
+
+  // Market metadata
+  imageUrl         String?  // Market image
+  sourceUrl        String?  // Source URL for verification
+  rules            String?  // Market rules and conditions
+
+  // Risk and trading info
+  minDisplayPrice  Float?   @default(0.01) // Minimum display price
+  maxDisplayPrice  Float?   @default(0.99) // Maximum display price
+
+  // Timestamps
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  lastPriceUpdate  DateTime @default(now())
+
+  // Relations
+  positions        PolymarketPosition[]
+  orders           PolymarketOrder[]
+  events           PolymarketEvent[]
+
+  @@index([polymarketId])
+  @@index([status, resolutionDate])
+  @@index([category])
+  @@index([volume24h])
+  @@map("prediction_markets")
+}
+
+model PolymarketPosition {
+  id              String   @id @default(cuid())
+  userId          String
+  marketId        String
+
+  // Position details
+  side            String   // "YES" | "NO"
+  shares          Float    // Number of shares owned
+  avgPrice        Float    // Average purchase price
+  totalCost       Float    // Total USDC invested
+
+  // Current valuation
+  currentPrice    Float?   // Current market price
+  marketValue     Float?   // Current market value of position
+  unrealizedPnl   Float?   // Unrealized P&L
+
+  // Realized P&L tracking
+  realizedPnl     Float    @default(0.0)
+  sharesRealized  Float    @default(0.0) // Shares sold/realized
+
+  // Position status
+  status          String   @default("open") // "open" | "closed" | "partial"
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  lastUpdated     DateTime @default(now())
+
+  // Relations
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  market          PredictionMarket @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  orders          PolymarketOrder[]
+
+  @@unique([userId, marketId, side])
+  @@index([userId])
+  @@index([marketId])
+  @@map("polymarket_positions")
+}
+
+model PolymarketOrder {
+  id              String   @id @default(cuid())
+  userId          String
+  marketId        String
+  positionId      String?
+
+  // Order identification
+  polymarketOrderId String? @unique // Polymarket's order ID
+  clientOrderId   String?  // Client-side order ID
+
+  // Order details
+  side            String   // "YES" | "NO"
+  orderType       String   // "market" | "limit"
+  action          String   // "buy" | "sell"
+
+  // Pricing and quantity
+  price           Float    // Order price (0-1 for prediction markets)
+  size            Float    // Shares to buy/sell
+  filledSize      Float    @default(0.0) // Shares actually filled
+  avgFillPrice    Float?   // Average fill price
+
+  // Order status and execution
+  status          String   @default("pending") // "pending" | "filled" | "partial" | "cancelled" | "expired"
+  fillReason      String?  // Reason for fill/rejection
+
+  // Fees and slippage
+  makerFee        Float?   // Maker fee (if applicable)
+  takerFee        Float?   // Taker fee
+  slippage        Float?   // Execution slippage
+
+  // Timing
+  timeInForce     String?  // "GTC" | "IOC" | "FOK"
+  expiresAt       DateTime?
+
+  // Execution details
+  executedAt      DateTime?
+  cancelledAt     DateTime?
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  market          PredictionMarket   @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  position        PolymarketPosition? @relation(fields: [positionId], references: [id])
+
+  @@index([userId, status])
+  @@index([marketId])
+  @@index([status, createdAt])
+  @@map("polymarket_orders")
+}
+
+model PolymarketEvent {
+  id              String   @id @default(cuid())
+  marketId        String
+
+  // Event details
+  eventType       String   // "price_change" | "volume_spike" | "resolution" | "status_change"
+  severity        String   @default("info") // "info" | "warning" | "critical"
+
+  // Event data
+  data            Json     // Event-specific data
+  previousValue   Json?    // Previous state before event
+  newValue        Json?    // New state after event
+
+  // Event metadata
+  source          String   @default("polymarket") // Data source
+  confidence      Float    @default(1.0)
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+
+  // Relations
+  market          PredictionMarket @relation(fields: [marketId], references: [id], onDelete: Cascade)
+
+  @@index([marketId, eventType])
+  @@index([createdAt])
+  @@map("polymarket_events")
+}
+
+// ============================================================================
+// HYPERLIQUID TRADING PLATFORM
+// ============================================================================
+
+model HyperliquidMarket {
+  id              String   @id @default(cuid())
+
+  // Market identification
+  symbol          String   @unique // Trading symbol (e.g., "BTC-USD", "ETH-USD")
+  baseAsset       String   // Base asset symbol
+  quoteAsset      String   // Quote asset symbol (usually USD)
+
+  // Market type and details
+  marketType      String   // "perp" | "spot"
+  contractSize    Float?   // Contract size for perpetuals
+  tickSize        Float?   // Minimum price increment
+  stepSize        Float?   // Minimum quantity increment
+
+  // Current market data
+  markPrice       Float?   // Current mark price
+  indexPrice      Float?   // Index price for perpetuals
+  lastPrice       Float?   // Last traded price
+
+  // Market statistics
+  volume24h       Float?   // 24h volume
+  openInterest    Float?   // Open interest for perpetuals
+  fundingRate     Float?   // Current funding rate (perpetuals only)
+  nextFunding     DateTime? // Next funding time
+
+  // Risk parameters
+  maxLeverage     Int?     // Maximum leverage allowed
+  maintenanceMargin Float?  // Maintenance margin requirement
+  initialMargin   Float?   // Initial margin requirement
+
+  // Market status
+  status          String   @default("active") // "active" | "suspended" | "delisted"
+  tradingEnabled  Boolean  @default(true)
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  lastPriceUpdate DateTime @default(now())
+
+  // Relations
+  positions       HyperliquidPosition[]
+  orders          HyperliquidOrder[]
+  fundingHistory  FundingRateHistory[]
+  events          HyperliquidEvent[]
+
+  @@index([symbol])
+  @@index([marketType])
+  @@index([volume24h])
+  @@map("hyperliquid_markets")
+}
+
+model HyperliquidPosition {
+  id              String   @id @default(cuid())
+  userId          String
+  marketId        String
+
+  // Position details
+  side            String   // "long" | "short"
+  size            Float    // Position size
+  entryPrice      Float    // Average entry price
+  markPrice       Float?   // Current mark price
+
+  // Margin and leverage
+  margin          Float    // Margin allocated to position
+  leverage        Float    // Current leverage
+  marginRatio     Float?   // Current margin ratio
+
+  // P&L tracking
+  unrealizedPnl   Float?   // Unrealized P&L
+  realizedPnl     Float    @default(0.0) // Realized P&L
+
+  // Risk management
+  liquidationPrice Float?  // Liquidation price
+  stopLoss        Float?   // Stop loss price
+  takeProfit      Float?   // Take profit price
+
+  // Position status
+  status          String   @default("open") // "open" | "closed" | "liquidated"
+
+  // Funding (for perpetuals)
+  fundingPaid     Float    @default(0.0) // Total funding paid/received
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  lastUpdated     DateTime @default(now())
+  closedAt        DateTime?
+
+  // Relations
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  market          HyperliquidMarket @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  orders          HyperliquidOrder[]
+
+  @@unique([userId, marketId]) // One position per user per market
+  @@index([userId])
+  @@index([marketId])
+  @@index([status])
+  @@map("hyperliquid_positions")
+}
+
+model HyperliquidOrder {
+  id              String   @id @default(cuid())
+  userId          String
+  marketId        String
+  positionId      String?
+
+  // Order identification
+  hyperliquidOrderId String? @unique // Hyperliquid's order ID
+  clientOrderId   String?  // Client-side order ID
+  nonce           BigInt?  // Nonce for order uniqueness
+
+  // Order details
+  side            String   // "buy" | "sell"
+  orderType       String   // "market" | "limit" | "stop" | "take_profit"
+  timeInForce     String   @default("GTC") // "GTC" | "IOC" | "ALO"
+
+  // Pricing and quantity
+  price           Float?   // Limit price (null for market orders)
+  triggerPrice    Float?   // Trigger price for stop orders
+  size            Float    // Order size
+  filledSize      Float    @default(0.0) // Size filled
+  avgFillPrice    Float?   // Average fill price
+
+  // Reduce only and post only flags
+  reduceOnly      Boolean  @default(false) // Reduce only order
+  postOnly        Boolean  @default(false) // Post only order
+
+  // Order status
+  status          String   @default("pending") // "pending" | "filled" | "partial" | "cancelled" | "rejected"
+  rejectReason    String?  // Reason for rejection
+
+  // Fees
+  fee             Float?   // Trading fee paid
+
+  // Timing
+  expiresAt       DateTime?
+  executedAt      DateTime?
+  cancelledAt     DateTime?
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  market          HyperliquidMarket  @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  position        HyperliquidPosition? @relation(fields: [positionId], references: [id])
+
+  @@index([userId, status])
+  @@index([marketId])
+  @@index([status, createdAt])
+  @@map("hyperliquid_orders")
+}
+
+model FundingRateHistory {
+  id              String   @id @default(cuid())
+  marketId        String
+
+  // Funding rate data
+  fundingRate     Float    // Funding rate for this period
+  fundingTime     DateTime // When funding was applied
+  indexPrice      Float?   // Index price at funding time
+  markPrice       Float?   // Mark price at funding time
+
+  // Premium and interest
+  premium         Float?   // Premium component
+  interestRate    Float?   // Interest rate component
+
+  // Volume during period
+  volume          Float?   // Trading volume during funding period
+  openInterest    Float?   // Open interest at funding time
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+
+  // Relations
+  market          HyperliquidMarket @relation(fields: [marketId], references: [id], onDelete: Cascade)
+
+  @@unique([marketId, fundingTime])
+  @@index([marketId, fundingTime])
+  @@map("funding_rate_history")
+}
+
+model HyperliquidEvent {
+  id              String   @id @default(cuid())
+  marketId        String?
+  userId          String?
+
+  // Event details
+  eventType       String   // "trade" | "liquidation" | "funding" | "price_change" | "order_fill"
+  severity        String   @default("info") // "info" | "warning" | "critical"
+
+  // Event data
+  data            Json     // Event-specific data
+
+  // Event metadata
+  source          String   @default("hyperliquid")
+  confidence      Float    @default(1.0)
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+
+  // Relations
+  market          HyperliquidMarket? @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  user            User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([marketId, eventType])
+  @@index([userId, eventType])
+  @@index([createdAt])
+  @@map("hyperliquid_events")
+}
+
+// ============================================================================
+// EMBEDDED WALLETS & CROSS-CHAIN INFRASTRUCTURE
+// ============================================================================
+
+model EmbeddedWallet {
+  id              String   @id @default(cuid())
+  userId          String
+
+  // Wallet identification
+  walletAddress   String   @unique // Wallet public address
+  walletType      String   // "privy" | "smart_contract" | "eoa"
+  chainId         Int      // Blockchain network ID
+
+  // Wallet metadata
+  chainName       String   // Human-readable chain name (Polygon, Hyperliquid, etc.)
+  isActive        Boolean  @default(true)
+  isPrimary       Boolean  @default(false) // Primary wallet for this chain
+
+  // Privy-specific fields
+  privyWalletId   String?  // Privy's internal wallet ID
+  privyUserId     String?  // Privy's user ID
+
+  // Smart wallet features
+  isSmartWallet   Boolean  @default(false)
+  factoryAddress  String?  // Smart wallet factory address
+  implementation  String?  // Smart wallet implementation address
+
+  // Security and recovery
+  recoveryMethod  String?  // "social" | "email" | "phone" | "hardware"
+  backupStatus    String   @default("none") // "none" | "partial" | "complete"
+
+  // Wallet statistics
+  transactionCount Int     @default(0)
+  lastUsed        DateTime @default(now())
+  totalVolume     Float    @default(0.0) // Total transaction volume
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessions        WalletSession[]
+  transactions    CrossChainTransaction[]
+
+  @@unique([userId, chainId, walletAddress])
+  @@index([userId, chainId])
+  @@index([walletAddress])
+  @@index([chainId])
+  @@map("embedded_wallets")
+}
+
+model WalletSession {
+  id              String   @id @default(cuid())
+  userId          String
+  walletId        String
+
+  // Session details
+  sessionToken    String   @unique // Unique session identifier
+  status          String   @default("active") // "active" | "expired" | "revoked"
+
+  // Session metadata
+  deviceInfo      Json?    // Device and browser information
+  ipAddress       String?  // IP address for session
+  userAgent       String?  // User agent string
+  location        Json?    // Approximate location data
+
+  // Authentication details
+  authMethod      String   // "email" | "phone" | "social" | "wallet" | "passkey"
+  authProvider    String?  // "google" | "apple" | "discord" | etc.
+
+  // Session security
+  nonce           String?  // Cryptographic nonce
+  signature       String?  // Authentication signature
+  challenge       String?  // Challenge for wallet-based auth
+
+  // Session limits and permissions
+  permissions     String[] @default([]) // "read" | "trade" | "transfer"
+  expiresAt       DateTime
+  lastActivity    DateTime @default(now())
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wallet          EmbeddedWallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([sessionToken])
+  @@index([expiresAt])
+  @@map("wallet_sessions")
+}
+
+model CrossChainTransaction {
+  id              String   @id @default(cuid())
+  userId          String
+  walletId        String
+
+  // Transaction identification
+  txHash          String?  // Transaction hash (for completed txs)
+  lifiTransactionId String? // LiFi transaction ID
+  clientTxId      String   @unique // Client-generated unique ID
+
+  // Transaction type and details
+  transactionType String   // "bridge" | "swap" | "transfer" | "trade"
+  protocol        String?  // "lifi" | "polymarket" | "hyperliquid"
+
+  // Source chain information
+  fromChainId     Int
+  fromChainName   String
+  fromToken       String   // Token address or symbol
+  fromAmount      String   // Amount as string to preserve precision
+  fromTxHash      String?  // Source transaction hash
+
+  // Destination chain information
+  toChainId       Int
+  toChainName     String
+  toToken         String   // Token address or symbol
+  toAmount        String?  // Received amount (may differ due to slippage)
+  toTxHash        String?  // Destination transaction hash
+
+  // Transaction routing
+  routeData       Json?    // LiFi route information
+  bridgeUsed      String?  // Bridge protocol used
+  exchangeUsed    String?  // Exchange used for swaps
+
+  // Transaction status
+  status          String   @default("pending") // "pending" | "processing" | "completed" | "failed" | "cancelled"
+  statusDetails   String?  // Detailed status information
+  failureReason   String?  // Reason for failure
+
+  // Financial details
+  fees            Json?    // Breakdown of all fees
+  slippage        Float?   // Actual slippage experienced
+  gasCost         String?  // Total gas cost
+  exchangeRate    Float?   // Exchange rate used
+
+  // Timing
+  estimatedTime   Int?     // Estimated completion time (seconds)
+  actualTime      Int?     // Actual completion time (seconds)
+  submittedAt     DateTime?
+  completedAt     DateTime?
+
+  // User experience
+  userInitiated   Boolean  @default(true) // User vs system initiated
+  retryCount      Int      @default(0)
+  lastRetryAt     DateTime?
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wallet          EmbeddedWallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([fromChainId, toChainId])
+  @@index([transactionType, status])
+  @@index([createdAt])
+  @@map("cross_chain_transactions")
+}
+
+model LifiQuote {
+  id              String   @id @default(cuid())
+  userId          String?
+
+  // Quote identification
+  quoteId         String   @unique // LiFi quote ID
+  clientQuoteId   String?  // Client-generated quote ID
+
+  // Route details
+  fromChainId     Int
+  toChainId       Int
+  fromToken       String
+  toToken         String
+  fromAmount      String
+
+  // Quote results
+  toAmount        String   // Expected output amount
+  toAmountMin     String   // Minimum guaranteed amount
+  gasCost         String   // Estimated gas cost
+
+  // Route information
+  routeSteps      Json     // Detailed route steps
+  toolsUsed       String[] // Tools/protocols used
+  estimatedTime   Int      // Estimated execution time (seconds)
+
+  // Pricing
+  fees            Json     // Fee breakdown
+  exchangeRate    Float    // Exchange rate
+  priceImpact     Float?   // Price impact percentage
+
+  // Quote metadata
+  valid           Boolean  @default(true)
+  expiresAt       DateTime
+  requestedAt     DateTime @default(now())
+
+  // Quote source
+  fromAddress     String?  // Requesting wallet address
+  slippage        Float    @default(0.005) // Slippage tolerance (0.5%)
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  user            User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, valid])
+  @@index([fromChainId, toChainId])
+  @@index([expiresAt])
+  @@map("lifi_quotes")
 }
