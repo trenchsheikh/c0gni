@@ -86,7 +86,20 @@ export class ChatSessionManager {
     options: Partial<ChatSessionData> = {}
   ): Promise<ChatSessionData> {
     console.log(`📝 [SESSION] Creating new chat session for user: ${userId || 'anonymous'}`)
-    
+    // Ensure user exists if userId provided to avoid FK violations
+    if (userId) {
+      const existing = await prisma.user.findUnique({ where: { id: userId } })
+      if (!existing) {
+        try {
+          await prisma.user.create({ data: { id: userId } })
+          console.log(`👤 [SESSION] Auto-created user record for: ${userId}`)
+        } catch (e) {
+          console.warn(`⚠️ [SESSION] Failed to create user ${userId}. Falling back to shared session.`, e)
+          userId = undefined
+        }
+      }
+    }
+
     const session = await prisma.chatSession.create({
       data: {
         userId,

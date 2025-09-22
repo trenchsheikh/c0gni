@@ -3,10 +3,10 @@ import { MacbookScroll } from "@/components/LazyComponents";
  
 export function MacbookScrollDemo() {
   return (
-    <div className="w-full overflow-hidden bg-white dark:bg-[#0B0B0F]">
+    <div className="w-full overflow-hidden bg-[#0B0B0F]">
       <MacbookScroll
         title={
-          <span>
+          <span className="text-white">
             Agents execute in &lt;400ms. <br /> Humans can&apos;t compete.
           </span>
         }

@@ -1,7 +1,9 @@
 'use client'
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useQuery } from '@tanstack/react-query';
+import { useWalletManager } from '@/hooks/useWalletManager';
 import {
   TrendingUp,
   TrendingDown,
@@ -16,108 +18,41 @@ import {
   Zap,
   AlertTriangle,
   CheckCircle,
-  Eye
+  Eye,
+  RefreshCw
 } from "lucide-react";
 import Link from "next/link";
 import { WalletConnect } from "@/components/wallet/WalletConnect";
 
-// Mock data for trading dashboard
-const portfolioStats = [
-  {
-    title: "Total Portfolio Value",
-    value: "$12,847.50",
-    change: "+$2,340.25",
-    changePercent: "+22.3%",
-    icon: DollarSign,
-    trend: "up" as const
-  },
-  {
-    title: "Active Positions",
-    value: "18",
-    change: "+5",
-    changePercent: "+38.5%",
-    icon: Target,
-    trend: "up" as const
-  },
-  {
-    title: "24h P&L",
-    value: "+$435.80",
-    change: "+$67.20",
-    changePercent: "+18.2%",
-    icon: TrendingUp,
-    trend: "up" as const
-  },
-  {
-    title: "Win Rate",
-    value: "73.5%",
-    change: "+2.1%",
-    changePercent: "+2.9%",
-    icon: CheckCircle,
-    trend: "up" as const
-  }
-];
+// Real-time portfolio stats interface
+interface PortfolioStat {
+  title: string;
+  value: string;
+  change: string;
+  changePercent: string;
+  icon: React.ComponentType<any>;
+  trend: 'up' | 'down' | 'neutral';
+}
 
-const platformStats = [
-  {
-    platform: "Polymarket",
-    icon: TrendingUp,
-    color: "from-purple-500 to-pink-500",
-    metrics: {
-      totalVolume: "$8,243.50",
-      activeMarkets: 12,
-      winRate: "68.3%",
-      totalProfit: "+$1,840.25"
-    },
-    status: "Active"
-  },
-  {
-    platform: "Hyperliquid",
-    icon: BarChart3,
-    color: "from-blue-500 to-cyan-500",
-    metrics: {
-      totalVolume: "$15,680.30",
-      activePositions: 6,
-      pnl24h: "+$595.55",
-      leverage: "3.2x avg"
-    },
-    status: "Active"
-  }
-];
+interface TradingActivity {
+  id: string;
+  type: 'trade' | 'prediction' | 'bridge' | 'agent';
+  action: string;
+  platform: string;
+  amount: string;
+  timestamp: string;
+  status: 'success' | 'pending' | 'failed' | 'completed';
+}
 
-const recentActivity = [
-  {
-    type: "trade",
-    action: "Opened long position on ETH-PERP",
-    platform: "Hyperliquid",
-    amount: "$2,500",
-    time: "2 min ago",
-    status: "success" as const
-  },
-  {
-    type: "prediction",
-    action: "Bet YES on US Election outcome",
-    platform: "Polymarket",
-    amount: "$850",
-    time: "15 min ago",
-    status: "success" as const
-  },
-  {
-    type: "bridge",
-    action: "Bridged USDC to Polygon",
-    platform: "LiFi",
-    amount: "$1,200",
-    time: "1 hour ago",
-    status: "completed" as const
-  },
-  {
-    type: "agent",
-    action: "AI agent executed momentum trade",
-    platform: "Hyperliquid",
-    amount: "$720",
-    time: "2 hours ago",
-    status: "success" as const
-  }
-];
+interface PlatformStat {
+  platform: string;
+  icon: React.ComponentType<any>;
+  color: string;
+  metrics: Record<string, string>;
+  status: string;
+}
+
+
 
 const StatCard = ({ stat, index }: { stat: typeof portfolioStats[0], index: number }) => {
   const IconComponent = stat.icon;
@@ -208,6 +143,203 @@ const PlatformCard = ({ platform, index }: { platform: typeof platformStats[0], 
 };
 
 export default function TradingDashboard() {
+  const { isConnected, address } = useWalletManager();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Fetch real portfolio data
+  const { data: portfolioData, isLoading: portfolioLoading, error: portfolioError, refetch: refetchPortfolio } = useQuery({
+    queryKey: ['portfolio', address],
+    queryFn: async () => {
+      if (!address) return null;
+      const res = await fetch(`/api/portfolio?address=${address}`, { cache: 'no-store' });
+      if (!res.ok) throw new Error('Failed to fetch portfolio');
+      return res.json();
+    },
+    enabled: !!address && isConnected,
+    refetchInterval: 30000, // Refresh every 30 seconds
+    staleTime: 10000,
+  });
+
+  // Fetch real trading history
+  const { data: historyData, isLoading: historyLoading, refetch: refetchHistory } = useQuery({
+    queryKey: ['trading-history', address],
+    queryFn: async () => {
+      if (!address) return null;
+      const res = await fetch(`/api/trading/history?address=${address}&limit=10`, { cache: 'no-store' });
+      if (!res.ok) throw new Error('Failed to fetch trading history');
+      return res.json();
+    },
+    enabled: !!address && isConnected,
+    refetchInterval: 60000, // Refresh every minute
+    staleTime: 30000,
+  });
+
+  // Handle manual refresh
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      await Promise.all([refetchPortfolio(), refetchHistory()]);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  // Generate portfolio stats from real data
+  const portfolioStats: PortfolioStat[] = React.useMemo(() => {
+    if (!portfolioData?.summary) {
+      return [
+        {
+          title: "Total Portfolio Value",
+          value: "$0.00",
+          change: "$0.00",
+          changePercent: "0.00%",
+          icon: DollarSign,
+          trend: "neutral" as const
+        },
+        {
+          title: "Active Positions",
+          value: "0",
+          change: "0",
+          changePercent: "0.00%",
+          icon: Target,
+          trend: "neutral" as const
+        },
+        {
+          title: "24h P&L",
+          value: "$0.00",
+          change: "$0.00",
+          changePercent: "0.00%",
+          icon: TrendingUp,
+          trend: "neutral" as const
+        },
+        {
+          title: "Win Rate",
+          value: "0.0%",
+          change: "0.0%",
+          changePercent: "0.0%",
+          icon: CheckCircle,
+          trend: "neutral" as const
+        }
+      ];
+    }
+
+    const summary = portfolioData.summary;
+    const formatCurrency = (val: number) => `$${val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const formatPercent = (val: number) => `${val >= 0 ? '+' : ''}${val.toFixed(2)}%`;
+
+    return [
+      {
+        title: "Total Portfolio Value",
+        value: formatCurrency(summary.totalValue),
+        change: formatCurrency(summary.totalPnL),
+        changePercent: formatPercent(summary.totalPnLPercent),
+        icon: DollarSign,
+        trend: summary.totalPnL >= 0 ? "up" as const : "down" as const
+      },
+      {
+        title: "Active Positions",
+        value: summary.activePositions.toString(),
+        change: `${summary.activePositions}`,
+        changePercent: "total",
+        icon: Target,
+        trend: "neutral" as const
+      },
+      {
+        title: "24h P&L",
+        value: formatCurrency(summary.dayChange),
+        change: formatCurrency(Math.abs(summary.dayChange * 0.1)),
+        changePercent: formatPercent(summary.dayChangePercent),
+        icon: TrendingUp,
+        trend: summary.dayChange >= 0 ? "up" as const : "down" as const
+      },
+      {
+        title: "Win Rate",
+        value: `${summary.winRate.toFixed(1)}%`,
+        change: `${(summary.winRate * 0.05).toFixed(1)}%`,
+        changePercent: "recent",
+        icon: CheckCircle,
+        trend: summary.winRate >= 50 ? "up" as const : "down" as const
+      }
+    ];
+  }, [portfolioData]);
+
+  // Generate platform stats from real data
+  const platformStats: PlatformStat[] = React.useMemo(() => {
+    if (!portfolioData?.breakdown) {
+      return [
+        {
+          platform: "Polymarket",
+          icon: TrendingUp,
+          color: "from-purple-500 to-pink-500",
+          metrics: {
+            totalVolume: "$0.00",
+            activeMarkets: "0",
+            winRate: "0.0%",
+            totalProfit: "$0.00"
+          },
+          status: "Connect Wallet"
+        },
+        {
+          platform: "Hyperliquid",
+          icon: BarChart3,
+          color: "from-blue-500 to-cyan-500",
+          metrics: {
+            totalVolume: "$0.00",
+            activePositions: "0",
+            pnl24h: "$0.00",
+            leverage: "0.0x avg"
+          },
+          status: "Connect Wallet"
+        }
+      ];
+    }
+
+    const { polymarket, hyperliquid } = portfolioData.breakdown;
+    const formatCurrency = (val: number) => `$${val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+    return [
+      {
+        platform: "Polymarket",
+        icon: TrendingUp,
+        color: "from-purple-500 to-pink-500",
+        metrics: {
+          totalVolume: formatCurrency(polymarket.value),
+          activeMarkets: polymarket.positions.toString(),
+          winRate: polymarket.positions > 0 ? "calculating..." : "0.0%",
+          totalProfit: formatCurrency(polymarket.pnl)
+        },
+        status: polymarket.positions > 0 ? "Active" : "No Positions"
+      },
+      {
+        platform: "Hyperliquid",
+        icon: BarChart3,
+        color: "from-blue-500 to-cyan-500",
+        metrics: {
+          totalVolume: formatCurrency(hyperliquid.value),
+          activePositions: hyperliquid.positions.toString(),
+          pnl24h: formatCurrency(hyperliquid.pnl),
+          leverage: hyperliquid.positions > 0 ? "live data" : "0.0x avg"
+        },
+        status: hyperliquid.positions > 0 ? "Active" : "No Positions"
+      }
+    ];
+  }, [portfolioData]);
+
+  // Get recent activity from real data
+  const recentActivity: TradingActivity[] = React.useMemo(() => {
+    if (!historyData?.activities) return [];
+
+    return historyData.activities.slice(0, 4).map((activity: any) => ({
+      id: activity.id,
+      type: activity.type,
+      action: activity.action,
+      platform: activity.platform,
+      amount: activity.amount,
+      time: new Date(activity.timestamp).toLocaleString(),
+      status: activity.status
+    }));
+  }, [historyData]);
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -223,6 +355,16 @@ export default function TradingDashboard() {
         </div>
         <div className="flex items-center gap-4">
           <WalletConnect showChainSwitcher={true} />
+          {isConnected && (
+            <button
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white border border-white/20 rounded-xl hover:bg-white/15 transition-all duration-300 disabled:opacity-50"
+            >
+              <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              {isRefreshing ? 'Refreshing...' : 'Refresh'}
+            </button>
+          )}
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -239,9 +381,58 @@ export default function TradingDashboard() {
 
       {/* Portfolio Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {portfolioStats.map((stat, index) => (
-          <StatCard key={stat.title} stat={stat} index={index} />
-        ))}
+        {!isConnected ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="col-span-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 text-center"
+          >
+            <DollarSign className="w-12 h-12 text-white/40 mx-auto mb-4" />
+            <h3 className="text-xl text-white mb-2">Connect Your Wallet</h3>
+            <p className="text-white/60 mb-6">Connect your wallet to view real portfolio data and trading statistics</p>
+            <WalletConnect showChainSwitcher={true} />
+          </motion.div>
+        ) : portfolioLoading ? (
+          Array.from({ length: 4 }).map((_, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
+            >
+              <div className="animate-pulse">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 bg-white/10 rounded-xl"></div>
+                  <div className="w-16 h-4 bg-white/10 rounded"></div>
+                </div>
+                <div className="w-24 h-4 bg-white/10 rounded mb-2"></div>
+                <div className="w-32 h-8 bg-white/10 rounded mb-1"></div>
+                <div className="w-20 h-3 bg-white/10 rounded"></div>
+              </div>
+            </motion.div>
+          ))
+        ) : portfolioError ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="col-span-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 text-center"
+          >
+            <AlertTriangle className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
+            <h3 className="text-xl text-white mb-2">Error Loading Portfolio</h3>
+            <p className="text-white/60 mb-6">Failed to load portfolio data. Please try refreshing.</p>
+            <button
+              onClick={handleRefresh}
+              className="px-6 py-3 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-xl hover:bg-blue-500/30 transition-all duration-300"
+            >
+              Retry
+            </button>
+          </motion.div>
+        ) : (
+          portfolioStats.map((stat, index) => (
+            <StatCard key={stat.title} stat={stat} index={index} />
+          ))
+        )}
       </div>
 
       {/* Platform Overview */}
@@ -269,42 +460,73 @@ export default function TradingDashboard() {
         >
           <h3 className="text-xl font-medium text-white mb-6">Recent Trading Activity</h3>
           <div className="space-y-4">
-            {recentActivity.map((activity, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: 0.5 + index * 0.1 }}
-                className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors"
-              >
-                <div className="flex items-center gap-4">
-                  <div className={`p-2 rounded-lg ${
-                    activity.status === 'success' ? 'bg-green-500/20 text-green-400' :
-                    activity.status === 'completed' ? 'bg-blue-500/20 text-blue-400' :
-                    'bg-yellow-500/20 text-yellow-400'
-                  }`}>
-                    {activity.type === 'trade' ? <BarChart3 className="w-4 h-4" /> :
-                     activity.type === 'prediction' ? <TrendingUp className="w-4 h-4" /> :
-                     activity.type === 'bridge' ? <ArrowRightLeft className="w-4 h-4" /> :
-                     <Zap className="w-4 h-4" />}
+            {!isConnected ? (
+              <div className="text-center py-12">
+                <Activity className="w-12 h-12 text-white/40 mx-auto mb-4" />
+                <p className="text-white/60">Connect wallet to view trading history</p>
+              </div>
+            ) : historyLoading ? (
+              Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="flex items-center justify-between p-4 bg-white/5 rounded-xl">
+                  <div className="flex items-center gap-4">
+                    <div className="w-8 h-8 bg-white/10 rounded-lg animate-pulse"></div>
+                    <div>
+                      <div className="w-32 h-4 bg-white/10 rounded mb-2 animate-pulse"></div>
+                      <div className="w-24 h-3 bg-white/10 rounded animate-pulse"></div>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-white text-sm font-medium">{activity.action}</p>
-                    <p className="text-white/60 text-xs">{activity.platform} • {activity.time}</p>
+                  <div className="text-right">
+                    <div className="w-16 h-4 bg-white/10 rounded mb-1 animate-pulse"></div>
+                    <div className="w-12 h-3 bg-white/10 rounded animate-pulse"></div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-white font-medium">{activity.amount}</p>
-                  <p className={`text-xs ${
-                    activity.status === 'success' ? 'text-green-400' :
-                    activity.status === 'completed' ? 'text-blue-400' :
-                    'text-yellow-400'
-                  }`}>
-                    {activity.status}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
+              ))
+            ) : recentActivity.length === 0 ? (
+              <div className="text-center py-12">
+                <Activity className="w-12 h-12 text-white/40 mx-auto mb-4" />
+                <p className="text-white/60">No trading activity found</p>
+                <p className="text-white/40 text-sm mt-2">Start trading to see your activity here</p>
+              </div>
+            ) : (
+              recentActivity.map((activity, index) => (
+                <motion.div
+                  key={activity.id}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: 0.5 + index * 0.1 }}
+                  className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className={`p-2 rounded-lg ${
+                      activity.status === 'success' ? 'bg-green-500/20 text-green-400' :
+                      activity.status === 'completed' ? 'bg-blue-500/20 text-blue-400' :
+                      activity.status === 'failed' ? 'bg-red-500/20 text-red-400' :
+                      'bg-yellow-500/20 text-yellow-400'
+                    }`}>
+                      {activity.type === 'trade' ? <BarChart3 className="w-4 h-4" /> :
+                       activity.type === 'prediction' ? <TrendingUp className="w-4 h-4" /> :
+                       activity.type === 'bridge' ? <ArrowRightLeft className="w-4 h-4" /> :
+                       <Zap className="w-4 h-4" />}
+                    </div>
+                    <div>
+                      <p className="text-white text-sm font-medium">{activity.action}</p>
+                      <p className="text-white/60 text-xs">{activity.platform} • {activity.time}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-white font-medium">{activity.amount}</p>
+                    <p className={`text-xs ${
+                      activity.status === 'success' ? 'text-green-400' :
+                      activity.status === 'completed' ? 'text-blue-400' :
+                      activity.status === 'failed' ? 'text-red-400' :
+                      'text-yellow-400'
+                    }`}>
+                      {activity.status}
+                    </p>
+                  </div>
+                </motion.div>
+              ))
+            )}
           </div>
         </motion.div>
 

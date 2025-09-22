@@ -8,6 +8,7 @@ import { http } from 'viem'
 import { polygon } from 'viem/chains'
 import { createConfig } from 'wagmi'
 import { Toaster } from '@/components/ui/sonner'
+import { WalletProvider } from '@/contexts/WalletContext'
 
 // Custom chain configuration for Hyperliquid
 const hyperliquid = {
@@ -89,8 +90,10 @@ export function Providers({ children }: ProvidersProps) {
     >
       <QueryClientProvider client={queryClient}>
         <WagmiProvider config={wagmiConfig}>
-          {children}
-          <Toaster />
+          <WalletProvider>
+            {children}
+            <Toaster />
+          </WalletProvider>
         </WagmiProvider>
       </QueryClientProvider>
     </PrivyProvider>

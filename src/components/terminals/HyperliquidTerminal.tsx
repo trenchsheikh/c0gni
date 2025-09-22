@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { WalletConnect } from '@/components/wallet/WalletConnect';
+import { WalletSwitcher } from '@/components/wallet/WalletSwitcher';
 import { CrossChainBridge } from '@/components/bridge/CrossChainBridge';
+import { QuickTrade } from '@/components/trading/QuickTrade';
 import {
   TrendingUp,
   TrendingDown,
@@ -730,7 +731,7 @@ export default function HyperliquidTerminal() {
           <p className="text-white/60">Advanced perpetual and spot trading</p>
         </div>
         <div className="flex items-center gap-4">
-          <WalletConnect showChainSwitcher={true} />
+          <WalletSwitcher />
           <button
             onClick={() => refetch()}
             disabled={isQueryLoading}
@@ -887,6 +888,25 @@ export default function HyperliquidTerminal() {
 
         {/* Sidebar */}
         <div className="space-y-6">
+          {/* Quick Trade Component */}
+          {selectedMarket && (
+            <QuickTrade
+              market={{
+                id: selectedMarket.symbol,
+                symbol: selectedMarket.symbol,
+                markPrice: selectedMarket.markPrice,
+                type: 'hyperliquid',
+              }}
+              platform="hyperliquid"
+              onTradeComplete={() => {
+                // Refresh positions after trade
+                if (selectedTab === 'positions') {
+                  // Trigger position refresh
+                }
+              }}
+            />
+          )}
+
           {/* Trading Interface */}
           {selectedMarket && <TradingInterface />}
 

@@ -12,15 +12,19 @@ export interface NavigationContext {
 // Generate deep links to dashboard pages
 export class DashboardNavigator {
   static polymarket(params: { market?: string, action?: string }): string {
+    if (params.market) {
+      return `/dashboard/polymarket/${params.market}`
+    }
     const url = new URL('/dashboard/polymarket', window.location.origin)
-    if (params.market) url.searchParams.set('market', params.market)
     if (params.action) url.searchParams.set('action', params.action)
     return url.pathname + url.search
   }
 
   static hyperliquid(params: { symbol?: string, action?: string }): string {
+    if (params.symbol) {
+      return `/dashboard/hyperliquid/${encodeURIComponent(params.symbol)}`
+    }
     const url = new URL('/dashboard/hyperliquid', window.location.origin)
-    if (params.symbol) url.searchParams.set('symbol', params.symbol)
     if (params.action) url.searchParams.set('action', params.action)
     return url.pathname + url.search
   }

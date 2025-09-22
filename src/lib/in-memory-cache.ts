@@ -98,6 +98,8 @@ export const CACHE_KEYS = {
   HYPERLIQUID_ORDERBOOK: (symbol: string) => `hyperliquid:orderbook:${symbol}`,
   HYPERLIQUID_LAST_UPDATE: 'hyperliquid:last_update',
   HYPERLIQUID_META: 'hyperliquid:meta',
+  POLYMARKET_MARKETS: 'polymarket:markets',
+  POLYMARKET_LAST_UPDATE: 'polymarket:last_update',
 } as const
 
 // TTL values (in seconds)
@@ -127,4 +129,14 @@ export function getOrderBookDataCache(symbol: string) {
 
 export function getLastUpdateCache() {
   return memoryCache.get(CACHE_KEYS.HYPERLIQUID_LAST_UPDATE)
+}
+
+// Polymarket helpers (memory cache)
+export function setPolymarketMarketsCache(data: any[]): void {
+  memoryCache.set(CACHE_KEYS.POLYMARKET_MARKETS, data, CACHE_TTL.MARKETS)
+  memoryCache.set(CACHE_KEYS.POLYMARKET_LAST_UPDATE, Date.now(), CACHE_TTL.MARKETS)
+}
+
+export function getPolymarketMarketsCache(): any[] | null {
+  return memoryCache.get(CACHE_KEYS.POLYMARKET_MARKETS)
 }

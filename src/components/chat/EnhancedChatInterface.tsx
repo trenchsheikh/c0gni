@@ -407,13 +407,13 @@ export function EnhancedChatInterface({
                   price: market.yesPrice,
                   volume: market.volume24h,
                   confidence: market.impliedOdds,
-                  url: market.dashboardUrl || `/dashboard/polymarket?market=${market.id}`
+                  url: market.dashboardUrl || `/dashboard/polymarket/${market.id}`
                 },
                 quickActions: [
                   {
                     label: 'Trade',
                     type: 'navigate',
-                    href: market.dashboardUrl || `/dashboard/polymarket?market=${market.id}`,
+                    href: market.dashboardUrl || `/dashboard/polymarket/${market.id}`,
                     icon: DollarSign
                   },
                   {
@@ -437,13 +437,13 @@ export function EnhancedChatInterface({
                   change: market.priceChangePercent24h,
                   volume: market.volume24h,
                   trend: market.priceChangePercent24h > 0 ? 'up' : 'down',
-                  url: market.dashboardUrl || `/dashboard/hyperliquid?symbol=${encodeURIComponent(market.symbol)}`
+                  url: market.dashboardUrl || `/dashboard/hyperliquid/${encodeURIComponent(market.symbol)}`
                 },
                 quickActions: [
                   {
                     label: 'Trade',
                     type: 'navigate',
-                    href: market.dashboardUrl || `/dashboard/hyperliquid?symbol=${encodeURIComponent(market.symbol)}`,
+                    href: market.dashboardUrl || `/dashboard/hyperliquid/${encodeURIComponent(market.symbol)}`,
                     icon: TrendingUp
                   }
                 ]

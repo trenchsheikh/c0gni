@@ -7,7 +7,9 @@ import {
   getMarketDataCache,
   setOrderBookDataCache,
   getOrderBookDataCache,
-  getLastUpdateCache
+  getLastUpdateCache,
+  setPolymarketMarketsCache,
+  getPolymarketMarketsCache
 } from './in-memory-cache'
 
 // Redis client configuration using Upstash
@@ -34,6 +36,9 @@ export const REDIS_KEYS = {
   HYPERLIQUID_ORDERBOOK: (symbol: string) => `hyperliquid:orderbook:${symbol}`,
   HYPERLIQUID_LAST_UPDATE: 'hyperliquid:last_update',
   HYPERLIQUID_META: 'hyperliquid:meta',
+  POLYMARKET_MARKETS: 'polymarket:markets',
+  POLYMARKET_LAST_UPDATE: 'polymarket:last_update',
+  POLYMARKET_MARKET: (id: string) => `polymarket:market:${id}`,
 } as const
 
 // TTL values (in seconds)
@@ -72,7 +77,7 @@ export async function getMarketData() {
       console.log('📊 Redis data result:', data ? `Found ${JSON.stringify(data).length} chars` : 'null')
 
       if (data) {
-        const parsed = JSON.parse(data as string)
+        const parsed = typeof data === 'string' ? JSON.parse(data as string) : (data as any)
         console.log(`✅ Redis returned ${Array.isArray(parsed) ? parsed.length : 'non-array'} markets`)
         // Also cache in memory for faster subsequent access
         setMarketDataCache(parsed)
@@ -111,7 +116,7 @@ export async function getOrderBookData(symbol: string) {
     try {
       const data = await redis.get(REDIS_KEYS.HYPERLIQUID_ORDERBOOK(symbol))
       if (data) {
-        const parsed = JSON.parse(data as string)
+        const parsed = typeof data === 'string' ? JSON.parse(data as string) : (data as any)
         // Also cache in memory for faster subsequent access
         setOrderBookDataCache(symbol, parsed)
         return parsed
@@ -140,7 +145,7 @@ export async function getMetaData() {
   if (!redis) return null
   try {
     const data = await redis.get(REDIS_KEYS.HYPERLIQUID_META)
-    return data ? JSON.parse(data as string) : null
+    return data ? (typeof data === 'string' ? JSON.parse(data as string) : (data as any)) : null
   } catch (error) {
     console.error('Redis getMetaData error:', error)
     return null
@@ -160,6 +165,68 @@ export async function getLastUpdate() {
 
   // Fallback to memory cache
   return getLastUpdateCache()
+}
+
+export async function getPolymarketLastUpdate() {
+  if (redis) {
+    try {
+      const update = await redis.get(REDIS_KEYS.POLYMARKET_LAST_UPDATE)
+      if (update) return update
+    } catch (error) {
+      console.warn('Redis getPolymarketLastUpdate error, falling back to memory cache:', (error as any).message)
+    }
+  }
+  return memoryCache.get(CACHE_KEYS.POLYMARKET_LAST_UPDATE)
+}
+
+// Polymarket caching helpers
+export async function setPolymarketMarkets(markets: any[]) {
+  // Always set memory cache too
+  setPolymarketMarketsCache(markets)
+  if (redis) {
+    try {
+      await redis.setex(REDIS_KEYS.POLYMARKET_MARKETS, TTL.MARKETS, JSON.stringify(markets))
+      await redis.set(REDIS_KEYS.POLYMARKET_LAST_UPDATE, Date.now())
+      // Also store each market individually for quick lookup
+      const pipeline = redis.pipeline()
+      for (const m of markets) {
+        if (m?.id) pipeline.setex(REDIS_KEYS.POLYMARKET_MARKET(m.id), TTL.MARKETS, JSON.stringify(m))
+      }
+      await pipeline.exec()
+      return true
+    } catch (e: any) {
+      console.warn('Redis setPolymarketMarkets error:', e.message)
+    }
+  }
+  return true
+}
+
+export async function getPolymarketMarkets(): Promise<any[] | null> {
+  if (redis) {
+    try {
+      const data = await redis.get(REDIS_KEYS.POLYMARKET_MARKETS)
+      if (data) {
+        const parsed = typeof data === 'string' ? JSON.parse(data as string) : (data as any)
+        setPolymarketMarketsCache(parsed)
+        return parsed
+      }
+    } catch (e: any) {
+      console.warn('Redis getPolymarketMarkets error:', e.message)
+    }
+  }
+  return getPolymarketMarketsCache()
+}
+
+export async function getPolymarketMarket(id: string): Promise<any | null> {
+  if (redis) {
+    try {
+      const data = await redis.get(REDIS_KEYS.POLYMARKET_MARKET(id))
+      if (data) return typeof data === 'string' ? JSON.parse(data as string) : (data as any)
+    } catch {}
+  }
+  // fallback: try memory cache list
+  const list = getPolymarketMarketsCache()
+  return Array.isArray(list) ? list.find((m: any) => m.id === id) || null : null
 }
 
 // Test Redis connection

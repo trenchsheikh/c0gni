@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server'
+import { getPolymarketMarkets, setPolymarketMarkets } from '@/lib/redis'
 
 // Prefer Polymarket Gamma; fallback to CLOB if needed
 const DEFAULT_GAMMA = 'https://gamma-api.polymarket.com'
@@ -239,50 +240,32 @@ function parseClobMarket(market: any) {
 
 export async function GET(_req: NextRequest) {
   try {
+    const cached = await getPolymarketMarkets()
+    if (cached && Array.isArray(cached) && cached.length > 0) {
+      return Response.json({ markets: cached, cached: true })
+    }
+
+    // Auto-refresh when empty
     let rawMarkets: any[] = []
     let isGamma = true
-
     try {
       rawMarkets = await fetchGammaMarkets()
     } catch {
-      try {
-        rawMarkets = await fetchClobMarkets()
-        isGamma = false
-      } catch (e) {
-        throw new Error('Both Gamma and CLOB APIs failed')
-      }
+      rawMarkets = await fetchClobMarkets()
+      isGamma = false
     }
 
-    // Map raw markets to frontend format
+    const now = new Date()
     const markets = rawMarkets
-      .map(market => isGamma ? parseGammaMarket(market) : parseClobMarket(market))
-      .filter(market => {
-        // Basic validation
-        if (!market.question || market.question === 'Untitled market') return false
+      .map(m => isGamma ? parseGammaMarket(m) : parseClobMarket(m))
+      .filter(m => m.status === 'active' && (!m.resolutionDate || new Date(m.resolutionDate) > now))
+      .sort((a, b) => (b.totalVolume + b.volume24h + b.liquidity) - (a.totalVolume + a.volume24h + a.liquidity))
+      .slice(0, 50)
 
-        // Only include truly active markets
-        if (market.status !== 'active') return false
-
-        // Additional date check
-        if (market.resolutionDate) {
-          const resDate = new Date(market.resolutionDate)
-          const now = new Date()
-          // Only include markets ending in the future
-          if (resDate <= now) return false
-        }
-
-        return true
-      })
-      .sort((a, b) => {
-        // Sort by total volume first, then by 24h volume, then by liquidity
-        const aVolume = a.totalVolume + a.volume24h + a.liquidity
-        const bVolume = b.totalVolume + b.volume24h + b.liquidity
-        return bVolume - aVolume
-      })
-      .slice(0, 50) // Limit to top 50 markets
-
-    return Response.json({ markets })
+    await setPolymarketMarkets(markets)
+    return Response.json({ markets, cached: false, autoRefreshed: true })
   } catch (e: any) {
-    return Response.json({ error: e?.message || 'Failed to load Polymarket markets' }, { status: 500 })
+    console.error('Polymarket auto-refresh failed:', e?.message || e)
+    return Response.json({ markets: [], cached: false, autoRefreshed: false, message: 'Polymarket data unavailable (network restricted). Please try again later or run /api/polymarket/sync on a network-enabled environment.' })
   }
 }

@@ -193,8 +193,8 @@ function getSystemPrompt(knowledgeId: string): string {
 - **Portfolio Analysis**: Performance tracking, risk metrics, position optimization
 
 ## Dashboard Integration:
-- Generate direct links to specific markets: /dashboard/polymarket?market=ID
-- Navigate to trading interfaces: /dashboard/hyperliquid?symbol=BTC-USD
+- Generate direct links to specific markets: /dashboard/polymarket/ID
+- Navigate to trading interfaces: /dashboard/hyperliquid/BTC-USD
 - Portfolio navigation: /dashboard/portfolio for position analysis
 - Bridge recommendations: /dashboard/bridge for cross-chain needs
 
@@ -222,7 +222,7 @@ When presenting market data, always format as JSON for visual rendering:
       "question": "Market question or symbol",
       "yesPrice": 0.65,
       "volume24h": 50000,
-      "dashboardUrl": "/dashboard/polymarket?market=xyz"
+      "dashboardUrl": "/dashboard/polymarket/xyz"
     }
   ]
 }
@@ -262,12 +262,13 @@ export class AIAgent {
       prompt 
     })
     
+    const maxIters = parseInt(process.env.AGENT_MAX_ITERATIONS || '30')
     this.agent = new AgentExecutor({ 
       agent: toolCallingAgent, 
       tools,
       verbose: true,
-      maxIterations: 10,
-      returnIntermediateSteps: true
+      maxIterations: isNaN(maxIters) ? 30 : maxIters,
+      returnIntermediateSteps: true,
     })
   }
 

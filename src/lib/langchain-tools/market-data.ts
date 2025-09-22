@@ -1,5 +1,6 @@
 import { DynamicStructuredTool } from '@langchain/core/tools'
 import { z } from 'zod'
+import { getMarketData as getHyperliquidCache, getPolymarketMarkets as getPolymarketCache } from '@/lib/redis'
 
 // Polymarket Data Tool
 export const getPolymarketDataTool = new DynamicStructuredTool({
@@ -7,48 +8,91 @@ export const getPolymarketDataTool = new DynamicStructuredTool({
   description: 'Get real-time Polymarket prediction market data including active markets, prices, volumes, and trading opportunities. Use this to analyze prediction markets and betting opportunities.',
   schema: z.object({
     query: z.string().describe('What specific market data you want: "trending", "politics", "crypto", "sports", "active", or search terms'),
-    limit: z.number().optional().describe('Number of markets to return (default 10, max 50)')
+    limit: z.number().optional().nullable().describe('Number of markets to return (default 10, max 50)')
   }),
-  func: async ({ query, limit = 10 }) => {
+  func: async ({ query, limit }) => {
     try {
       console.log(`🎯 [AGENT] Fetching Polymarket data for: "${query}"`)
 
-      const response = await fetch('/api/markets/polymarket', {
-        cache: 'no-store'
-      })
+      const effLimit = typeof limit === 'number' && Number.isFinite(limit) ? limit : 10
 
-      if (!response.ok) {
-        throw new Error(`Polymarket API error: ${response.status}`)
+      // Prefer cached data from our Redis instance; avoid network fetches here
+      let markets = await getPolymarketCache() || []
+      // Auto-refresh via API route if cache is empty
+      if (!Array.isArray(markets) || markets.length === 0) {
+        try {
+          const base = (process.env.NEXT_PUBLIC_CHAT_URL || process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000').replace(/\/$/, '')
+          await fetch(`${base}/api/markets/polymarket`, { cache: 'no-store' })
+          markets = await getPolymarketCache() || []
+        } catch {}
       }
 
-      const data = await response.json()
-      const markets = data.markets || []
+      // Improved categorization and filtering using tags+question with a scoring model
+      const CATEGORY_SYNONYMS: Record<string, string[]> = {
+        politics: ['politics', 'election', 'president', 'trump', 'biden', 'senate', 'congress', 'vote', 'policy', 'primary'],
+        crypto: ['crypto', 'bitcoin', 'btc', 'ethereum', 'eth', 'token', 'nft', 'defi', 'solana', 'sol', 'altcoin', 'web3'],
+        sports: ['sports', 'nfl', 'nba', 'mlb', 'soccer', 'football', 'basketball', 'baseball', 'tennis', 'golf', 'ufc', 'match', 'game', 'championship', 'world cup'],
+        technology: ['technology', 'tech', 'ai', 'gpt', 'apple', 'google', 'microsoft', 'tesla', 'spacex', 'openai'],
+        economics: ['economics', 'market', 'stock', 'gdp', 'inflation', 'recession', 'fed', 'federal reserve', 'interest rate', 'cpi', 'unemployment'],
+        science: ['science', 'climate', 'weather', 'hurricane', 'earthquake', 'temperature', 'global warming', 'space', 'biology'],
+        entertainment: ['entertainment', 'movie', 'oscar', 'celebrity', 'music', 'album', 'netflix', 'award', 'tv', 'series']
+      }
+
+      const allSynonyms = Object.entries(CATEGORY_SYNONYMS).reduce<Record<string, string>>((acc, [cat, list]) => {
+        for (const term of list) acc[term] = cat
+        return acc
+      }, {})
+
+      const normalize = (s?: string) => (s || '').toLowerCase()
+      const safeNum = (n: any) => (typeof n === 'number' && Number.isFinite(n)) ? n : (parseFloat(n) || 0)
+      const scoreMarket = (m: any) => safeNum(m.volume24h) * 1.0 + safeNum(m.totalVolume) * 0.5 + safeNum(m.liquidity) * 0.3
+      const hasTag = (m: any, term: string) => Array.isArray(m.tags) && m.tags.some((t: any) => normalize(String(t)).includes(term))
+      const textIncludes = (m: any, term: string) => normalize(m.question).includes(term) || normalize(m.description).includes(term)
+
+      const matchesCategory = (m: any, catKey: string) => {
+        const synonyms = CATEGORY_SYNONYMS[catKey] || []
+        // Match by explicit category label if present
+        if (normalize(m.category) === catKey) return true
+        // Match by tags
+        if (synonyms.some(s => hasTag(m, s))) return true
+        // Match by question/description text
+        if (synonyms.some(s => textIncludes(m, s))) return true
+        return false
+      }
 
       // Filter markets based on query
       let filteredMarkets = markets
-      const queryLower = query.toLowerCase()
+      const queryLower = query.toLowerCase().trim()
 
       if (queryLower === 'trending') {
         filteredMarkets = markets
-          .sort((a: any, b: any) => (b.volume24h + b.totalVolume) - (a.volume24h + a.totalVolume))
-          .slice(0, limit)
+          .filter((m: any) => m.status === 'active')
+          .sort((a: any, b: any) => scoreMarket(b) - scoreMarket(a))
+          .slice(0, effLimit)
       } else if (queryLower === 'active') {
         filteredMarkets = markets
           .filter((m: any) => m.status === 'active')
-          .slice(0, limit)
-      } else if (['politics', 'crypto', 'sports', 'technology', 'economics'].includes(queryLower)) {
+          .slice(0, effLimit)
+      } else if (CATEGORY_SYNONYMS[queryLower] || allSynonyms[queryLower]) {
+        const targetCat = CATEGORY_SYNONYMS[queryLower] ? queryLower : allSynonyms[queryLower]
         filteredMarkets = markets
-          .filter((m: any) => m.category.toLowerCase() === queryLower)
-          .slice(0, limit)
+          .filter((m: any) => matchesCategory(m, targetCat))
+          .sort((a: any, b: any) => scoreMarket(b) - scoreMarket(a))
+          .slice(0, effLimit)
       } else {
         // Search markets by question content
         filteredMarkets = markets
-          .filter((m: any) =>
-            m.question.toLowerCase().includes(queryLower) ||
-            m.category.toLowerCase().includes(queryLower) ||
-            (m.description && m.description.toLowerCase().includes(queryLower))
-          )
-          .slice(0, limit)
+          .map((m: any) => ({
+            m,
+            score:
+              (textIncludes(m, queryLower) ? 5 : 0) +
+              (hasTag(m, queryLower) ? 5 : 0) +
+              scoreMarket(m) / 1e5 // scale down to keep contribution reasonable
+          }))
+          .filter(({ m, score }: any) => m.status === 'active' && score > 0)
+          .sort((a: any, b: any) => b.score - a.score)
+          .slice(0, effLimit)
+          .map(({ m }: any) => m)
       }
 
       const formattedData = filteredMarkets.map((market: any) => ({
@@ -64,7 +108,7 @@ export const getPolymarketDataTool = new DynamicStructuredTool({
         status: market.status,
         resolutionDate: market.resolutionDate,
         marketUrl: `https://polymarket.com/market/${market.id}`,
-        dashboardUrl: `/dashboard/polymarket?market=${market.id}`
+        dashboardUrl: `/dashboard/polymarket/${market.id}`
       }))
 
       console.log(`📊 [AGENT] Found ${formattedData.length} Polymarket markets`)
@@ -80,7 +124,7 @@ export const getPolymarketDataTool = new DynamicStructuredTool({
       console.error('[AGENT] Polymarket data error:', error)
       return JSON.stringify({
         markets: [],
-        error: 'Failed to fetch Polymarket data',
+        error: 'No cached Polymarket data',
         details: error instanceof Error ? error.message : 'Unknown error'
       })
     }
@@ -93,22 +137,24 @@ export const getHyperliquidDataTool = new DynamicStructuredTool({
   description: 'Get real-time Hyperliquid perpetual and spot market data including prices, funding rates, volumes, and trading opportunities. Use this for crypto derivatives analysis.',
   schema: z.object({
     query: z.string().describe('What data you want: "trending", "funding", "btc", "eth", "perp", "spot", or specific symbol like "BTC-USD"'),
-    limit: z.number().optional().describe('Number of markets to return (default 10, max 50)')
+    limit: z.number().optional().nullable().describe('Number of markets to return (default 10, max 50)')
   }),
-  func: async ({ query, limit = 10 }) => {
+  func: async ({ query, limit }) => {
     try {
       console.log(`⚡ [AGENT] Fetching Hyperliquid data for: "${query}"`)
 
-      const response = await fetch('/api/markets/hyperliquid', {
-        cache: 'no-store'
-      })
+      const effLimit = typeof limit === 'number' && Number.isFinite(limit) ? limit : 10
 
-      if (!response.ok) {
-        throw new Error(`Hyperliquid API error: ${response.status}`)
+      // Read from our Redis cache only (no external fetch from tool)
+      let markets = await getHyperliquidCache() || []
+      // Auto-refresh via API route if cache is empty
+      if (!Array.isArray(markets) || markets.length === 0) {
+        try {
+          const base = (process.env.NEXT_PUBLIC_CHAT_URL || process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000').replace(/\/$/, '')
+          await fetch(`${base}/api/markets/hyperliquid`, { cache: 'no-store' })
+          markets = await getHyperliquidCache() || []
+        } catch {}
       }
-
-      const data = await response.json()
-      const markets = data.markets || []
 
       // Filter markets based on query
       let filteredMarkets = markets
@@ -117,20 +163,20 @@ export const getHyperliquidDataTool = new DynamicStructuredTool({
       if (queryLower === 'trending') {
         filteredMarkets = markets
           .sort((a: any, b: any) => b.volume24h - a.volume24h)
-          .slice(0, limit)
+          .slice(0, effLimit)
       } else if (queryLower === 'funding') {
         filteredMarkets = markets
           .filter((m: any) => m.marketType === 'perp' && m.fundingRate !== undefined)
           .sort((a: any, b: any) => Math.abs(b.fundingRate || 0) - Math.abs(a.fundingRate || 0))
-          .slice(0, limit)
+          .slice(0, effLimit)
       } else if (queryLower === 'perp') {
         filteredMarkets = markets
           .filter((m: any) => m.marketType === 'perp')
-          .slice(0, limit)
+          .slice(0, effLimit)
       } else if (queryLower === 'spot') {
         filteredMarkets = markets
           .filter((m: any) => m.marketType === 'spot')
-          .slice(0, limit)
+          .slice(0, effLimit)
       } else {
         // Search by symbol or asset name
         filteredMarkets = markets
@@ -138,7 +184,7 @@ export const getHyperliquidDataTool = new DynamicStructuredTool({
             m.symbol.toLowerCase().includes(queryLower) ||
             m.baseAsset.toLowerCase().includes(queryLower)
           )
-          .slice(0, limit)
+          .slice(0, effLimit)
       }
 
       const formattedData = filteredMarkets.map((market: any) => ({
@@ -156,17 +202,16 @@ export const getHyperliquidDataTool = new DynamicStructuredTool({
         nextFunding: market.nextFunding,
         maxLeverage: market.maxLeverage,
         status: market.status,
-        dashboardUrl: `/dashboard/hyperliquid?symbol=${encodeURIComponent(market.symbol)}`
+        dashboardUrl: `/dashboard/hyperliquid/${encodeURIComponent(market.symbol)}`
       }))
 
-      console.log(`🚀 [AGENT] Found ${formattedData.length} Hyperliquid markets`)
+      console.log(`🚀 [AGENT] Found ${formattedData.length} Hyperliquid markets (cache)`)
 
       return JSON.stringify({
         markets: formattedData,
         totalFound: filteredMarkets.length,
         query,
-        cached: data.cached || false,
-        lastUpdate: data.lastUpdate,
+        cached: true,
         timestamp: new Date().toISOString(),
         summary: `Found ${formattedData.length} markets for "${query}". Top market: ${formattedData[0]?.symbol || 'None'}`
       })
@@ -174,7 +219,7 @@ export const getHyperliquidDataTool = new DynamicStructuredTool({
       console.error('[AGENT] Hyperliquid data error:', error)
       return JSON.stringify({
         markets: [],
-        error: 'Failed to fetch Hyperliquid data',
+        error: 'No cached Hyperliquid data',
         details: error instanceof Error ? error.message : 'Unknown error'
       })
     }
@@ -187,23 +232,18 @@ export const analyzeMarketOpportunityTool = new DynamicStructuredTool({
   description: 'Analyze trading opportunities across Polymarket and Hyperliquid markets. Identifies high-volume, high-volatility, or arbitrage opportunities.',
   schema: z.object({
     analysisType: z.enum(['volume', 'volatility', 'funding', 'arbitrage', 'trending']).describe('Type of analysis to perform'),
-    timeframe: z.enum(['1h', '4h', '24h']).optional().describe('Timeframe for analysis (default 24h)')
+    timeframe: z.enum(['1h', '4h', '24h']).optional().nullable().describe('Timeframe for analysis (default 24h)')
   }),
-  func: async ({ analysisType, timeframe = '24h' }) => {
+  func: async ({ analysisType, timeframe }) => {
     try {
-      console.log(`🔍 [AGENT] Analyzing market opportunities: ${analysisType} (${timeframe})`)
+      const effectiveTimeframe = (timeframe ?? '24h') as '1h' | '4h' | '24h'
+      console.log(`🔍 [AGENT] Analyzing market opportunities: ${analysisType} (${effectiveTimeframe})`)
 
-      // Fetch data from both platforms
-      const [polyResponse, hyperResponse] = await Promise.all([
-        fetch('/api/markets/polymarket', { cache: 'no-store' }),
-        fetch('/api/markets/hyperliquid', { cache: 'no-store' })
+      // Read directly from Redis cache (no external fetch)
+      const [polyMarkets, hyperMarkets] = await Promise.all([
+        getPolymarketCache().then(m => m || []),
+        getHyperliquidCache().then(m => m || []),
       ])
-
-      const polyData = polyResponse.ok ? await polyResponse.json() : { markets: [] }
-      const hyperData = hyperResponse.ok ? await hyperResponse.json() : { markets: [] }
-
-      const polyMarkets = polyData.markets || []
-      const hyperMarkets = hyperData.markets || []
 
       let opportunities: any[] = []
 
@@ -220,7 +260,7 @@ export const analyzeMarketOpportunityTool = new DynamicStructuredTool({
               market: m.question,
               volume24h: m.volume24h,
               opportunity: `High activity market with $${m.volume24h.toLocaleString()} daily volume`,
-              url: `/dashboard/polymarket?market=${m.id}`
+              url: `/dashboard/polymarket/${m.id}`
             }))
 
           const highVolumeHypermarkets = hyperMarkets
@@ -233,7 +273,7 @@ export const analyzeMarketOpportunityTool = new DynamicStructuredTool({
               market: m.symbol,
               volume24h: m.volume24h,
               opportunity: `High liquidity ${m.marketType} with $${m.volume24h.toLocaleString()} daily volume`,
-              url: `/dashboard/hyperliquid?symbol=${encodeURIComponent(m.symbol)}`
+              url: `/dashboard/hyperliquid/${encodeURIComponent(m.symbol)}`
             }))
 
           opportunities = [...highVolumePolymarkets, ...highVolumeHypermarkets]
@@ -251,7 +291,7 @@ export const analyzeMarketOpportunityTool = new DynamicStructuredTool({
               market: m.symbol,
               fundingRate: (m.fundingRate * 100).toFixed(4) + '%',
               opportunity: `${m.fundingRate > 0 ? 'Receive' : 'Pay'} funding rate of ${Math.abs(m.fundingRate * 100).toFixed(4)}%`,
-              url: `/dashboard/hyperliquid?symbol=${encodeURIComponent(m.symbol)}`
+              url: `/dashboard/hyperliquid/${encodeURIComponent(m.symbol)}`
             }))
           break
 
@@ -267,7 +307,7 @@ export const analyzeMarketOpportunityTool = new DynamicStructuredTool({
               market: m.question,
               trend: `${(m.impliedOdds * 100).toFixed(1)}% implied probability`,
               opportunity: `Active betting on: ${m.question.substring(0, 80)}...`,
-              url: `/dashboard/polymarket?market=${m.id}`
+              url: `/dashboard/polymarket/${m.id}`
             }))
 
           const trendingHyper = hyperMarkets
@@ -280,7 +320,7 @@ export const analyzeMarketOpportunityTool = new DynamicStructuredTool({
               market: m.symbol,
               trend: `${m.priceChangePercent24h > 0 ? '+' : ''}${m.priceChangePercent24h.toFixed(2)}% (24h)`,
               opportunity: `High volatility trading opportunity`,
-              url: `/dashboard/hyperliquid?symbol=${encodeURIComponent(m.symbol)}`
+              url: `/dashboard/hyperliquid/${encodeURIComponent(m.symbol)}`
             }))
 
           opportunities = [...trendingPoly, ...trendingHyper]
@@ -295,7 +335,7 @@ export const analyzeMarketOpportunityTool = new DynamicStructuredTool({
       return JSON.stringify({
         opportunities,
         analysisType,
-        timeframe,
+        timeframe: effectiveTimeframe,
         totalOpportunities: opportunities.length,
         timestamp: new Date().toISOString(),
         summary: `Found ${opportunities.length} ${analysisType} opportunities across Polymarket and Hyperliquid`
@@ -327,7 +367,8 @@ export const getPortfolioInsightsTool = new DynamicStructuredTool({
 
       if (platform === 'polymarket' || platform === 'both') {
         try {
-          const response = await fetch('/api/markets/polymarket/positions', {
+          const base = (process.env.NEXT_PUBLIC_CHAT_URL || process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXTAUTH_URL || 'http://localhost:3002').replace(/\/$/, '')
+          const response = await fetch(`${base}/api/markets/polymarket/positions`, {
             cache: 'no-store'
           })
           if (response.ok) {

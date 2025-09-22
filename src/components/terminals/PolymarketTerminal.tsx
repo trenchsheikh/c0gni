@@ -2,10 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { WalletConnect } from '@/components/wallet/WalletConnect';
+import { WalletSwitcher } from '@/components/wallet/WalletSwitcher';
 import { CrossChainBridge } from '@/components/bridge/CrossChainBridge';
 import TradingModal from '@/components/polymarket/TradingModal';
-import { useWallet } from '@/lib/wallet';
+import { QuickTrade } from '@/components/trading/QuickTrade';
+import { useWalletManager } from '@/hooks/useWalletManager';
+import { WalletStatus } from '@/components/wallet/WalletStatus';
 import {
   TrendingUp,
   TrendingDown,
@@ -89,7 +91,7 @@ const CATEGORIES = [
 ];
 
 export default function PolymarketTerminal() {
-  const { isConnected, address } = useWallet();
+  const { isConnected, address } = useWalletManager();
 
   // State management
   const [selectedTab, setSelectedTab] = useState<'markets' | 'positions' | 'orders' | 'bridge'>('markets');
@@ -408,6 +410,9 @@ export default function PolymarketTerminal() {
 
   return (
     <div className="space-y-6">
+      {/* Debug Status */}
+      <WalletStatus />
+
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
@@ -415,7 +420,7 @@ export default function PolymarketTerminal() {
           <p className="text-white/60">Trade prediction markets with real-time data</p>
         </div>
         <div className="flex items-center gap-4">
-          <WalletConnect showChainSwitcher={true} />
+          <WalletSwitcher />
           <button className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white border border-white/20 rounded-2xl hover:bg-white/15 transition-all duration-300">
             <RefreshCw className="w-4 h-4" />
             Refresh
@@ -506,7 +511,7 @@ export default function PolymarketTerminal() {
                 <div className="text-center py-12">
                   <PieChart className="w-12 h-12 text-white/40 mx-auto mb-4" />
                   <p className="text-white/60 mb-4">Connect wallet to view positions</p>
-                  <WalletConnect showChainSwitcher={false} />
+                  <WalletSwitcher />
                 </div>
               ) : isLoadingPositions ? (
                 <div className="text-center py-12">
@@ -533,7 +538,7 @@ export default function PolymarketTerminal() {
                 <div className="text-center py-12">
                   <Activity className="w-12 h-12 text-white/40 mx-auto mb-4" />
                   <p className="text-white/60 mb-4">Connect wallet to view orders</p>
-                  <WalletConnect showChainSwitcher={false} />
+                  <WalletSwitcher />
                 </div>
               ) : userOrders.length === 0 ? (
                 <div className="text-center py-12">
@@ -599,6 +604,26 @@ export default function PolymarketTerminal() {
 
         {/* Sidebar */}
         <div className="space-y-6">
+          {/* Quick Trade Component */}
+          {selectedMarket && (
+            <QuickTrade
+              market={{
+                id: selectedMarket.id,
+                question: selectedMarket.question,
+                yesPrice: selectedMarket.yesPrice,
+                noPrice: selectedMarket.noPrice,
+                type: 'polymarket',
+              }}
+              platform="polymarket"
+              onTradeComplete={() => {
+                // Refresh positions after trade
+                if (selectedTab === 'positions') {
+                  // Trigger position refresh
+                }
+              }}
+            />
+          )}
+
           {/* Market Details */}
           {selectedMarket && (
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
