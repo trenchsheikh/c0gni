@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
+import { useWalletContext } from '@/contexts/WalletContext';
 
 export default function DashboardLayoutWrapper({
   children,
@@ -10,6 +11,21 @@ export default function DashboardLayoutWrapper({
   children: React.ReactNode;
 }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const { disconnect, isReady } = useWalletContext();
+  const hasDisconnected = useRef(false);
+
+  // Disconnect wallet on dashboard entry - only once per mount
+  useEffect(() => {
+    if (isReady && !hasDisconnected.current) {
+      hasDisconnected.current = true;
+      // Disconnect wallets and clear any stored preferences
+      disconnect().catch(() => {
+        // Silently handle errors - wallet might already be disconnected
+      });
+      // Clear localStorage preferences
+      localStorage.removeItem('preferredWallet');
+    }
+  }, [isReady, disconnect]);
 
   return (
     <div className="bg-[#0A0A0A] min-h-screen flex">

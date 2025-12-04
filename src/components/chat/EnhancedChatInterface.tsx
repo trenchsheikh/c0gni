@@ -564,99 +564,95 @@ export function EnhancedChatInterface({
 
   return (
     <div className={`flex flex-col h-full ${className}`}>
-      {/* Background effects */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-gradient-to-r from-white/5 to-gray-300/5 rounded-full filter blur-3xl animate-blob" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-l from-white/5 to-gray-300/5 rounded-full filter blur-3xl animate-blob animation-delay-2000" />
-      </div>
-
-      {/* Messages Container */}
-      <div className="flex-1 px-6 pt-6 pb-6 overflow-y-auto relative z-10">
-        <div className="space-y-6 max-w-4xl mx-auto">
-          {messages.map((message, index) => (
-            <EnhancedMessageBubble
-              key={message.id}
-              message={message}
-              index={index}
-              onActionClick={handleActionClick}
-            />
-          ))}
-
-          {/* Streaming message */}
-          {isStreaming && (
-            <StreamingMessageBubble
-              content={streamingMessage}
-              thinkingContent={thinkingContent}
-              showThinking={showThinking}
-              activeTools={activeTools}
-              memoryAccess={memoryAccess}
-            />
+      {/* Messages Container - ChatGPT style */}
+      <div className="flex-1 overflow-y-auto relative">
+        <div className="max-w-3xl mx-auto px-4 py-8">
+          {messages.length === 0 && !isStreaming && (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center space-y-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center mx-auto">
+                  <Sparkles className="w-6 h-6 text-white" />
+                </div>
+                <p className="text-zinc-400 font-light">Start a conversation to begin</p>
+              </div>
+            </div>
           )}
+          
+          <div className="space-y-6">
+            {messages.map((message, index) => (
+              <EnhancedMessageBubble
+                key={message.id}
+                message={message}
+                index={index}
+                onActionClick={handleActionClick}
+              />
+            ))}
 
-          <div ref={messagesEndRef} />
+            {/* Streaming message */}
+            {isStreaming && (
+              <StreamingMessageBubble
+                content={streamingMessage}
+                thinkingContent={thinkingContent}
+                showThinking={showThinking}
+                activeTools={activeTools}
+                memoryAccess={memoryAccess}
+              />
+            )}
+
+            <div ref={messagesEndRef} />
+          </div>
         </div>
       </div>
 
-      {/* Input Area */}
-      <div className="p-6 relative z-10">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6">
-            <div className="relative">
+      {/* Input Area - Fixed at bottom, ChatGPT style */}
+      <div className="flex-shrink-0 border-t border-white/5 bg-zinc-900/50 backdrop-blur-xl">
+        <div className="max-w-3xl mx-auto px-4 py-4">
+          <div className="relative">
+            <div className="bg-zinc-900/50 border border-white/5 rounded-2xl shadow-lg">
               <textarea
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Ask about markets, trading opportunities, or portfolio analysis..."
-                className="w-full bg-white/5 backdrop-blur-sm
-                           border border-white/10 rounded-2xl
-                           px-6 py-4 pr-20
-                           text-white placeholder-white/40
-                           focus:bg-white/[0.08] focus:border-white/20
-                           focus:outline-none focus:ring-2 focus:ring-white/10
-                           transition-all duration-300
-                           resize-none min-h-[60px] max-h-[200px]"
+                placeholder="Message AI Assistant..."
+                className="w-full bg-transparent
+                           px-4 py-3 pr-12
+                           text-white placeholder-zinc-500
+                           focus:outline-none
+                           resize-none min-h-[52px] max-h-[200px]
+                           text-sm"
                 disabled={isLoading}
+                rows={1}
               />
-
-              {/* Action buttons */}
-              <div className="absolute right-3 bottom-3 flex items-center gap-2">
+              
+              {/* Send button */}
+              <div className="absolute right-2 bottom-2">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={sendMessage}
                   disabled={isLoading || !input.trim()}
-                  className="px-4 py-2 bg-gradient-to-r from-white/10 to-white/5
-                             hover:from-white/15 hover:to-white/10
-                             disabled:from-white/5 disabled:to-white/5
-                             border border-white/10 rounded-xl
-                             flex items-center gap-2
-                             transition-all duration-300"
+                  className="w-8 h-8 rounded-lg bg-white text-black flex items-center justify-center
+                             hover:bg-zinc-200 disabled:bg-white/10 disabled:text-zinc-500
+                             transition-all duration-200 disabled:cursor-not-allowed"
                 >
                   {isLoading ? (
-                    <Loader2 className="w-4 h-4 text-white/60 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
-                    <Send className="w-4 h-4 text-white/80" />
+                    <Send className="w-4 h-4" />
                   )}
-                  <span className="text-sm font-medium text-white/80">Send</span>
                 </motion.button>
               </div>
             </div>
-
-            {/* Features row */}
-            <div className="mt-4 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <span className="text-xs flex items-center gap-1 text-white/60">
-                  <Zap className="w-3 h-3" />
-                  Market Analysis Mode
-                </span>
-                <span className="text-xs text-white/40">
-                  Real-time Data • Dashboard Integration
-                </span>
-              </div>
-              <span className="text-xs text-white/40">
-                {input.length}/4000
+            
+            {/* Footer info */}
+            <div className="mt-2 flex items-center justify-center gap-4 text-xs text-zinc-500">
+              <span className="flex items-center gap-1">
+                <Zap className="w-3 h-3" />
+                Market Analysis
               </span>
+              <span>•</span>
+              <span>Real-time Data</span>
             </div>
           </div>
         </div>
@@ -679,93 +675,96 @@ function EnhancedMessageBubble({
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: isUser ? 20 : -20 }}
-      animate={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{
-        duration: 0.4,
+        duration: 0.3,
         ease: [0.16, 1, 0.3, 1],
-        delay: index * 0.1
+        delay: index * 0.05
       }}
-      className={`flex gap-4 ${isUser ? 'justify-end' : ''}`}
+      className={`flex gap-4 group ${isUser ? 'flex-row-reverse' : ''}`}
     >
+      {/* Avatar */}
       {!isUser && (
-        <div className="w-10 h-10 bg-gradient-to-br from-white/20 to-white/5 rounded-xl flex items-center justify-center flex-shrink-0">
-          <Image src="/c0gni-c-white.svg" alt="c0gni" width={20} height={20} className="w-5 h-5" />
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center flex-shrink-0 mt-1">
+          <Image src="/c0gni-c-white.svg" alt="c0gni" width={16} height={16} className="w-4 h-4" />
         </div>
       )}
 
-      <div className={`max-w-[80%] ${isUser ? 'text-right' : ''}`}>
-        <div className={`p-4 sm:p-5 rounded-2xl ${
-          isUser
-            ? 'bg-gradient-to-r from-white/[0.08] to-white/[0.05] border border-white/10'
-            : 'bg-white/[0.03] backdrop-blur-sm border border-white/[0.08]'
-        }`}>
+      <div className={`flex-1 ${isUser ? 'flex justify-end' : ''}`}>
+        <div className={`max-w-[85%] ${isUser ? 'ml-auto' : ''}`}>
           {isUser ? (
-            <p className="text-white/90">{message.content}</p>
+            <div className="bg-zinc-800/50 rounded-2xl px-4 py-3">
+              <p className="text-white text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+            </div>
           ) : (
-            <div className="prose prose-invert prose-sm max-w-none
-                            prose-headings:text-white/90
-                            prose-p:text-white/80
-                            prose-code:bg-white/10
-                            prose-code:px-2
-                            prose-code:py-1
-                            prose-code:rounded
-                            prose-pre:bg-white/5
-                            prose-pre:border
-                            prose-pre:border-white/10">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {message.content}
-              </ReactMarkdown>
+            <div className="space-y-3">
+              <div className="prose prose-invert prose-sm max-w-none
+                              prose-headings:text-white prose-headings:font-medium
+                              prose-p:text-zinc-300 prose-p:leading-relaxed
+                              prose-strong:text-white
+                              prose-code:text-zinc-300 prose-code:bg-zinc-800/50
+                              prose-code:px-1.5 prose-code:py-0.5
+                              prose-code:rounded prose-code:text-xs
+                              prose-pre:bg-zinc-900/50 prose-pre:border
+                              prose-pre:border-white/5 prose-pre:rounded-lg
+                              prose-ul:text-zinc-300 prose-ol:text-zinc-300
+                              prose-li:text-zinc-300">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {message.content}
+                </ReactMarkdown>
+              </div>
             </div>
           )}
-        </div>
 
-        {/* Market Data Display */}
-        {message.marketData && message.marketData.length > 0 && (
-          <div className="mt-4 space-y-3">
-            {message.marketData.map((data, idx) => (
-              <MarketDataCard
-                key={idx}
-                data={data}
-                onActionClick={onActionClick}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Action Buttons */}
-        {message.actionButtons && message.actionButtons.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {message.actionButtons.map((action, idx) => (
-              <motion.button
-                key={idx}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => onActionClick(action)}
-                className="flex items-center gap-2 px-3 py-2 bg-white/10 hover:bg-white/15 border border-white/20 rounded-lg text-sm text-white/80 transition-all duration-300"
-              >
-                {action.icon && <action.icon className="w-4 h-4" />}
-                {action.label}
-                <ChevronRight className="w-3 h-3" />
-              </motion.button>
-            ))}
-          </div>
-        )}
-
-        <div className="mt-2 text-xs text-white/40 flex items-center gap-2">
-          <span>{message.timestamp.toLocaleTimeString()}</span>
-          {message.confidence && (
-            <span className="flex items-center gap-1">
-              <CheckCircle className="w-3 h-3" />
-              {Math.round(message.confidence * 100)}% confident
-            </span>
+          {/* Market Data Display */}
+          {message.marketData && message.marketData.length > 0 && (
+            <div className="mt-4 space-y-3">
+              {message.marketData.map((data, idx) => (
+                <MarketDataCard
+                  key={idx}
+                  data={data}
+                  onActionClick={onActionClick}
+                />
+              ))}
+            </div>
           )}
-          {message.processingTime && (
-            <span className="flex items-center gap-1">
-              <Clock className="w-3 h-3" />
-              {(message.processingTime / 1000).toFixed(1)}s
-            </span>
+
+          {/* Action Buttons */}
+          {message.actionButtons && message.actionButtons.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {message.actionButtons.map((action, idx) => (
+                <motion.button
+                  key={idx}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => onActionClick(action)}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs text-zinc-300 hover:text-white transition-all duration-200"
+                >
+                  {action.icon && <action.icon className="w-3.5 h-3.5" />}
+                  {action.label}
+                  <ChevronRight className="w-3 h-3" />
+                </motion.button>
+              ))}
+            </div>
           )}
+
+          {/* Metadata - only show on hover for cleaner look */}
+          <div className="mt-2 text-xs text-zinc-500 flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span>{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            {message.confidence && (
+              <span className="flex items-center gap-1">
+                <CheckCircle className="w-3 h-3" />
+                {Math.round(message.confidence * 100)}%
+              </span>
+            )}
+            {message.processingTime && (
+              <span className="flex items-center gap-1">
+                <Clock className="w-3 h-3" />
+                {(message.processingTime / 1000).toFixed(1)}s
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </motion.div>
@@ -895,21 +894,16 @@ function StreamingMessageBubble({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="flex gap-4"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex gap-4 group"
     >
-      <div className="relative w-10 h-10 bg-gradient-to-br from-white/20 to-white/5 rounded-xl flex items-center justify-center flex-shrink-0">
-        <Image src="/c0gni-c-white.svg" alt="c0gni" width={20} height={20} className="w-5 h-5" />
-        <motion.div
-          className="absolute inset-0 bg-white/20 rounded-xl"
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-        />
+      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-white/20 to-white/5 flex items-center justify-center flex-shrink-0 mt-1">
+        <Image src="/c0gni-c-white.svg" alt="c0gni" width={16} height={16} className="w-4 h-4" />
       </div>
 
       <div className="flex-1">
-        <div className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] rounded-2xl p-4 sm:p-5">
+        <div className="space-y-3">
           {/* Memory access indicators */}
           <AnimatePresence>
             {memoryAccess.length > 0 && (
@@ -1009,22 +1003,23 @@ function StreamingMessageBubble({
 
           {/* Main content */}
           <div className="prose prose-invert prose-sm max-w-none
-                          prose-headings:text-white/90
-                          prose-p:text-white/80
-                          prose-code:bg-white/10
-                          prose-code:px-2
-                          prose-code:py-1
-                          prose-code:rounded
-                          prose-pre:bg-white/5
-                          prose-pre:border
-                          prose-pre:border-white/10">
+                          prose-headings:text-white prose-headings:font-medium
+                          prose-p:text-zinc-300 prose-p:leading-relaxed
+                          prose-strong:text-white
+                          prose-code:text-zinc-300 prose-code:bg-zinc-800/50
+                          prose-code:px-1.5 prose-code:py-0.5
+                          prose-code:rounded prose-code:text-xs
+                          prose-pre:bg-zinc-900/50 prose-pre:border
+                          prose-pre:border-white/5 prose-pre:rounded-lg
+                          prose-ul:text-zinc-300 prose-ol:text-zinc-300
+                          prose-li:text-zinc-300">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {content}
             </ReactMarkdown>
             {content && (
               <motion.span
-                className="inline-block w-2 h-4 bg-white/60 ml-1"
-                animate={{ opacity: [1, 0, 1] }}
+                className="inline-block w-0.5 h-4 bg-zinc-400 ml-1"
+                animate={{ opacity: [1, 0.3, 1] }}
                 transition={{ duration: 1, repeat: Infinity }}
               />
             )}

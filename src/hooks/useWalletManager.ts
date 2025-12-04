@@ -136,18 +136,11 @@ export function useWalletManager(): UseWalletManagerReturn {
     }
   }, [activeWalletInfo?.address, activeWalletInfo?.chainId])
 
-  // Connect wallet (smart selection)
+  // Connect wallet - always default to embedded (no persistence)
   const connect = useCallback(async () => {
-    // If user has previously connected an external wallet, prefer that
-    const preferredWallet = localStorage.getItem('preferredWallet')
-
-    if (preferredWallet === 'external') {
-      await connectExternal()
-    } else {
-      // Default to embedded for new users
-      await connectEmbedded()
-    }
-  }, [connectEmbedded, connectExternal])
+    // Always default to embedded wallet - no persistence of preferences
+    await connectEmbedded()
+  }, [connectEmbedded])
 
   // Switch between wallets
   const switchWallets = useCallback(() => {

@@ -86,16 +86,8 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     setIsMounted(true)
   }, [])
 
-  // Load saved wallet preference - only after mount
-  useEffect(() => {
-    if (!isMounted) return
-    const saved = localStorage.getItem('preferredWallet')
-    if (saved === 'external' || saved === 'embedded') {
-      startTransition(() => {
-        setActiveWallet(saved)
-      })
-    }
-  }, [isMounted])
+  // Don't load saved wallet preference - always start disconnected
+  // Removed localStorage persistence to ensure users always connect on dashboard entry
 
   // Update embedded wallet info - deferred after mount
   useEffect(() => {
@@ -161,7 +153,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       }
 
       setActiveWallet('embedded')
-      localStorage.setItem('preferredWallet', 'embedded')
+      // Don't persist wallet preference - users should connect each time
     } catch (error) {
       console.error('Failed to connect embedded wallet:', error)
       toast.error('Failed to connect embedded wallet')
@@ -177,7 +169,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     try {
       await connectWallet()
       setActiveWallet('external')
-      localStorage.setItem('preferredWallet', 'external')
+      // Don't persist wallet preference - users should connect each time
       toast.success('External wallet connected successfully')
     } catch (error) {
       console.error('Failed to connect external wallet:', error)
@@ -200,7 +192,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     }
 
     setActiveWallet(type)
-    localStorage.setItem('preferredWallet', type)
+    // Don't persist wallet preference - users should connect each time
     toast.success(`Switched to ${type} wallet`)
   }, [embeddedInfo, externalInfo])
 
@@ -211,6 +203,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       wagmiDisconnect()
       setEmbeddedInfo(null)
       setExternalInfo(null)
+      // Clear any wallet preferences
       localStorage.removeItem('preferredWallet')
       toast.success('Disconnected successfully')
     } catch (error) {

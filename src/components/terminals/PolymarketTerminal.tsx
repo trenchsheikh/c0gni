@@ -302,7 +302,7 @@ export default function PolymarketTerminal() {
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ scale: 1.02 }}
       onClick={() => onSelect(market)}
-      className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 cursor-pointer hover:bg-white/10 transition-all duration-300"
+      className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6 cursor-pointer hover:bg-white/5 transition-all duration-300"
     >
       <div className="flex justify-between items-start mb-4">
         <div className="flex-1">
@@ -310,7 +310,7 @@ export default function PolymarketTerminal() {
             {market.question}
           </h3>
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-white/60 text-sm">{market.category}</span>
+            <span className="text-zinc-400 text-sm">{market.category}</span>
             <div className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(market.status)}`}>
               {market.status}
             </div>
@@ -333,17 +333,17 @@ export default function PolymarketTerminal() {
 
       <div className="flex justify-between items-center text-sm">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1 text-white/60">
+          <div className="flex items-center gap-1 text-zinc-400">
             <BarChart3 className="w-4 h-4" />
             <span>{formatCurrency(market.volume24h)}</span>
           </div>
-          <div className="flex items-center gap-1 text-white/60">
+          <div className="flex items-center gap-1 text-zinc-400">
             <Users className="w-4 h-4" />
             <span>{formatCurrency(market.liquidity)}</span>
           </div>
         </div>
         {market.resolutionDate && (
-          <div className="flex items-center gap-1 text-white/60">
+          <div className="flex items-center gap-1 text-zinc-400">
             <Clock className="w-4 h-4" />
             <span>{market.resolutionDate.toLocaleDateString()}</span>
           </div>
@@ -357,7 +357,7 @@ export default function PolymarketTerminal() {
       layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
+      className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6"
     >
       <div className="flex justify-between items-start mb-4">
         <div className="flex-1">
@@ -374,19 +374,19 @@ export default function PolymarketTerminal() {
 
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
-          <div className="text-white/60 text-sm mb-1">Shares</div>
+          <div className="text-zinc-400 text-sm mb-1">Shares</div>
           <div className="text-white text-lg font-medium">{position.shares}</div>
         </div>
         <div>
-          <div className="text-white/60 text-sm mb-1">Avg Price</div>
+          <div className="text-zinc-400 text-sm mb-1">Avg Price</div>
           <div className="text-white text-lg font-medium">{formatPrice(position.avgPrice)}</div>
         </div>
         <div>
-          <div className="text-white/60 text-sm mb-1">Market Value</div>
+          <div className="text-zinc-400 text-sm mb-1">Market Value</div>
           <div className="text-white text-lg font-medium">{formatCurrency(position.marketValue)}</div>
         </div>
         <div>
-          <div className="text-white/60 text-sm mb-1">P&L</div>
+          <div className="text-zinc-400 text-sm mb-1">P&L</div>
           <div className={`text-lg font-medium ${
             position.unrealizedPnl >= 0 ? 'text-green-400' : 'text-red-400'
           }`}>
@@ -400,31 +400,31 @@ export default function PolymarketTerminal() {
   const OrderBookView = memo(({ orderBook }: { orderBook: OrderBook }) => (
     <div className="grid grid-cols-2 gap-6">
       {/* YES Order Book */}
-      <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+      <div className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
         <h3 className="text-green-400 font-medium text-lg mb-4">YES Order Book</h3>
 
         <div className="space-y-4">
           <div>
-            <h4 className="text-white/60 text-sm mb-2">Asks</h4>
+            <h4 className="text-zinc-400 text-sm mb-2">Asks</h4>
             <div className="space-y-1">
               {orderBook.yes.asks.map((ask, index) => (
                 <div key={index} className="flex justify-between items-center text-sm">
                   <span className="text-red-400">{formatPrice(ask.price)}</span>
-                  <span className="text-white/60">{ask.size}</span>
-                  <span className="text-white/40">{ask.total}</span>
+                  <span className="text-zinc-400">{ask.size}</span>
+                  <span className="text-zinc-500">{ask.total}</span>
                 </div>
               ))}
             </div>
           </div>
 
           <div className="border-t border-white/10 pt-4">
-            <h4 className="text-white/60 text-sm mb-2">Bids</h4>
+            <h4 className="text-zinc-400 text-sm mb-2">Bids</h4>
             <div className="space-y-1">
               {orderBook.yes.bids.map((bid, index) => (
                 <div key={index} className="flex justify-between items-center text-sm">
                   <span className="text-green-400">{formatPrice(bid.price)}</span>
-                  <span className="text-white/60">{bid.size}</span>
-                  <span className="text-white/40">{bid.total}</span>
+                  <span className="text-zinc-400">{bid.size}</span>
+                  <span className="text-zinc-500">{bid.total}</span>
                 </div>
               ))}
             </div>
@@ -433,31 +433,31 @@ export default function PolymarketTerminal() {
       </div>
 
       {/* NO Order Book */}
-      <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+      <div className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
         <h3 className="text-red-400 font-medium text-lg mb-4">NO Order Book</h3>
 
         <div className="space-y-4">
           <div>
-            <h4 className="text-white/60 text-sm mb-2">Asks</h4>
+            <h4 className="text-zinc-400 text-sm mb-2">Asks</h4>
             <div className="space-y-1">
               {orderBook.no.asks.map((ask, index) => (
                 <div key={index} className="flex justify-between items-center text-sm">
                   <span className="text-red-400">{formatPrice(ask.price)}</span>
-                  <span className="text-white/60">{ask.size}</span>
-                  <span className="text-white/40">{ask.total}</span>
+                  <span className="text-zinc-400">{ask.size}</span>
+                  <span className="text-zinc-500">{ask.total}</span>
                 </div>
               ))}
             </div>
           </div>
 
           <div className="border-t border-white/10 pt-4">
-            <h4 className="text-white/60 text-sm mb-2">Bids</h4>
+            <h4 className="text-zinc-400 text-sm mb-2">Bids</h4>
             <div className="space-y-1">
               {orderBook.no.bids.map((bid, index) => (
                 <div key={index} className="flex justify-between items-center text-sm">
                   <span className="text-green-400">{formatPrice(bid.price)}</span>
-                  <span className="text-white/60">{bid.size}</span>
-                  <span className="text-white/40">{bid.total}</span>
+                  <span className="text-zinc-400">{bid.size}</span>
+                  <span className="text-zinc-500">{bid.total}</span>
                 </div>
               ))}
             </div>
@@ -473,8 +473,8 @@ export default function PolymarketTerminal() {
       {/* Header - Always visible immediately */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-light text-white mb-2">Polymarket Terminal</h1>
-          <p className="text-white/60">Trade prediction markets with real-time data</p>
+          <h1 className="text-3xl font-light text-white mb-2 tracking-tight">Polymarket Terminal</h1>
+          <p className="text-zinc-400 font-light">Trade prediction markets with real-time data</p>
         </div>
         <div className="flex items-center gap-4">
           <WalletConnect showChainSwitcher={false} />
@@ -490,7 +490,7 @@ export default function PolymarketTerminal() {
                 const queryClient = require('@tanstack/react-query').useQueryClient();
                 queryClient.invalidateQueries({ queryKey: ['polymarket-markets'] });
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white border border-white/20 rounded-2xl hover:bg-white/15 transition-all duration-300"
+              className="flex items-center gap-2 px-4 py-2 bg-white/5 text-white border border-white/10 rounded-2xl hover:bg-white/15 transition-all duration-300"
             >
               <RefreshCw className="w-4 h-4" />
               Refresh
@@ -500,7 +500,7 @@ export default function PolymarketTerminal() {
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex space-x-1 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-1">
+      <div className="flex space-x-1 bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-1">
         {[
           { id: 'markets', label: 'Markets', icon: TrendingUp },
           { id: 'positions', label: 'Positions', icon: PieChart },
@@ -513,7 +513,7 @@ export default function PolymarketTerminal() {
             className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition-all duration-300 ${
               selectedTab === tab.id
                 ? 'bg-white/15 text-white'
-                : 'text-white/60 hover:text-white hover:bg-white/5'
+                : 'text-zinc-400 hover:text-white hover:bg-white/5'
             }`}
           >
             <tab.icon className="w-4 h-4" />
@@ -531,19 +531,19 @@ export default function PolymarketTerminal() {
               {/* Search and Filters */}
               <div className="flex gap-4">
                 <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/40" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-zinc-500" />
                   <input
                     type="text"
                     placeholder="Search markets..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-white/40 focus:outline-none focus:border-white/40"
+                    className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-white/40 focus:outline-none focus:border-white/40"
                   />
                 </div>
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="px-4 py-3 bg-white/10 border border-white/20 rounded-2xl text-white focus:outline-none focus:border-white/40"
+                  className="px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-white/40"
                 >
                   {CATEGORIES.map(category => (
                     <option key={category} value={category} className="bg-black">
@@ -558,13 +558,13 @@ export default function PolymarketTerminal() {
                 {isLoading && markets.length === 0 ? (
                   <div className="grid gap-4">
                     {Array.from({ length: 6 }).map((_, i) => (
-                      <div key={i} className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 animate-pulse">
-                        <div className="h-6 bg-white/10 rounded mb-4 w-3/4"></div>
+                      <div key={i} className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6 animate-pulse">
+                        <div className="h-6 bg-white/5 rounded mb-4 w-3/4"></div>
                         <div className="grid grid-cols-2 gap-4 mb-4">
-                          <div className="h-20 bg-white/10 rounded-xl"></div>
-                          <div className="h-20 bg-white/10 rounded-xl"></div>
+                          <div className="h-20 bg-white/5 rounded-xl"></div>
+                          <div className="h-20 bg-white/5 rounded-xl"></div>
                         </div>
-                        <div className="h-4 bg-white/10 rounded w-1/2"></div>
+                        <div className="h-4 bg-white/5 rounded w-1/2"></div>
                       </div>
                     ))}
                   </div>
@@ -588,20 +588,20 @@ export default function PolymarketTerminal() {
             <div className="space-y-4">
               {!isConnected ? (
                 <div className="text-center py-12">
-                  <PieChart className="w-12 h-12 text-white/40 mx-auto mb-4" />
-                  <p className="text-white/60 mb-4">Connect wallet to view positions</p>
+                  <PieChart className="w-12 h-12 text-zinc-500 mx-auto mb-4" />
+                  <p className="text-zinc-400 mb-4">Connect wallet to view positions</p>
                   <WalletConnect showChainSwitcher={false} />
                 </div>
               ) : isLoadingPositions ? (
                 <div className="text-center py-12">
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white/30 mx-auto mb-4"></div>
-                  <p className="text-white/60">Loading positions...</p>
+                  <p className="text-zinc-400">Loading positions...</p>
                 </div>
               ) : positions.length === 0 ? (
                 <div className="text-center py-12">
-                  <PieChart className="w-12 h-12 text-white/40 mx-auto mb-4" />
-                  <p className="text-white/60">No positions found</p>
-                  <p className="text-white/40 text-sm mt-2">Start trading to build your portfolio</p>
+                  <PieChart className="w-12 h-12 text-zinc-500 mx-auto mb-4" />
+                  <p className="text-zinc-400">No positions found</p>
+                  <p className="text-zinc-500 text-sm mt-2">Start trading to build your portfolio</p>
                 </div>
               ) : (
                 positions.map((position, index) => (
@@ -615,24 +615,24 @@ export default function PolymarketTerminal() {
             <div className="space-y-4">
               {!isConnected ? (
                 <div className="text-center py-12">
-                  <Activity className="w-12 h-12 text-white/40 mx-auto mb-4" />
-                  <p className="text-white/60 mb-4">Connect wallet to view orders</p>
+                  <Activity className="w-12 h-12 text-zinc-500 mx-auto mb-4" />
+                  <p className="text-zinc-400 mb-4">Connect wallet to view orders</p>
                   <WalletConnect showChainSwitcher={false} />
                 </div>
               ) : userOrders.length === 0 ? (
                 <div className="text-center py-12">
-                  <Activity className="w-12 h-12 text-white/40 mx-auto mb-4" />
-                  <p className="text-white/60">No orders found</p>
-                  <p className="text-white/40 text-sm mt-2">Your trading history will appear here</p>
+                  <Activity className="w-12 h-12 text-zinc-500 mx-auto mb-4" />
+                  <p className="text-zinc-400">No orders found</p>
+                  <p className="text-zinc-500 text-sm mt-2">Your trading history will appear here</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {userOrders.map((order) => (
-                    <div key={order.id} className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4">
+                    <div key={order.id} className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-4">
                       <div className="flex justify-between items-start mb-2">
                         <div>
                           <div className="text-white font-medium">{order.action.toUpperCase()} {order.side}</div>
-                          <div className="text-white/60 text-sm">Market: {order.marketId}</div>
+                          <div className="text-zinc-400 text-sm">Market: {order.marketId}</div>
                         </div>
                         <div className={`px-2 py-1 rounded-full text-xs font-medium ${
                           order.status === 'filled' ? 'bg-green-500/20 text-green-400' :
@@ -645,25 +645,25 @@ export default function PolymarketTerminal() {
                       </div>
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <span className="text-white/60">Size:</span>
+                          <span className="text-zinc-400">Size:</span>
                           <span className="text-white ml-2">{order.size}</span>
                         </div>
                         <div>
-                          <span className="text-white/60">Price:</span>
+                          <span className="text-zinc-400">Price:</span>
                           <span className="text-white ml-2">${order.price.toFixed(3)}</span>
                         </div>
                         <div>
-                          <span className="text-white/60">Filled:</span>
+                          <span className="text-zinc-400">Filled:</span>
                           <span className="text-white ml-2">{order.filledSize}</span>
                         </div>
                         <div>
-                          <span className="text-white/60">Fees:</span>
+                          <span className="text-zinc-400">Fees:</span>
                           <span className="text-white ml-2">${order.fees?.toFixed(2) || '0.00'}</span>
                         </div>
                       </div>
                       {order.txHash && (
                         <div className="mt-2 text-xs">
-                          <span className="text-white/60">Tx: </span>
+                          <span className="text-zinc-400">Tx: </span>
                           <span className="text-white/80 font-mono">{order.txHash.slice(0, 10)}...{order.txHash.slice(-8)}</span>
                         </div>
                       )}
@@ -705,28 +705,28 @@ export default function PolymarketTerminal() {
 
           {/* Market Details */}
           {selectedMarket && (
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+            <div className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
               <h3 className="text-white font-medium text-lg mb-4">Market Details</h3>
               <div className="space-y-4">
                 <div>
-                  <h4 className="text-white/60 text-sm mb-2">Question</h4>
+                  <h4 className="text-zinc-400 text-sm mb-2">Question</h4>
                   <p className="text-white text-sm">{selectedMarket.question}</p>
                 </div>
 
                 {selectedMarket.description && (
                   <div>
-                    <h4 className="text-white/60 text-sm mb-2">Description</h4>
+                    <h4 className="text-zinc-400 text-sm mb-2">Description</h4>
                     <p className="text-white/80 text-sm">{selectedMarket.description}</p>
                   </div>
                 )}
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <h4 className="text-white/60 text-sm mb-1">24h Volume</h4>
+                    <h4 className="text-zinc-400 text-sm mb-1">24h Volume</h4>
                     <p className="text-white font-medium">{formatCurrency(selectedMarket.volume24h)}</p>
                   </div>
                   <div>
-                    <h4 className="text-white/60 text-sm mb-1">Liquidity</h4>
+                    <h4 className="text-zinc-400 text-sm mb-1">Liquidity</h4>
                     <p className="text-white font-medium">{formatCurrency(selectedMarket.liquidity)}</p>
                   </div>
                 </div>
@@ -744,7 +744,7 @@ export default function PolymarketTerminal() {
                     </button>
                   ) : (
                     <div className="text-center">
-                      <p className="text-white/60 text-sm mb-3">Connect wallet to trade</p>
+                      <p className="text-zinc-400 text-sm mb-3">Connect wallet to trade</p>
                       <WalletConnect showChainSwitcher={false} />
                     </div>
                   )}
@@ -755,24 +755,24 @@ export default function PolymarketTerminal() {
 
           {/* Order Book */}
           {selectedMarket && orderBook && (
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+            <div className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
               <h3 className="text-white font-medium text-lg mb-4">Order Book</h3>
               <OrderBookView orderBook={orderBook} />
             </div>
           )}
 
           {/* Portfolio Summary */}
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
             <h3 className="text-white font-medium text-lg mb-4">Portfolio Summary</h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-white/60">Total Value</span>
+                <span className="text-zinc-400">Total Value</span>
                 <span className="text-white font-medium">
                   {formatCurrency(positions.reduce((sum, pos) => sum + pos.marketValue, 0))}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-white/60">Unrealized P&L</span>
+                <span className="text-zinc-400">Unrealized P&L</span>
                 <span className={`font-medium ${
                   positions.reduce((sum, pos) => sum + pos.unrealizedPnl, 0) >= 0
                     ? 'text-green-400'
@@ -783,7 +783,7 @@ export default function PolymarketTerminal() {
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-white/60">Active Positions</span>
+                <span className="text-zinc-400">Active Positions</span>
                 <span className="text-white font-medium">{positions.length}</span>
               </div>
             </div>

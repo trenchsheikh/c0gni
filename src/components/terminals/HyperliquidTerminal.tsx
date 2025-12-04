@@ -360,7 +360,7 @@ export default function HyperliquidTerminal() {
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ scale: 1.01 }}
       onClick={() => setSelectedMarket(market)}
-      className={`bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 cursor-pointer hover:bg-white/10 transition-all duration-300 ${
+      className={`bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6 cursor-pointer hover:bg-white/5 transition-all duration-300 ${
         selectedMarket?.symbol === market.symbol ? 'border-blue-500/50 bg-blue-500/10' : ''
       }`}
     >
@@ -395,14 +395,14 @@ export default function HyperliquidTerminal() {
 
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
-          <div className="text-white/60 text-sm">24h Volume</div>
+          <div className="text-zinc-400 text-sm">24h Volume</div>
           <div className="text-white font-medium">
             {formatCurrency(market.volume24h)}
           </div>
         </div>
         {market.openInterest && (
           <div>
-            <div className="text-white/60 text-sm">Open Interest</div>
+            <div className="text-zinc-400 text-sm">Open Interest</div>
             <div className="text-white font-medium">
               {formatCurrency(market.openInterest)}
             </div>
@@ -413,14 +413,14 @@ export default function HyperliquidTerminal() {
       {market.fundingRate !== undefined && (
         <div className="flex justify-between items-center text-sm border-t border-white/10 pt-3">
           <div>
-            <span className="text-white/60">Funding: </span>
+            <span className="text-zinc-400">Funding: </span>
             <span className={`font-medium ${
               market.fundingRate >= 0 ? 'text-green-400' : 'text-red-400'
             }`}>
               {(market.fundingRate * 100).toFixed(4)}%
             </span>
           </div>
-          <div className="text-white/60">
+          <div className="text-zinc-400">
             Next: {getTimeUntilFunding(market.nextFunding)}
           </div>
         </div>
@@ -449,7 +449,7 @@ export default function HyperliquidTerminal() {
       layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
+      className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6"
     >
       <div className="flex justify-between items-start mb-4">
         <div>
@@ -474,36 +474,36 @@ export default function HyperliquidTerminal() {
 
       <div className="grid grid-cols-3 gap-4 mb-4">
         <div>
-          <div className="text-white/60 text-sm">Size</div>
+          <div className="text-zinc-400 text-sm">Size</div>
           <div className="text-white font-medium">{formatNumber(position.size)}</div>
         </div>
         <div>
-          <div className="text-white/60 text-sm">Entry Price</div>
+          <div className="text-zinc-400 text-sm">Entry Price</div>
           <div className="text-white font-medium">${formatPrice(position.entryPrice)}</div>
         </div>
         <div>
-          <div className="text-white/60 text-sm">Mark Price</div>
+          <div className="text-zinc-400 text-sm">Mark Price</div>
           <div className="text-white font-medium">${formatPrice(position.markPrice)}</div>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4 text-sm">
         <div className="flex justify-between">
-          <span className="text-white/60">Margin:</span>
+          <span className="text-zinc-400">Margin:</span>
           <span className="text-white">{formatCurrency(position.margin)}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-white/60">Margin Ratio:</span>
+          <span className="text-zinc-400">Margin Ratio:</span>
           <span className="text-white">{(position.marginRatio * 100).toFixed(2)}%</span>
         </div>
         {position.liquidationPrice && (
           <>
             <div className="flex justify-between">
-              <span className="text-white/60">Liq. Price:</span>
+              <span className="text-zinc-400">Liq. Price:</span>
               <span className="text-red-400">${formatPrice(position.liquidationPrice)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-white/60">Funding:</span>
+              <span className="text-zinc-400">Funding:</span>
               <span className={position.fundingPaid >= 0 ? 'text-green-400' : 'text-red-400'}>
                 {formatCurrency(position.fundingPaid)}
               </span>
@@ -519,7 +519,7 @@ export default function HyperliquidTerminal() {
       layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
+      className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6"
     >
       <div className="flex justify-between items-start mb-4">
         <div>
@@ -543,7 +543,7 @@ export default function HyperliquidTerminal() {
           }`}>
             {order.status.toUpperCase()}
           </div>
-          <div className="text-white/60 text-xs">
+          <div className="text-zinc-400 text-xs">
             {order.timestamp.toLocaleTimeString()}
           </div>
         </div>
@@ -551,23 +551,23 @@ export default function HyperliquidTerminal() {
 
       <div className="grid grid-cols-2 gap-4 text-sm">
         <div className="flex justify-between">
-          <span className="text-white/60">Size:</span>
+          <span className="text-zinc-400">Size:</span>
           <span className="text-white">{formatNumber(order.size)}</span>
         </div>
         {order.price && (
           <div className="flex justify-between">
-            <span className="text-white/60">Price:</span>
+            <span className="text-zinc-400">Price:</span>
             <span className="text-white">${formatPrice(order.price)}</span>
           </div>
         )}
         {order.triggerPrice && (
           <div className="flex justify-between">
-            <span className="text-white/60">Trigger:</span>
+            <span className="text-zinc-400">Trigger:</span>
             <span className="text-white">${formatPrice(order.triggerPrice)}</span>
           </div>
         )}
         <div className="flex justify-between">
-          <span className="text-white/60">Filled:</span>
+          <span className="text-zinc-400">Filled:</span>
           <span className="text-white">{formatNumber(order.filledSize)}</span>
         </div>
       </div>
@@ -594,7 +594,7 @@ export default function HyperliquidTerminal() {
   );
 
   const TradingInterface = () => (
-    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+    <div className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
       <h3 className="text-white font-medium text-lg mb-4">Trade {selectedMarket?.symbol}</h3>
 
       {/* Order Side */}
@@ -604,7 +604,7 @@ export default function HyperliquidTerminal() {
           className={`flex-1 py-3 rounded-l-xl font-medium transition-all duration-300 ${
             orderSide === 'buy'
               ? 'bg-green-500/30 text-green-400 border border-green-500/50'
-              : 'bg-white/10 text-white/60 border border-white/20'
+              : 'bg-white/5 text-zinc-400 border border-white/10'
           }`}
         >
           Buy / Long
@@ -614,7 +614,7 @@ export default function HyperliquidTerminal() {
           className={`flex-1 py-3 rounded-r-xl font-medium transition-all duration-300 ${
             orderSide === 'sell'
               ? 'bg-red-500/30 text-red-400 border border-red-500/50'
-              : 'bg-white/10 text-white/60 border border-white/20'
+              : 'bg-white/5 text-zinc-400 border border-white/10'
           }`}
         >
           Sell / Short
@@ -628,7 +628,7 @@ export default function HyperliquidTerminal() {
           className={`flex-1 py-2 rounded-l-xl font-medium transition-all duration-300 ${
             orderType === 'market'
               ? 'bg-blue-500/30 text-blue-400 border border-blue-500/50'
-              : 'bg-white/10 text-white/60 border border-white/20'
+              : 'bg-white/5 text-zinc-400 border border-white/10'
           }`}
         >
           Market
@@ -638,7 +638,7 @@ export default function HyperliquidTerminal() {
           className={`flex-1 py-2 rounded-r-xl font-medium transition-all duration-300 ${
             orderType === 'limit'
               ? 'bg-blue-500/30 text-blue-400 border border-blue-500/50'
-              : 'bg-white/10 text-white/60 border border-white/20'
+              : 'bg-white/5 text-zinc-400 border border-white/10'
           }`}
         >
           Limit
@@ -647,26 +647,26 @@ export default function HyperliquidTerminal() {
 
       {/* Size Input */}
       <div className="mb-4">
-        <label className="block text-white/60 text-sm mb-2">Size</label>
+        <label className="block text-zinc-400 text-sm mb-2">Size</label>
         <input
           type="number"
           value={orderSize}
           onChange={(e) => setOrderSize(e.target.value)}
           placeholder="0.00"
-          className="w-full p-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-white/40"
+          className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-white/40"
         />
       </div>
 
       {/* Price Input (for limit orders) */}
       {orderType === 'limit' && (
         <div className="mb-4">
-          <label className="block text-white/60 text-sm mb-2">Price</label>
+          <label className="block text-zinc-400 text-sm mb-2">Price</label>
           <input
             type="number"
             value={orderPrice}
             onChange={(e) => setOrderPrice(e.target.value)}
             placeholder="0.00"
-            className="w-full p-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-white/40"
+            className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-white/40"
           />
         </div>
       )}
@@ -674,7 +674,7 @@ export default function HyperliquidTerminal() {
       {/* Leverage (for perpetuals) */}
       {selectedMarket?.marketType === 'perp' && (
         <div className="mb-4">
-          <label className="block text-white/60 text-sm mb-2">Leverage: {leverage}x</label>
+          <label className="block text-zinc-400 text-sm mb-2">Leverage: {leverage}x</label>
           <input
             type="range"
             min="1"
@@ -683,7 +683,7 @@ export default function HyperliquidTerminal() {
             onChange={(e) => setLeverage(Number(e.target.value))}
             className="w-full"
           />
-          <div className="flex justify-between text-xs text-white/40 mt-1">
+          <div className="flex justify-between text-xs text-zinc-500 mt-1">
             <span>1x</span>
             <span>{selectedMarket.maxLeverage || 50}x</span>
           </div>
@@ -692,7 +692,7 @@ export default function HyperliquidTerminal() {
 
       {/* Order Options */}
       <div className="flex gap-4 mb-6">
-        <label className="flex items-center gap-2 text-white/60 text-sm">
+        <label className="flex items-center gap-2 text-zinc-400 text-sm">
           <input
             type="checkbox"
             checked={reduceOnly}
@@ -701,7 +701,7 @@ export default function HyperliquidTerminal() {
           />
           Reduce Only
         </label>
-        <label className="flex items-center gap-2 text-white/60 text-sm">
+        <label className="flex items-center gap-2 text-zinc-400 text-sm">
           <input
             type="checkbox"
             checked={postOnly}
@@ -724,20 +724,20 @@ export default function HyperliquidTerminal() {
       {/* Order Summary */}
       {orderSize && (orderType === 'market' || orderPrice) && (
         <div className="mt-4 p-4 bg-white/5 rounded-xl">
-          <div className="text-white/60 text-sm mb-2">Order Summary</div>
+          <div className="text-zinc-400 text-sm mb-2">Order Summary</div>
           <div className="space-y-1 text-sm">
             <div className="flex justify-between">
-              <span className="text-white/60">Size:</span>
+              <span className="text-zinc-400">Size:</span>
               <span className="text-white">{orderSize} {selectedMarket?.baseAsset}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-white/60">Price:</span>
+              <span className="text-zinc-400">Price:</span>
               <span className="text-white">
                 {orderType === 'market' ? 'Market' : `$${orderPrice}`}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-white/60">Value:</span>
+              <span className="text-zinc-400">Value:</span>
               <span className="text-white">
                 {formatCurrency(
                   Number(orderSize) * (orderType === 'market'
@@ -748,7 +748,7 @@ export default function HyperliquidTerminal() {
             </div>
             {selectedMarket?.marketType === 'perp' && (
               <div className="flex justify-between">
-                <span className="text-white/60">Margin:</span>
+                <span className="text-zinc-400">Margin:</span>
                 <span className="text-white">
                   {formatCurrency(
                     (Number(orderSize) * (orderType === 'market'
@@ -769,8 +769,8 @@ export default function HyperliquidTerminal() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-light text-white mb-2">Hyperliquid Terminal</h1>
-          <p className="text-white/60">Advanced perpetual and spot trading</p>
+          <h1 className="text-3xl font-light text-white mb-2 tracking-tight">Hyperliquid Terminal</h1>
+          <p className="text-zinc-400 font-light">Advanced perpetual and spot trading</p>
         </div>
         <div className="flex items-center gap-4">
           <WalletConnect showChainSwitcher={false} />
@@ -787,7 +787,7 @@ export default function HyperliquidTerminal() {
                 queryClient.invalidateQueries({ queryKey: ['hyperliquid-markets'] });
               }}
               disabled={isQueryLoading}
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white border border-white/20 rounded-2xl hover:bg-white/15 transition-all duration-300 disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-white/5 text-white border border-white/10 rounded-2xl hover:bg-white/15 transition-all duration-300 disabled:opacity-50"
             >
               <RefreshCw className={`w-4 h-4 ${isQueryLoading ? 'animate-spin' : ''}`} />
               {isQueryLoading ? 'Refreshing...' : 'Refresh'}
@@ -797,7 +797,7 @@ export default function HyperliquidTerminal() {
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex space-x-1 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-1">
+      <div className="flex space-x-1 bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-1">
         {[
           { id: 'markets', label: 'Markets', icon: BarChart3 },
           { id: 'positions', label: 'Positions', icon: Target },
@@ -811,7 +811,7 @@ export default function HyperliquidTerminal() {
             className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition-all duration-300 ${
               selectedTab === tab.id
                 ? 'bg-white/15 text-white'
-                : 'text-white/60 hover:text-white hover:bg-white/5'
+                : 'text-zinc-400 hover:text-white hover:bg-white/5'
             }`}
           >
             <tab.icon className="w-4 h-4" />
@@ -834,13 +834,13 @@ export default function HyperliquidTerminal() {
                     placeholder="Search markets..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-4 pr-4 py-3 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-white/40 focus:outline-none focus:border-white/40"
+                    className="w-full pl-4 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-white/40 focus:outline-none focus:border-white/40"
                   />
                 </div>
                 <select
                   value={selectedMarketType}
                   onChange={(e) => setSelectedMarketType(e.target.value)}
-                  className="px-4 py-3 bg-white/10 border border-white/20 rounded-2xl text-white focus:outline-none focus:border-white/40"
+                  className="px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-white/40"
                 >
                   {MARKET_TYPES.map(type => (
                     <option key={type} value={type} className="bg-black">
@@ -855,7 +855,7 @@ export default function HyperliquidTerminal() {
                 {isLoading ? (
                   <div className="text-center py-12">
                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white/30 mx-auto mb-4"></div>
-                    <p className="text-white/60">Loading markets...</p>
+                    <p className="text-zinc-400">Loading markets...</p>
                   </div>
                 ) : error ? (
                   <div className="text-center py-12">
@@ -881,8 +881,8 @@ export default function HyperliquidTerminal() {
             <div className="space-y-4">
               {positions.length === 0 ? (
                 <div className="text-center py-12">
-                  <Target className="w-12 h-12 text-white/40 mx-auto mb-4" />
-                  <p className="text-white/60">No open positions</p>
+                  <Target className="w-12 h-12 text-zinc-500 mx-auto mb-4" />
+                  <p className="text-zinc-400">No open positions</p>
                 </div>
               ) : (
                 positions.map((position, index) => (
@@ -896,8 +896,8 @@ export default function HyperliquidTerminal() {
             <div className="space-y-4">
               {orders.length === 0 ? (
                 <div className="text-center py-12">
-                  <Activity className="w-12 h-12 text-white/40 mx-auto mb-4" />
-                  <p className="text-white/60">No active orders</p>
+                  <Activity className="w-12 h-12 text-zinc-500 mx-auto mb-4" />
+                  <p className="text-zinc-400">No active orders</p>
                 </div>
               ) : (
                 orders.map((order) => (
@@ -909,14 +909,14 @@ export default function HyperliquidTerminal() {
 
           {selectedTab === 'funding' && (
             <div className="space-y-4">
-              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+              <div className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
                 <h3 className="text-white font-medium text-lg mb-4">Funding Rates</h3>
                 <div className="space-y-3">
                   {markets.filter(m => m.marketType === 'perp').map(market => (
                     <div key={market.symbol} className="flex justify-between items-center p-3 bg-white/5 rounded-xl">
                       <div>
                         <div className="text-white font-medium">{market.symbol}</div>
-                        <div className="text-white/60 text-sm">
+                        <div className="text-zinc-400 text-sm">
                           Next funding: {getTimeUntilFunding(market.nextFunding)}
                         </div>
                       </div>
@@ -965,7 +965,7 @@ export default function HyperliquidTerminal() {
 
           {/* Order Book */}
           {selectedMarket && orderBook && (
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+            <div className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
               <h3 className="text-white font-medium text-lg mb-4">Order Book</h3>
               <div className="space-y-4">
                 {/* Asks */}
@@ -975,8 +975,8 @@ export default function HyperliquidTerminal() {
                     {orderBook.asks.slice().reverse().map((ask, index) => (
                       <div key={index} className="flex justify-between items-center text-sm">
                         <span className="text-red-400">${formatPrice(ask.price)}</span>
-                        <span className="text-white/60">{formatNumber(ask.size)}</span>
-                        <span className="text-white/40">{formatNumber(ask.total)}</span>
+                        <span className="text-zinc-400">{formatNumber(ask.size)}</span>
+                        <span className="text-zinc-500">{formatNumber(ask.total)}</span>
                       </div>
                     ))}
                   </div>
@@ -984,7 +984,7 @@ export default function HyperliquidTerminal() {
 
                 {/* Spread */}
                 <div className="text-center py-2 border-y border-white/10">
-                  <div className="text-white/60 text-sm">
+                  <div className="text-zinc-400 text-sm">
                     Spread: ${formatPrice(orderBook.spread)}
                   </div>
                 </div>
@@ -996,8 +996,8 @@ export default function HyperliquidTerminal() {
                     {orderBook.bids.map((bid, index) => (
                       <div key={index} className="flex justify-between items-center text-sm">
                         <span className="text-green-400">${formatPrice(bid.price)}</span>
-                        <span className="text-white/60">{formatNumber(bid.size)}</span>
-                        <span className="text-white/40">{formatNumber(bid.total)}</span>
+                        <span className="text-zinc-400">{formatNumber(bid.size)}</span>
+                        <span className="text-zinc-500">{formatNumber(bid.total)}</span>
                       </div>
                     ))}
                   </div>
@@ -1007,11 +1007,11 @@ export default function HyperliquidTerminal() {
           )}
 
           {/* Portfolio Summary */}
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
+          <div className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
             <h3 className="text-white font-medium text-lg mb-4">Portfolio Summary</h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-white/60">Total P&L</span>
+                <span className="text-zinc-400">Total P&L</span>
                 <span className={`font-medium ${
                   positions.reduce((sum, pos) => sum + pos.unrealizedPnl, 0) >= 0
                     ? 'text-green-400'
@@ -1022,17 +1022,17 @@ export default function HyperliquidTerminal() {
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-white/60">Total Margin</span>
+                <span className="text-zinc-400">Total Margin</span>
                 <span className="text-white font-medium">
                   {formatCurrency(positions.reduce((sum, pos) => sum + pos.margin, 0))}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-white/60">Active Positions</span>
+                <span className="text-zinc-400">Active Positions</span>
                 <span className="text-white font-medium">{positions.length}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-white/60">Open Orders</span>
+                <span className="text-zinc-400">Open Orders</span>
                 <span className="text-white font-medium">{orders.length}</span>
               </div>
             </div>

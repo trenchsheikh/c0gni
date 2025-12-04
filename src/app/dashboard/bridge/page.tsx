@@ -5,6 +5,9 @@ import { motion } from "framer-motion";
 import { ArrowRightLeft, DollarSign, Clock, Target } from "lucide-react";
 import { CrossChainBridge } from '@/components/bridge/CrossChainBridge';
 import { WalletConnect } from '@/components/wallet/WalletConnect';
+import { PageHeader } from '@/components/dashboard/PageHeader';
+import { StatCard } from '@/components/dashboard/StatCard';
+import { Card } from '@/components/dashboard/Card';
 
 const bridgeStats = [
   {
@@ -37,40 +40,36 @@ export default function BridgePage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="flex items-center justify-between"
+      <PageHeader
+        title="Cross-Chain Bridge"
+        subtitle="Transfer USDC seamlessly between Polygon and Hyperliquid"
       >
-        <div>
-          <h1 className="text-4xl font-light text-white mb-2">Cross-Chain Bridge</h1>
-          <p className="text-white/60">Transfer USDC seamlessly between Polygon and Hyperliquid</p>
-        </div>
         <WalletConnect showChainSwitcher={true} />
-      </motion.div>
+      </PageHeader>
 
       {/* Bridge Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {bridgeStats.map((stat, index) => (
-          <motion.div
-            key={stat.title}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-            className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
-          >
-            <div className="flex items-center gap-4">
-              <div className={`p-3 rounded-xl bg-gradient-to-r ${stat.color} bg-opacity-20`}>
-                <stat.icon className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <p className="text-white/60 text-sm">{stat.title}</p>
-                <p className="text-white text-2xl font-bold">{stat.value}</p>
-              </div>
-            </div>
-          </motion.div>
-        ))}
+        <StatCard
+          title="Total Bridged"
+          value="$24,680.50"
+          icon={DollarSign}
+          trend="neutral"
+          index={0}
+        />
+        <StatCard
+          title="Avg Bridge Time"
+          value="3.2 min"
+          icon={Clock}
+          trend="neutral"
+          index={1}
+        />
+        <StatCard
+          title="Success Rate"
+          value="99.8%"
+          icon={Target}
+          trend="neutral"
+          index={2}
+        />
       </div>
 
       {/* Main Bridge Interface */}
@@ -92,12 +91,7 @@ export default function BridgePage() {
         </motion.div>
 
         {/* Recent Bridges */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
-        >
+        <Card delay={0.3}>
           <h3 className="text-xl font-medium text-white mb-6">Recent Bridges</h3>
           <div className="space-y-4">
             {recentBridges.map((bridge, index) => (
@@ -112,51 +106,46 @@ export default function BridgePage() {
                   <p className="text-white font-medium">{bridge.amount}</p>
                   <span className="text-green-400 text-xs">✓ {bridge.status}</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-white/60">
+                <div className="flex items-center gap-2 text-sm text-zinc-500">
                   <span>{bridge.from}</span>
                   <ArrowRightLeft className="w-3 h-3" />
                   <span>{bridge.to}</span>
                 </div>
-                <p className="text-white/40 text-xs mt-1">{bridge.time}</p>
+                <p className="text-zinc-500 text-xs mt-1">{bridge.time}</p>
               </motion.div>
             ))}
           </div>
-        </motion.div>
+        </Card>
       </div>
 
       {/* Bridge Information */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
-      >
-        <h3 className="text-xl font-medium text-white mb-6">About Cross-Chain Transfers</h3>
-        <div className="grid md:grid-cols-2 gap-8">
-          <div>
-            <h4 className="text-white font-medium mb-3">How it works</h4>
-            <ul className="space-y-2 text-white/60 text-sm">
-              <li>• Powered by LiFi protocol for secure transfers</li>
-              <li>• Automatic route optimization for best rates</li>
-              <li>• Real-time gas estimation and slippage protection</li>
-              <li>• End-to-end transaction monitoring</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-white font-medium mb-3">Supported Networks</h4>
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full bg-purple-500" />
-                <span className="text-white/60 text-sm">Polygon - For Polymarket trading</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full bg-blue-500" />
-                <span className="text-white/60 text-sm">Hyperliquid - For perpetual trading</span>
+      <Card delay={0.4}>
+          <h3 className="text-lg font-medium text-white mb-6">About Cross-Chain Transfers</h3>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <h4 className="text-white font-medium mb-3">How it works</h4>
+              <ul className="space-y-2 text-zinc-400 text-sm">
+                <li>• Powered by LiFi protocol for secure transfers</li>
+                <li>• Automatic route optimization for best rates</li>
+                <li>• Real-time gas estimation and slippage protection</li>
+                <li>• End-to-end transaction monitoring</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-medium mb-3">Supported Networks</h4>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 rounded-full bg-purple-500" />
+                  <span className="text-zinc-400 text-sm">Polygon - For Polymarket trading</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 rounded-full bg-blue-500" />
+                  <span className="text-zinc-400 text-sm">Hyperliquid - For perpetual trading</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </motion.div>
+      </Card>
     </div>
   );
 }
