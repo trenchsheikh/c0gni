@@ -1,18 +1,20 @@
 'use client'
 
-import { Suspense } from 'react'
-import HyperliquidTerminal from '@/components/terminals/HyperliquidTerminal'
+import dynamic from 'next/dynamic'
+
+// Load component immediately without blocking - show UI shell first
+const HyperliquidTerminal = dynamic(
+  () => import('@/components/terminals/HyperliquidTerminal'),
+  {
+    ssr: false,
+    // No loading state - component will show its own skeleton
+  }
+)
 
 export default function HyperliquidPage() {
   return (
     <div className="space-y-6">
-      <Suspense fallback={
-        <div className="min-h-[400px] flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white/30"></div>
-        </div>
-      }>
-        <HyperliquidTerminal />
-      </Suspense>
+      <HyperliquidTerminal />
     </div>
   )
 }

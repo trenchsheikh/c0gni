@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, startTransition, useDeferredValue } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { WalletSwitcher } from '@/components/wallet/WalletSwitcher';
+import { WalletConnect } from '@/components/wallet/WalletConnect';
+import { useWalletManager } from '@/hooks/useWalletManager';
 import { CrossChainBridge } from '@/components/bridge/CrossChainBridge';
 import { QuickTrade } from '@/components/trading/QuickTrade';
 import {
@@ -94,7 +96,7 @@ interface OrderBook {
 const MARKET_TYPES = ['All', 'Perpetuals', 'Spot'];
 
 export default function HyperliquidTerminal() {
-  // State management
+  // State management - all synchronous, no blocking
   const [selectedTab, setSelectedTab] = useState<'markets' | 'positions' | 'orders' | 'funding' | 'bridge'>('markets');
   const [selectedMarket, setSelectedMarket] = useState<Market | null>(null);
   const [markets, setMarkets] = useState<Market[]>([]);
@@ -104,9 +106,35 @@ export default function HyperliquidTerminal() {
   const [wsEnabled] = useState(() => (process.env.NEXT_PUBLIC_ENABLE_HYPERLIQUID_WS || 'false').toLowerCase() === 'true');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMarketType, setSelectedMarketType] = useState('All');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // Start as false to show UI immediately
   const [error, setError] = useState<string | null>(null);
   const [hasInitiallyLoaded, setHasInitiallyLoaded] = useState(false);
+  const [isSwitchingChain, setIsSwitchingChain] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Defer wallet manager hook - load after initial render
+  const walletData = useDeferredValue(useWalletManager());
+  const { isConnected, address, isOnHyperliquid, switchToHyperliquid } = walletData;
+
+  // Mark as mounted after first render - then start loading data
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Auto-switch to Hyperliquid chain - deferred after mount
+  useEffect(() => {
+    if (!isMounted) return;
+    startTransition(() => {
+      if (isConnected && !isOnHyperliquid && !isSwitchingChain) {
+        setIsSwitchingChain(true);
+        switchToHyperliquid().catch(() => {
+          // Silently fail - user can manually switch if needed
+        }).finally(() => {
+          setIsSwitchingChain(false);
+        });
+      }
+    });
+  }, [isMounted, isConnected, isOnHyperliquid, switchToHyperliquid, isSwitchingChain]);
 
   // Trading form state
   const [orderSide, setOrderSide] = useState<'buy' | 'sell'>('buy');
@@ -117,7 +145,7 @@ export default function HyperliquidTerminal() {
   const [reduceOnly, setReduceOnly] = useState(false);
   const [postOnly, setPostOnly] = useState(false);
 
-  // Fetch markets with React Query for real-time updates
+  // Fetch markets with React Query - deferred after mount
   const { data: marketsData, isLoading: isQueryLoading, error: queryError, refetch } = useQuery({
     queryKey: ['hyperliquid-markets'],
     queryFn: async () => {
@@ -125,9 +153,15 @@ export default function HyperliquidTerminal() {
       if (!res.ok) throw new Error(`Failed to load markets (${res.status})`);
       return res.json();
     },
-    refetchInterval: 2000, // Refresh every 2 seconds
+    enabled: isMounted, // Only fetch after component is mounted
+    refetchInterval: 5000, // Refresh every 5 seconds (less frequent for better performance)
     refetchIntervalInBackground: true,
-    staleTime: 1000, // Consider data stale after 1 second
+    staleTime: 30 * 1000, // Consider data fresh for 30 seconds (longer cache for faster loads)
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+    refetchOnWindowFocus: false, // Don't refetch on window focus
+    refetchOnMount: false, // Don't refetch on mount if data is fresh
+    retry: 1, // Faster retry
+    retryDelay: 500, // Quick retry delay
   });
 
   // Background sync to keep Redis cache fresh
@@ -144,11 +178,18 @@ export default function HyperliquidTerminal() {
     staleTime: 30000, // 30 seconds
   });
 
-  // Process markets data and manage loading state
+  // Process markets data and manage loading state (non-blocking, deferred)
   useEffect(() => {
-    setIsLoading(isQueryLoading);
+    if (!isMounted) return;
+    startTransition(() => {
+      // Only set loading if we have no data yet
+      if (isQueryLoading && markets.length === 0) {
+        setIsLoading(true);
+      } else {
+        setIsLoading(false);
+      }
 
-    if (marketsData?.markets) {
+      if (marketsData?.markets) {
       const newMarkets: Market[] = marketsData.markets.map((m: any) => ({
         symbol: m.symbol || m.asset || m.pair,
         marketType: m.marketType || (m.type || 'perp'),
@@ -196,10 +237,11 @@ export default function HyperliquidTerminal() {
       if (!hasInitiallyLoaded) {
         setHasInitiallyLoaded(true);
       }
-    } else if (queryError) {
-      setError(queryError?.message || 'Failed to load markets');
-    }
-  }, [marketsData, queryError, isQueryLoading]);
+      } else if (queryError) {
+        setError(queryError?.message || 'Failed to load markets');
+      }
+    });
+  }, [isMounted, marketsData, queryError, isQueryLoading, markets.length, hasInitiallyLoaded]);
 
   // Order book with React Query and WebSocket fallback
   const { data: orderBookData } = useQuery({
@@ -731,15 +773,26 @@ export default function HyperliquidTerminal() {
           <p className="text-white/60">Advanced perpetual and spot trading</p>
         </div>
         <div className="flex items-center gap-4">
-          <WalletSwitcher />
-          <button
-            onClick={() => refetch()}
-            disabled={isQueryLoading}
-            className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white border border-white/20 rounded-2xl hover:bg-white/15 transition-all duration-300 disabled:opacity-50"
-          >
-            <RefreshCw className={`w-4 h-4 ${isQueryLoading ? 'animate-spin' : ''}`} />
-            {isQueryLoading ? 'Refreshing...' : 'Refresh'}
-          </button>
+          <WalletConnect showChainSwitcher={false} />
+          {isSwitchingChain && (
+            <div className="flex items-center gap-2 px-4 py-2 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-2xl">
+              <RefreshCw className="w-4 h-4 animate-spin" />
+              Switching to Hyperliquid...
+            </div>
+          )}
+          {!isSwitchingChain && (
+            <button
+              onClick={() => {
+                const queryClient = require('@tanstack/react-query').useQueryClient();
+                queryClient.invalidateQueries({ queryKey: ['hyperliquid-markets'] });
+              }}
+              disabled={isQueryLoading}
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white border border-white/20 rounded-2xl hover:bg-white/15 transition-all duration-300 disabled:opacity-50"
+            >
+              <RefreshCw className={`w-4 h-4 ${isQueryLoading ? 'animate-spin' : ''}`} />
+              {isQueryLoading ? 'Refreshing...' : 'Refresh'}
+            </button>
+          )}
         </div>
       </div>
 

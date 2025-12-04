@@ -39,7 +39,7 @@ interface PortfolioPosition {
 
 
 
-const PortfolioMetrics = ({ portfolioSummary }: { portfolioSummary: any }) => (
+const PortfolioMetrics = React.memo(({ portfolioSummary }: { portfolioSummary: any }) => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
     {[
       {
@@ -108,9 +108,9 @@ const PortfolioMetrics = ({ portfolioSummary }: { portfolioSummary: any }) => (
       </motion.div>
     ))}
   </div>
-);
+));
 
-const PolymarketTable = ({ positions, isLoading }: { positions: PortfolioPosition[], isLoading: boolean }) => (
+const PolymarketTable = React.memo(({ positions, isLoading }: { positions: PortfolioPosition[], isLoading: boolean }) => (
   <motion.div
     initial={{ opacity: 0, x: -20 }}
     animate={{ opacity: 1, x: 0 }}
@@ -223,9 +223,9 @@ const PolymarketTable = ({ positions, isLoading }: { positions: PortfolioPositio
       </table>
     </div>
   </motion.div>
-);
+));
 
-const HyperliquidTable = ({ positions, isLoading }: { positions: PortfolioPosition[], isLoading: boolean }) => (
+const HyperliquidTable = React.memo(({ positions, isLoading }: { positions: PortfolioPosition[], isLoading: boolean }) => (
   <motion.div
     initial={{ opacity: 0, x: 20 }}
     animate={{ opacity: 1, x: 0 }}
@@ -369,8 +369,14 @@ export default function PortfolioPage() {
   };
 
   const positions: PortfolioPosition[] = portfolioData?.positions || [];
-  const polymarketPositions = positions.filter(p => p.platform === 'polymarket');
-  const hyperliquidPositions = positions.filter(p => p.platform === 'hyperliquid');
+  const polymarketPositions = React.useMemo(() => 
+    positions.filter(p => p.platform === 'polymarket'), 
+    [positions]
+  );
+  const hyperliquidPositions = React.useMemo(() => 
+    positions.filter(p => p.platform === 'hyperliquid'), 
+    [positions]
+  );
 
   return (
     <div className="space-y-8">

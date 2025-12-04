@@ -4,7 +4,7 @@ import { polygon } from 'viem/chains'
 
 // Custom chain configuration for Hyperliquid
 export const hyperliquid = {
-  id: 998,
+  id: 999,
   name: 'Hyperliquid',
   nativeCurrency: {
     decimals: 18,
@@ -13,7 +13,7 @@ export const hyperliquid = {
   },
   rpcUrls: {
     default: {
-      http: [process.env.NEXT_PUBLIC_HYPERLIQUID_RPC_URL || 'https://api.hyperliquid.xyz/info'],
+      http: [process.env.NEXT_PUBLIC_HYPERLIQUID_RPC_URL || 'https://rpc.hyperliquid.xyz/evm'],
     },
   },
   blockExplorers: {
@@ -51,9 +51,9 @@ export function useWallet() {
   // Wallet state
   const walletState: WalletState = {
     status: !ready ? 'connecting' :
-            authenticated && isConnected ? 'connected' :
-            authenticated && !isConnected ? 'error' :
-            'disconnected',
+      authenticated && isConnected ? 'connected' :
+        authenticated && !isConnected ? 'error' :
+          'disconnected',
     address: address,
     chainId: chainId,
     isEmbedded: !!embeddedWallet,
@@ -205,7 +205,7 @@ export const walletUtils = {
   // Get chain name
   getChainName: (chainId: number) => {
     switch (chainId) {
-      case polygon.id: return 'Polygon'
+      case polygon.id: return 'Polymarket'
       case hyperliquid.id: return 'Hyperliquid'
       default: return 'Unknown'
     }

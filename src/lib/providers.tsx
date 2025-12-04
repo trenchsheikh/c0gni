@@ -9,35 +9,14 @@ import { polygon } from 'viem/chains'
 import { createConfig } from 'wagmi'
 import { Toaster } from '@/components/ui/sonner'
 import { WalletProvider } from '@/contexts/WalletContext'
-
-// Custom chain configuration for Hyperliquid
-const hyperliquid = {
-  id: 998, // Hyperliquid Mainnet chain ID
-  name: 'Hyperliquid',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'USDC',
-    symbol: 'USDC',
-  },
-  rpcUrls: {
-    default: {
-      http: [process.env.NEXT_PUBLIC_HYPERLIQUID_RPC_URL || 'https://api.hyperliquid.xyz/info'],
-    },
-  },
-  blockExplorers: {
-    default: {
-      name: 'Hyperliquid Explorer',
-      url: 'https://app.hyperliquid.xyz',
-    },
-  },
-} as const
+import { hyperliquid } from '@/lib/wallet'
 
 // Wagmi configuration
 const wagmiConfig = createConfig({
   chains: [polygon, hyperliquid],
   transports: {
     [polygon.id]: http(process.env.NEXT_PUBLIC_POLYGON_RPC_URL),
-    [hyperliquid.id]: http(process.env.NEXT_PUBLIC_HYPERLIQUID_RPC_URL),
+    [hyperliquid.id]: http(process.env.NEXT_PUBLIC_HYPERLIQUID_RPC_URL || 'https://rpc.hyperliquid.xyz/evm'),
   },
 })
 
@@ -46,7 +25,19 @@ interface ProvidersProps {
 }
 
 export function Providers({ children }: ProvidersProps) {
-  const [queryClient] = useState(() => new QueryClient())
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        // Optimize caching for better performance
+        staleTime: 30 * 1000, // 30 seconds default stale time
+        gcTime: 5 * 60 * 1000, // 5 minutes garbage collection time (formerly cacheTime)
+        refetchOnWindowFocus: false, // Don't refetch on window focus for better UX
+        refetchOnMount: true, // Refetch on mount to ensure fresh data
+        retry: 2, // Retry failed requests twice
+        retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+      },
+    },
+  }))
 
   return (
     <PrivyProvider

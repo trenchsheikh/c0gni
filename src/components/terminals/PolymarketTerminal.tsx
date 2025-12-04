@@ -1,13 +1,15 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, memo, startTransition, useDeferredValue } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
 import { WalletSwitcher } from '@/components/wallet/WalletSwitcher';
+import { WalletConnect } from '@/components/wallet/WalletConnect';
 import { CrossChainBridge } from '@/components/bridge/CrossChainBridge';
 import TradingModal from '@/components/polymarket/TradingModal';
 import { QuickTrade } from '@/components/trading/QuickTrade';
 import { useWalletManager } from '@/hooks/useWalletManager';
-import { WalletStatus } from '@/components/wallet/WalletStatus';
+// Removed WalletStatus to prevent blocking render
 import {
   TrendingUp,
   TrendingDown,
@@ -91,9 +93,7 @@ const CATEGORIES = [
 ];
 
 export default function PolymarketTerminal() {
-  const { isConnected, address } = useWalletManager();
-
-  // State management
+  // State management - all synchronous, no blocking
   const [selectedTab, setSelectedTab] = useState<'markets' | 'positions' | 'orders' | 'bridge'>('markets');
   const [selectedMarket, setSelectedMarket] = useState<Market | null>(null);
   const [markets, setMarkets] = useState<Market[]>([]);
@@ -101,114 +101,169 @@ export default function PolymarketTerminal() {
   const [orderBook, setOrderBook] = useState<OrderBook | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // Start as false to show UI immediately
   const [error, setError] = useState<string | null>(null);
   const [isTradingModalOpen, setIsTradingModalOpen] = useState(false);
   const [isLoadingPositions, setIsLoadingPositions] = useState(false);
   const [userOrders, setUserOrders] = useState<any[]>([]);
+  const [isSwitchingChain, setIsSwitchingChain] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  
+  // Load wallet manager - but defer execution until after first render
+  const { isConnected, address, isOnPolymarket, switchToPolymarket, chainId } = useWalletManager();
 
-  // Load real open markets
+  // Mark as mounted after first render - then start loading data
   useEffect(() => {
-    const loadMarkets = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const res = await fetch('/api/markets/polymarket', { cache: 'no-store' });
-        if (!res.ok) throw new Error(`Failed to load markets (${res.status})`);
-        const data = await res.json();
-        const mapped: Market[] = (data.markets || data || []).map((m: any) => ({
-          id: m.id || m.slug || String(m.ticker || m.question || Math.random()),
-          question: m.question || m.title || m.name || 'Untitled market',
-          description: m.description || undefined,
-          category: m.category || (Array.isArray(m.tags) && m.tags[0]) || 'All',
-          yesPrice: typeof m.yesPrice === 'number' ? m.yesPrice : (m.prices?.yes ?? m.prices?.[0] ?? 0),
-          noPrice: typeof m.noPrice === 'number' ? m.noPrice : (m.prices?.no ?? m.prices?.[1] ?? 0),
-          volume24h: m.volume24h || m.volume_24h || 0,
-          totalVolume: m.totalVolume || m.volume || 0,
-          liquidity: m.liquidity || 0,
-          resolutionDate: m.endDate ? new Date(m.endDate) : undefined,
-          status: m.status || (m.active ? 'active' : 'closed'),
-          tags: m.tags || [],
-          impliedOdds: typeof m.impliedOdds === 'number' ? m.impliedOdds : (m.yesPrice ?? m.prices?.yes ?? 0)
-        }));
-        setMarkets(mapped);
-      } catch (e: any) {
-        setError(e?.message || 'Failed to load markets');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    loadMarkets();
+    setIsMounted(true);
   }, []);
 
-  // Load order book for the selected market (if available)
+  // Auto-switch to Polygon chain - deferred after mount
   useEffect(() => {
-    const loadOrderBook = async () => {
-      if (!selectedMarket) return setOrderBook(null);
-      try {
-        const res = await fetch(`/api/markets/polymarket/orderbook?id=${encodeURIComponent(selectedMarket.id)}`, { cache: 'no-store' });
-        if (!res.ok) return setOrderBook(null);
-        const ob = await res.json();
-        setOrderBook(ob?.orderBook || null);
-      } catch {
-        setOrderBook(null);
+    if (!isMounted) return;
+    startTransition(() => {
+      if (isConnected && !isOnPolymarket && !isSwitchingChain) {
+        setIsSwitchingChain(true);
+        switchToPolymarket().catch(() => {
+          // Silently fail - user can manually switch if needed
+        }).finally(() => {
+          setIsSwitchingChain(false);
+        });
       }
-    };
-    loadOrderBook();
-  }, [selectedMarket]);
+    });
+  }, [isMounted, isConnected, isOnPolymarket, switchToPolymarket, isSwitchingChain]);
 
-  // Load user positions when connected and on positions tab
-  useEffect(() => {
-    const loadPositions = async () => {
-      if (!isConnected || selectedTab !== 'positions') return;
-
-      setIsLoadingPositions(true);
-      try {
-        const res = await fetch('/api/markets/polymarket/positions');
-        if (res.ok) {
-          const data = await res.json();
-          setPositions(data.positions || []);
-        } else {
-          console.error('Failed to load positions');
-        }
-      } catch (e) {
-        console.error('Error loading positions:', e);
-      } finally {
-        setIsLoadingPositions(false);
-      }
-    };
-
-    loadPositions();
-  }, [isConnected, selectedTab]);
-
-  // Load user orders when connected and on orders tab
-  useEffect(() => {
-    const loadOrders = async () => {
-      if (!isConnected || selectedTab !== 'orders') return;
-
-      try {
-        const res = await fetch('/api/markets/polymarket/trade');
-        if (res.ok) {
-          const data = await res.json();
-          setUserOrders(data.orders || []);
-        } else {
-          console.error('Failed to load orders');
-        }
-      } catch (e) {
-        console.error('Error loading orders:', e);
-      }
-    };
-
-    loadOrders();
-  }, [isConnected, selectedTab]);
-
-  // Filter markets based on search and category
-  const filteredMarkets = markets.filter(market => {
-    const matchesSearch = market.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         market.category.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === 'All' || market.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+  // Load real open markets with React Query - deferred after mount
+  const { data: marketsData, isLoading: isMarketsLoading, error: marketsError } = useQuery({
+    queryKey: ['polymarket-markets'],
+    queryFn: async () => {
+      const res = await fetch('/api/markets/polymarket', { cache: 'no-store' });
+      if (!res.ok) throw new Error(`Failed to load markets (${res.status})`);
+      const data = await res.json();
+      return (data.markets || data || []).map((m: any) => ({
+        id: m.id || m.slug || String(m.ticker || m.question || Math.random()),
+        question: m.question || m.title || m.name || 'Untitled market',
+        description: m.description || undefined,
+        category: m.category || (Array.isArray(m.tags) && m.tags[0]) || 'All',
+        yesPrice: typeof m.yesPrice === 'number' ? m.yesPrice : (m.prices?.yes ?? m.prices?.[0] ?? 0),
+        noPrice: typeof m.noPrice === 'number' ? m.noPrice : (m.prices?.no ?? m.prices?.[1] ?? 0),
+        volume24h: m.volume24h || m.volume_24h || 0,
+        totalVolume: m.totalVolume || m.volume || 0,
+        liquidity: m.liquidity || 0,
+        resolutionDate: m.endDate ? new Date(m.endDate) : undefined,
+        status: m.status || (m.active ? 'active' : 'closed'),
+        tags: m.tags || [],
+        impliedOdds: typeof m.impliedOdds === 'number' ? m.impliedOdds : (m.yesPrice ?? m.prices?.yes ?? 0)
+      }));
+    },
+    enabled: isMounted, // Only fetch after component is mounted
+    staleTime: 60 * 1000, // Consider data fresh for 1 minute (longer cache for faster loads)
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+    refetchOnWindowFocus: false, // Don't refetch on window focus
+    refetchOnMount: false, // Don't refetch on mount if data is fresh
+    retry: 1, // Faster retry
+    retryDelay: 500, // Quick retry delay
   });
+
+  // Update local state when query data changes (non-blocking, deferred)
+  useEffect(() => {
+    if (!isMounted) return;
+    startTransition(() => {
+      if (marketsData) {
+        setMarkets(marketsData);
+        setError(null);
+      }
+      if (marketsError) {
+        setError(marketsError instanceof Error ? marketsError.message : 'Failed to load markets');
+      }
+      if (isMarketsLoading && markets.length === 0) {
+        setIsLoading(true);
+      } else {
+        setIsLoading(false);
+      }
+    });
+  }, [isMounted, marketsData, marketsError, isMarketsLoading, markets.length]);
+
+  // Load order book for the selected market (lazy loaded only when market is selected and visible)
+  const { data: orderBookData } = useQuery({
+    queryKey: ['polymarket-orderbook', selectedMarket?.id],
+    queryFn: async () => {
+      if (!selectedMarket) return null;
+      const res = await fetch(`/api/markets/polymarket/orderbook?id=${encodeURIComponent(selectedMarket.id)}`, { cache: 'no-store' });
+      if (!res.ok) return null;
+      const ob = await res.json();
+      return ob?.orderBook || null;
+    },
+    enabled: !!selectedMarket && selectedTab === 'markets', // Only fetch when market is selected and on markets tab
+    staleTime: 10000, // Consider data fresh for 10 seconds
+    gcTime: 2 * 60 * 1000, // Keep in cache for 2 minutes
+    refetchOnWindowFocus: false,
+  });
+
+  // Update order book state when query data changes (deferred)
+  useEffect(() => {
+    if (!isMounted) return;
+    startTransition(() => {
+      if (orderBookData !== undefined) {
+        setOrderBook(orderBookData);
+      }
+    });
+  }, [isMounted, orderBookData]);
+
+  // Load user positions when connected and on positions tab (lazy loaded with React Query)
+  const { data: positionsData, isLoading: isPositionsLoading } = useQuery({
+    queryKey: ['polymarket-positions', address],
+    queryFn: async () => {
+      const res = await fetch('/api/markets/polymarket/positions');
+      if (!res.ok) throw new Error('Failed to load positions');
+      const data = await res.json();
+      return data.positions || [];
+    },
+    enabled: isMounted && isConnected && selectedTab === 'positions', // Only fetch after mount and when connected and on positions tab
+    staleTime: 15000, // Consider data fresh for 15 seconds
+    gcTime: 2 * 60 * 1000, // Keep in cache for 2 minutes
+    refetchOnWindowFocus: false,
+  });
+
+  useEffect(() => {
+    if (positionsData) {
+      setPositions(positionsData);
+    }
+  }, [positionsData]);
+
+  useEffect(() => {
+    setIsLoadingPositions(isPositionsLoading);
+  }, [isPositionsLoading]);
+
+  // Load user orders when connected and on orders tab (lazy loaded with React Query)
+  const { data: ordersData } = useQuery({
+    queryKey: ['polymarket-orders', address],
+    queryFn: async () => {
+      const res = await fetch('/api/markets/polymarket/trade');
+      if (!res.ok) throw new Error('Failed to load orders');
+      const data = await res.json();
+      return data.orders || [];
+    },
+    enabled: isMounted && isConnected && selectedTab === 'orders', // Only fetch after mount and when connected and on orders tab
+    staleTime: 10000, // Consider data fresh for 10 seconds
+    gcTime: 2 * 60 * 1000, // Keep in cache for 2 minutes
+    refetchOnWindowFocus: false,
+  });
+
+  useEffect(() => {
+    if (ordersData) {
+      setUserOrders(ordersData);
+    }
+  }, [ordersData]);
+
+  // Filter markets based on search and category (memoized for performance)
+  const filteredMarkets = useMemo(() => {
+    return markets.filter(market => {
+      const matchesSearch = market.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           market.category.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = selectedCategory === 'All' || market.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [markets, searchQuery, selectedCategory]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -236,13 +291,17 @@ export default function PolymarketTerminal() {
     }
   };
 
-  const MarketCard = ({ market }: { market: Market }) => (
+  const handleMarketSelect = useCallback((market: Market) => {
+    setSelectedMarket(market);
+  }, []);
+
+  const MarketCard = memo(({ market, onSelect }: { market: Market; onSelect: (market: Market) => void }) => (
     <motion.div
       layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ scale: 1.02 }}
-      onClick={() => setSelectedMarket(market)}
+      onClick={() => onSelect(market)}
       className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 cursor-pointer hover:bg-white/10 transition-all duration-300"
     >
       <div className="flex justify-between items-start mb-4">
@@ -291,9 +350,9 @@ export default function PolymarketTerminal() {
         )}
       </div>
     </motion.div>
-  );
+  ));
 
-  const PositionCard = ({ position }: { position: Position }) => (
+  const PositionCard = memo(({ position }: { position: Position }) => (
     <motion.div
       layout
       initial={{ opacity: 0, y: 20 }}
@@ -336,9 +395,9 @@ export default function PolymarketTerminal() {
         </div>
       </div>
     </motion.div>
-  );
+  ));
 
-  const OrderBookView = ({ orderBook }: { orderBook: OrderBook }) => (
+  const OrderBookView = memo(({ orderBook }: { orderBook: OrderBook }) => (
     <div className="grid grid-cols-2 gap-6">
       {/* YES Order Book */}
       <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
@@ -406,25 +465,37 @@ export default function PolymarketTerminal() {
         </div>
       </div>
     </div>
-  );
+  ));
 
+  // Render UI immediately - don't wait for data
   return (
     <div className="space-y-6">
-      {/* Debug Status */}
-      <WalletStatus />
-
-      {/* Header */}
+      {/* Header - Always visible immediately */}
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-light text-white mb-2">Polymarket Terminal</h1>
           <p className="text-white/60">Trade prediction markets with real-time data</p>
         </div>
         <div className="flex items-center gap-4">
-          <WalletSwitcher />
-          <button className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white border border-white/20 rounded-2xl hover:bg-white/15 transition-all duration-300">
-            <RefreshCw className="w-4 h-4" />
-            Refresh
-          </button>
+          <WalletConnect showChainSwitcher={false} />
+          {isSwitchingChain && (
+            <div className="flex items-center gap-2 px-4 py-2 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-2xl">
+              <RefreshCw className="w-4 h-4 animate-spin" />
+              Switching to Polygon...
+            </div>
+          )}
+          {!isSwitchingChain && (
+            <button 
+              onClick={() => {
+                const queryClient = require('@tanstack/react-query').useQueryClient();
+                queryClient.invalidateQueries({ queryKey: ['polymarket-markets'] });
+              }}
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white border border-white/20 rounded-2xl hover:bg-white/15 transition-all duration-300"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Refresh
+            </button>
+          )}
         </div>
       </div>
 
@@ -482,12 +553,20 @@ export default function PolymarketTerminal() {
                 </select>
               </div>
 
-              {/* Markets Grid */}
+              {/* Markets Grid - Show skeleton immediately if no data */}
               <div className="space-y-4">
-                {isLoading ? (
-                  <div className="text-center py-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white/30 mx-auto mb-4"></div>
-                    <p className="text-white/60">Loading markets...</p>
+                {isLoading && markets.length === 0 ? (
+                  <div className="grid gap-4">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <div key={i} className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 animate-pulse">
+                        <div className="h-6 bg-white/10 rounded mb-4 w-3/4"></div>
+                        <div className="grid grid-cols-2 gap-4 mb-4">
+                          <div className="h-20 bg-white/10 rounded-xl"></div>
+                          <div className="h-20 bg-white/10 rounded-xl"></div>
+                        </div>
+                        <div className="h-4 bg-white/10 rounded w-1/2"></div>
+                      </div>
+                    ))}
                   </div>
                 ) : error ? (
                   <div className="text-center py-12">
@@ -497,7 +576,7 @@ export default function PolymarketTerminal() {
                 ) : (
                   <AnimatePresence mode="popLayout">
                     {filteredMarkets.map(market => (
-                      <MarketCard key={market.id} market={market} />
+                      <MarketCard key={market.id} market={market} onSelect={handleMarketSelect} />
                     ))}
                   </AnimatePresence>
                 )}
@@ -511,7 +590,7 @@ export default function PolymarketTerminal() {
                 <div className="text-center py-12">
                   <PieChart className="w-12 h-12 text-white/40 mx-auto mb-4" />
                   <p className="text-white/60 mb-4">Connect wallet to view positions</p>
-                  <WalletSwitcher />
+                  <WalletConnect showChainSwitcher={false} />
                 </div>
               ) : isLoadingPositions ? (
                 <div className="text-center py-12">
@@ -538,7 +617,7 @@ export default function PolymarketTerminal() {
                 <div className="text-center py-12">
                   <Activity className="w-12 h-12 text-white/40 mx-auto mb-4" />
                   <p className="text-white/60 mb-4">Connect wallet to view orders</p>
-                  <WalletSwitcher />
+                  <WalletConnect showChainSwitcher={false} />
                 </div>
               ) : userOrders.length === 0 ? (
                 <div className="text-center py-12">

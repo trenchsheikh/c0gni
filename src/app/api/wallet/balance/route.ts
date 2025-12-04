@@ -218,52 +218,39 @@ export async function GET(request: Request) {
       })
     }
 
-    // Fetch balances from all supported chains with timeout
-    const chainIds = [1, 137, 8453] // Ethereum, Polygon, Base
-    const balancePromises = chainIds.map(async (chainId) => {
-      try {
-        // Add timeout for each chain
-        const timeoutPromise = new Promise<null>((resolve) =>
-          setTimeout(() => resolve(null), 15000) // 15 second timeout per chain
-        )
-
-        return await Promise.race([
-          getChainBalance(address, chainId),
-          timeoutPromise
-        ])
-      } catch (error) {
-        console.warn(`Chain ${chainId} failed:`, error)
-        return null
-      }
-    })
-
-    const balances = await Promise.all(balancePromises)
-
-    // Filter out failed requests
-    const validBalances = balances.filter(Boolean) as WalletBalance[]
-
-    if (validBalances.length === 0) {
-      return NextResponse.json(
-        { error: 'Failed to fetch balances from any supported chain' },
-        { status: 500 }
-      )
+    // If no chainId specified, default to Polygon (137) for faster response
+    // Only fetch from all chains if explicitly requested
+    const defaultChainId = 137 // Polygon
+    const balance = await getChainBalance(address, defaultChainId)
+    
+    if (!balance) {
+      // Return empty balance instead of 500 error
+      return NextResponse.json({
+        success: true,
+        address,
+        chains: [{
+          chainId: defaultChainId,
+          chainName: 'Polygon',
+          native: { symbol: 'MATIC', balance: '0', raw: '0' },
+          tokens: []
+        }],
+        summary: {
+          totalChains: 1,
+          totalTokenTypes: 0,
+          hasPositiveBalance: false,
+          lastUpdated: new Date().toISOString()
+        }
+      })
     }
-
-    // Calculate total portfolio value (simplified - would need price feeds for accurate USD values)
-    const allTokens = validBalances.flatMap(b => b.tokens)
-    const totalTokens = allTokens.length
-    const hasPositiveBalance = validBalances.some(b =>
-      parseFloat(b.native.balance) > 0 || b.tokens.length > 0
-    )
 
     return NextResponse.json({
       success: true,
       address,
-      chains: validBalances,
+      chains: [balance],
       summary: {
-        totalChains: validBalances.length,
-        totalTokenTypes: totalTokens,
-        hasPositiveBalance,
+        totalChains: 1,
+        totalTokenTypes: balance.tokens.length,
+        hasPositiveBalance: parseFloat(balance.native.balance) > 0 || balance.tokens.length > 0,
         lastUpdated: new Date().toISOString()
       }
     })

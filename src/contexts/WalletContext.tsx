@@ -1,8 +1,8 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import React, { createContext, useContext, useState, useEffect, useCallback, startTransition } from 'react'
 import { usePrivy, useWallets } from '@privy-io/react-auth'
-import { useAccount, useWalletClient } from 'wagmi'
+import { useAccount, useWalletClient, useDisconnect } from 'wagmi'
 import { polygon } from 'viem/chains'
 import { toast } from 'sonner'
 
@@ -50,13 +50,15 @@ const WalletContext = createContext<WalletContextType | undefined>(undefined)
 export function WalletProvider({ children }: { children: React.ReactNode }) {
   const { ready, authenticated, user, login, logout, connectWallet, createWallet } = usePrivy()
   const { wallets } = useWallets()
-  const { address: wagmiAddress, isConnected: wagmiConnected } = useAccount()
+  const { address: wagmiAddress, isConnected: wagmiConnected, chainId: wagmiChainId } = useAccount()
   const { data: walletClient } = useWalletClient()
+  const { disconnect: wagmiDisconnect } = useDisconnect()
 
   const [activeWallet, setActiveWallet] = useState<WalletType>('embedded')
   const [isConnecting, setIsConnecting] = useState(false)
   const [embeddedInfo, setEmbeddedInfo] = useState<WalletInfo | null>(null)
   const [externalInfo, setExternalInfo] = useState<WalletInfo | null>(null)
+  const [isMounted, setIsMounted] = useState(false)
 
   // Get wallet instances from Privy
   const privyEmbedded = wallets.find(w => w.walletClientType === 'privy')
@@ -70,60 +72,79 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       userAddress: user?.wallet?.address,
       wagmiAddress,
       wagmiConnected,
+      wagmiChainId,
       walletsCount: wallets.length,
       wallets: wallets.map(w => ({ type: w.walletClientType, address: w.address })),
       embeddedInfo,
       externalInfo,
       activeWallet
     })
-  }, [ready, authenticated, user, wagmiAddress, wagmiConnected, wallets, embeddedInfo, externalInfo, activeWallet])
+  }, [ready, authenticated, user, wagmiAddress, wagmiConnected, wagmiChainId, wallets, embeddedInfo, externalInfo, activeWallet])
 
-  // Load saved wallet preference
+  // Mark as mounted after first render
   useEffect(() => {
-    const saved = localStorage.getItem('preferredWallet')
-    if (saved === 'external' || saved === 'embedded') {
-      setActiveWallet(saved)
-    }
+    setIsMounted(true)
   }, [])
 
-  // Update embedded wallet info
+  // Load saved wallet preference - only after mount
   useEffect(() => {
-    if (authenticated && privyEmbedded?.address) {
-      setEmbeddedInfo({
-        address: privyEmbedded.address,
-        type: 'embedded',
-        chainId: privyEmbedded.chainId || polygon.id,
-        isConnected: true,
+    if (!isMounted) return
+    const saved = localStorage.getItem('preferredWallet')
+    if (saved === 'external' || saved === 'embedded') {
+      startTransition(() => {
+        setActiveWallet(saved)
       })
-    } else if (authenticated && user?.wallet?.address) {
-      // Check if user has an embedded wallet from email login
-      setEmbeddedInfo({
-        address: user.wallet.address,
-        type: 'embedded',
-        chainId: polygon.id,
-        isConnected: true,
-      })
-    } else {
-      setEmbeddedInfo(null)
     }
-  }, [privyEmbedded, authenticated, user])
+  }, [isMounted])
 
-  // Update external wallet info
+  // Update embedded wallet info - deferred after mount
   useEffect(() => {
-    if (privyExternal?.address || (wagmiAddress && wagmiConnected)) {
-      const address = privyExternal?.address || wagmiAddress
-      if (address) {
-        setExternalInfo({
-          address,
-          type: 'external',
-          chainId: privyExternal?.chainId || polygon.id,
+    if (!isMounted) return
+    startTransition(() => {
+      if (authenticated && privyEmbedded?.address) {
+        setEmbeddedInfo({
+          address: privyEmbedded.address,
+          type: 'embedded',
+          chainId: Number(privyEmbedded.chainId) || polygon.id,
           isConnected: true,
         })
+      } else if (authenticated && user?.wallet?.address) {
+        // Check if user has an embedded wallet from email login
+        setEmbeddedInfo({
+          address: user.wallet.address,
+          type: 'embedded',
+          chainId: polygon.id,
+          isConnected: true,
+        })
+      } else {
+        setEmbeddedInfo(null)
       }
-    } else {
-      setExternalInfo(null)
-    }
-  }, [privyExternal, wagmiAddress, wagmiConnected])
+    })
+  }, [isMounted, privyEmbedded, authenticated, user])
+
+  // Update external wallet info - deferred after mount
+  useEffect(() => {
+    if (!isMounted) return
+    startTransition(() => {
+      if (privyExternal?.address || (wagmiAddress && wagmiConnected)) {
+        const address = privyExternal?.address || wagmiAddress
+        if (address) {
+          // Prefer Wagmi chainId if available and we are using the external wallet
+          // This ensures immediate UI updates when switching chains
+          const currentChainId = wagmiChainId || Number(privyExternal?.chainId) || polygon.id
+
+          setExternalInfo({
+            address,
+            type: 'external',
+            chainId: currentChainId,
+            isConnected: true,
+          })
+        }
+      } else {
+        setExternalInfo(null)
+      }
+    })
+  }, [isMounted, privyExternal, wagmiAddress, wagmiConnected, wagmiChainId])
 
   // Connect embedded wallet
   const connectEmbedded = useCallback(async () => {
@@ -187,6 +208,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const disconnect = useCallback(async () => {
     try {
       await logout()
+      wagmiDisconnect()
       setEmbeddedInfo(null)
       setExternalInfo(null)
       localStorage.removeItem('preferredWallet')
@@ -196,7 +218,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       toast.error('Failed to disconnect')
       throw error
     }
-  }, [logout])
+  }, [logout, wagmiDisconnect])
 
   // Refresh balances for both wallets
   const refreshBalances = useCallback(async () => {
@@ -223,7 +245,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     activeWalletInfo = {
       address: wagmiAddress,
       type: 'external' as WalletType,
-      chainId: polygon.id,
+      chainId: wagmiChainId || polygon.id,
       isConnected: true
     }
   }

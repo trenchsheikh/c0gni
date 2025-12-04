@@ -19,7 +19,9 @@ import {
   AlertTriangle,
   CheckCircle,
   Eye,
-  RefreshCw
+  RefreshCw,
+  ArrowUpRight,
+  ArrowDownRight
 } from "lucide-react";
 import Link from "next/link";
 import { WalletConnect } from "@/components/wallet/WalletConnect";
@@ -47,14 +49,11 @@ interface TradingActivity {
 interface PlatformStat {
   platform: string;
   icon: React.ComponentType<any>;
-  color: string;
   metrics: Record<string, string>;
   status: string;
 }
 
-
-
-const StatCard = ({ stat, index }: { stat: typeof portfolioStats[0], index: number }) => {
+const StatCard = ({ stat, index }: { stat: PortfolioStat, index: number }) => {
   const IconComponent = stat.icon;
 
   return (
@@ -62,38 +61,33 @@ const StatCard = ({ stat, index }: { stat: typeof portfolioStats[0], index: numb
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300"
+      className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6 hover:bg-zinc-900/80 transition-all duration-300 group"
     >
       <div className="flex items-center justify-between mb-4">
-        <div className={`p-3 rounded-xl bg-gradient-to-r ${
-          stat.trend === 'up' ? 'from-green-500/20 to-emerald-500/20' : 'from-red-500/20 to-rose-500/20'
-        }`}>
-          <IconComponent className={`w-6 h-6 ${
-            stat.trend === 'up' ? 'text-green-400' : 'text-red-400'
-          }`} />
+        <div className="p-3 rounded-xl bg-white/5 group-hover:bg-white/10 transition-colors">
+          <IconComponent className="w-6 h-6 text-white" />
         </div>
-        <div className={`flex items-center gap-1 text-sm ${
-          stat.trend === 'up' ? 'text-green-400' : 'text-red-400'
-        }`}>
+        <div className={`flex items-center gap-1 text-sm ${stat.trend === 'up' ? 'text-white' : stat.trend === 'down' ? 'text-white/60' : 'text-white/40'
+          }`}>
           {stat.trend === 'up' ? (
-            <TrendingUp className="w-4 h-4" />
-          ) : (
-            <TrendingDown className="w-4 h-4" />
-          )}
+            <ArrowUpRight className="w-4 h-4" />
+          ) : stat.trend === 'down' ? (
+            <ArrowDownRight className="w-4 h-4" />
+          ) : null}
           <span>{stat.changePercent}</span>
         </div>
       </div>
 
       <div>
-        <h3 className="text-white/60 text-sm font-medium">{stat.title}</h3>
-        <p className="text-white text-2xl font-bold mt-1">{stat.value}</p>
-        <p className="text-white/50 text-sm mt-1">{stat.change} today</p>
+        <h3 className="text-zinc-400 text-sm font-medium">{stat.title}</h3>
+        <p className="text-white text-2xl font-light mt-1 tracking-tight">{stat.value}</p>
+        <p className="text-zinc-500 text-sm mt-1">{stat.change} today</p>
       </div>
     </motion.div>
   );
 };
 
-const PlatformCard = ({ platform, index }: { platform: typeof platformStats[0], index: number }) => {
+const PlatformCard = ({ platform, index }: { platform: PlatformStat, index: number }) => {
   const IconComponent = platform.icon;
 
   return (
@@ -101,40 +95,41 @@ const PlatformCard = ({ platform, index }: { platform: typeof platformStats[0], 
       initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
-      className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300"
+      className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6 hover:bg-zinc-900/80 transition-all duration-300"
     >
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <div className={`p-3 rounded-xl bg-gradient-to-r ${platform.color}`}>
+        <div className="flex items-center gap-4">
+          <div className="p-3 rounded-xl bg-white/5">
             <IconComponent className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h3 className="text-white text-lg font-semibold">{platform.platform}</h3>
-            <span className="text-green-400 text-sm">● {platform.status}</span>
+            <h3 className="text-white text-lg font-medium">{platform.platform}</h3>
+            <div className="flex items-center gap-2 mt-1">
+              <div className={`w-1.5 h-1.5 rounded-full ${platform.status === 'Active' ? 'bg-white' : 'bg-zinc-600'}`} />
+              <span className="text-zinc-400 text-xs uppercase tracking-wider">{platform.status}</span>
+            </div>
           </div>
         </div>
         <Link
           href={`/dashboard/${platform.platform.toLowerCase()}`}
-          className="px-4 py-2 bg-white/10 text-white border border-white/20 rounded-xl hover:bg-white/15 transition-colors text-sm"
+          className="px-4 py-2 bg-white/5 text-white border border-white/10 rounded-xl hover:bg-white/10 transition-colors text-sm font-medium"
         >
-          <Eye className="w-4 h-4 inline mr-2" />
           View Terminal
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-6">
         {Object.entries(platform.metrics).map(([key, value], metricIndex) => (
           <motion.div
             key={key}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.4 + metricIndex * 0.1 }}
-            className="text-center"
           >
-            <p className="text-white/60 text-xs uppercase tracking-wide">
+            <p className="text-zinc-500 text-xs uppercase tracking-wider mb-1">
               {key.replace(/([A-Z])/g, ' $1').trim()}
             </p>
-            <p className="text-white text-lg font-semibold mt-1">{value}</p>
+            <p className="text-white text-lg font-light tracking-tight">{value}</p>
           </motion.div>
         ))}
       </div>
@@ -186,37 +181,37 @@ export default function TradingDashboard() {
 
   // Generate portfolio stats from real data
   const portfolioStats: PortfolioStat[] = React.useMemo(() => {
-    if (!portfolioData?.summary) {
+    if (!isConnected || !portfolioData?.summary) {
       return [
         {
           title: "Total Portfolio Value",
-          value: "$0.00",
-          change: "$0.00",
-          changePercent: "0.00%",
+          value: isConnected ? "$0.00" : "---",
+          change: isConnected ? "$0.00" : "---",
+          changePercent: isConnected ? "0.00%" : "---",
           icon: DollarSign,
           trend: "neutral" as const
         },
         {
           title: "Active Positions",
-          value: "0",
-          change: "0",
-          changePercent: "0.00%",
+          value: isConnected ? "0" : "---",
+          change: isConnected ? "0" : "---",
+          changePercent: "total",
           icon: Target,
           trend: "neutral" as const
         },
         {
           title: "24h P&L",
-          value: "$0.00",
-          change: "$0.00",
-          changePercent: "0.00%",
+          value: isConnected ? "$0.00" : "---",
+          change: isConnected ? "$0.00" : "---",
+          changePercent: isConnected ? "0.00%" : "---",
           icon: TrendingUp,
           trend: "neutral" as const
         },
         {
           title: "Win Rate",
-          value: "0.0%",
-          change: "0.0%",
-          changePercent: "0.0%",
+          value: isConnected ? "0.0%" : "---",
+          change: isConnected ? "0.0%" : "---",
+          changePercent: "recent",
           icon: CheckCircle,
           trend: "neutral" as const
         }
@@ -261,35 +256,33 @@ export default function TradingDashboard() {
         trend: summary.winRate >= 50 ? "up" as const : "down" as const
       }
     ];
-  }, [portfolioData]);
+  }, [portfolioData, isConnected]);
 
   // Generate platform stats from real data
   const platformStats: PlatformStat[] = React.useMemo(() => {
-    if (!portfolioData?.breakdown) {
+    if (!isConnected || !portfolioData?.breakdown) {
       return [
         {
           platform: "Polymarket",
           icon: TrendingUp,
-          color: "from-purple-500 to-pink-500",
           metrics: {
-            totalVolume: "$0.00",
-            activeMarkets: "0",
-            winRate: "0.0%",
-            totalProfit: "$0.00"
+            totalVolume: isConnected ? "$0.00" : "---",
+            activeMarkets: isConnected ? "0" : "---",
+            winRate: isConnected ? "0.0%" : "---",
+            totalProfit: isConnected ? "$0.00" : "---"
           },
-          status: "Connect Wallet"
+          status: isConnected ? "Connect Wallet" : "Disconnected"
         },
         {
           platform: "Hyperliquid",
           icon: BarChart3,
-          color: "from-blue-500 to-cyan-500",
           metrics: {
-            totalVolume: "$0.00",
-            activePositions: "0",
-            pnl24h: "$0.00",
-            leverage: "0.0x avg"
+            totalVolume: isConnected ? "$0.00" : "---",
+            activePositions: isConnected ? "0" : "---",
+            pnl24h: isConnected ? "$0.00" : "---",
+            leverage: isConnected ? "0.0x avg" : "---"
           },
-          status: "Connect Wallet"
+          status: isConnected ? "Connect Wallet" : "Disconnected"
         }
       ];
     }
@@ -301,7 +294,6 @@ export default function TradingDashboard() {
       {
         platform: "Polymarket",
         icon: TrendingUp,
-        color: "from-purple-500 to-pink-500",
         metrics: {
           totalVolume: formatCurrency(polymarket.value),
           activeMarkets: polymarket.positions.toString(),
@@ -313,7 +305,6 @@ export default function TradingDashboard() {
       {
         platform: "Hyperliquid",
         icon: BarChart3,
-        color: "from-blue-500 to-cyan-500",
         metrics: {
           totalVolume: formatCurrency(hyperliquid.value),
           activePositions: hyperliquid.positions.toString(),
@@ -323,7 +314,7 @@ export default function TradingDashboard() {
         status: hyperliquid.positions > 0 ? "Active" : "No Positions"
       }
     ];
-  }, [portfolioData]);
+  }, [portfolioData, isConnected]);
 
   // Get recent activity from real data
   const recentActivity: TradingActivity[] = React.useMemo(() => {
@@ -350,30 +341,31 @@ export default function TradingDashboard() {
         className="flex items-center justify-between"
       >
         <div>
-          <h1 className="text-4xl font-light text-white mb-2">Trading Dashboard</h1>
-          <p className="text-white/60">Monitor your prediction markets and perpetual trading performance</p>
+          <h1 className="text-3xl font-light text-white mb-2 tracking-tight">Trading Dashboard</h1>
+          <p className="text-zinc-400 font-light">Monitor your prediction markets and perpetual trading performance</p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <WalletConnect showChainSwitcher={true} />
           {isConnected && (
             <button
               onClick={handleRefresh}
               disabled={isRefreshing}
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white border border-white/20 rounded-xl hover:bg-white/15 transition-all duration-300 disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-white/5 text-white border border-white/10 rounded-xl hover:bg-white/10 transition-all duration-300 disabled:opacity-50"
             >
               <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
               {isRefreshing ? 'Refreshing...' : 'Refresh'}
             </button>
           )}
           <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
             <Link
               href="/dashboard/portfolio"
-              className="px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-xl hover:from-purple-600 hover:to-blue-600 transition-all duration-300"
+              className="px-6 py-2 bg-white text-black font-medium rounded-xl hover:bg-zinc-200 transition-all duration-300 flex items-center gap-2"
             >
-              View Full Portfolio
+              <PieChart className="w-4 h-4" />
+              View Portfolio
             </Link>
           </motion.div>
         </div>
@@ -381,34 +373,23 @@ export default function TradingDashboard() {
 
       {/* Portfolio Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {!isConnected ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="col-span-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 text-center"
-          >
-            <DollarSign className="w-12 h-12 text-white/40 mx-auto mb-4" />
-            <h3 className="text-xl text-white mb-2">Connect Your Wallet</h3>
-            <p className="text-white/60 mb-6">Connect your wallet to view real portfolio data and trading statistics</p>
-            <WalletConnect showChainSwitcher={true} />
-          </motion.div>
-        ) : portfolioLoading ? (
+        {portfolioLoading ? (
           Array.from({ length: 4 }).map((_, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
+              className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6"
             >
               <div className="animate-pulse">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-white/10 rounded-xl"></div>
-                  <div className="w-16 h-4 bg-white/10 rounded"></div>
+                  <div className="w-12 h-12 bg-white/5 rounded-xl"></div>
+                  <div className="w-16 h-4 bg-white/5 rounded"></div>
                 </div>
-                <div className="w-24 h-4 bg-white/10 rounded mb-2"></div>
-                <div className="w-32 h-8 bg-white/10 rounded mb-1"></div>
-                <div className="w-20 h-3 bg-white/10 rounded"></div>
+                <div className="w-24 h-4 bg-white/5 rounded mb-2"></div>
+                <div className="w-32 h-8 bg-white/5 rounded mb-1"></div>
+                <div className="w-20 h-3 bg-white/5 rounded"></div>
               </div>
             </motion.div>
           ))
@@ -416,14 +397,14 @@ export default function TradingDashboard() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="col-span-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 text-center"
+            className="col-span-full bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-8 text-center"
           >
-            <AlertTriangle className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
+            <AlertTriangle className="w-12 h-12 text-white/40 mx-auto mb-4" />
             <h3 className="text-xl text-white mb-2">Error Loading Portfolio</h3>
-            <p className="text-white/60 mb-6">Failed to load portfolio data. Please try refreshing.</p>
+            <p className="text-zinc-400 mb-6">Failed to load portfolio data. Please try refreshing.</p>
             <button
               onClick={handleRefresh}
-              className="px-6 py-3 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-xl hover:bg-blue-500/30 transition-all duration-300"
+              className="px-6 py-3 bg-white/5 text-white border border-white/10 rounded-xl hover:bg-white/10 transition-all duration-300"
             >
               Retry
             </button>
@@ -441,7 +422,7 @@ export default function TradingDashboard() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.3 }}
       >
-        <h2 className="text-2xl font-light text-white mb-6">Platform Overview</h2>
+        <h2 className="text-xl font-light text-white mb-6 tracking-tight">Platform Overview</h2>
         <div className="grid lg:grid-cols-2 gap-6">
           {platformStats.map((platform, index) => (
             <PlatformCard key={platform.platform} platform={platform} index={index} />
@@ -456,36 +437,42 @@ export default function TradingDashboard() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="lg:col-span-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
+          className="lg:col-span-2 bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6"
         >
-          <h3 className="text-xl font-medium text-white mb-6">Recent Trading Activity</h3>
-          <div className="space-y-4">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-medium text-white">Recent Activity</h3>
+            <Link href="/dashboard/history" className="text-sm text-zinc-400 hover:text-white transition-colors">
+              View All
+            </Link>
+          </div>
+
+          <div className="space-y-2">
             {!isConnected ? (
               <div className="text-center py-12">
-                <Activity className="w-12 h-12 text-white/40 mx-auto mb-4" />
-                <p className="text-white/60">Connect wallet to view trading history</p>
+                <Activity className="w-12 h-12 text-zinc-700 mx-auto mb-4" />
+                <p className="text-zinc-500">Connect wallet to view trading history</p>
               </div>
             ) : historyLoading ? (
               Array.from({ length: 3 }).map((_, index) => (
                 <div key={index} className="flex items-center justify-between p-4 bg-white/5 rounded-xl">
                   <div className="flex items-center gap-4">
-                    <div className="w-8 h-8 bg-white/10 rounded-lg animate-pulse"></div>
+                    <div className="w-8 h-8 bg-white/5 rounded-lg animate-pulse"></div>
                     <div>
-                      <div className="w-32 h-4 bg-white/10 rounded mb-2 animate-pulse"></div>
-                      <div className="w-24 h-3 bg-white/10 rounded animate-pulse"></div>
+                      <div className="w-32 h-4 bg-white/5 rounded mb-2 animate-pulse"></div>
+                      <div className="w-24 h-3 bg-white/5 rounded animate-pulse"></div>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="w-16 h-4 bg-white/10 rounded mb-1 animate-pulse"></div>
-                    <div className="w-12 h-3 bg-white/10 rounded animate-pulse"></div>
+                    <div className="w-16 h-4 bg-white/5 rounded mb-1 animate-pulse"></div>
+                    <div className="w-12 h-3 bg-white/5 rounded animate-pulse"></div>
                   </div>
                 </div>
               ))
             ) : recentActivity.length === 0 ? (
               <div className="text-center py-12">
-                <Activity className="w-12 h-12 text-white/40 mx-auto mb-4" />
-                <p className="text-white/60">No trading activity found</p>
-                <p className="text-white/40 text-sm mt-2">Start trading to see your activity here</p>
+                <Activity className="w-12 h-12 text-zinc-700 mx-auto mb-4" />
+                <p className="text-zinc-500">No trading activity found</p>
+                <p className="text-zinc-600 text-sm mt-2">Start trading to see your activity here</p>
               </div>
             ) : (
               recentActivity.map((activity, index) => (
@@ -494,35 +481,32 @@ export default function TradingDashboard() {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: 0.5 + index * 0.1 }}
-                  className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors"
+                  className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors group"
                 >
                   <div className="flex items-center gap-4">
-                    <div className={`p-2 rounded-lg ${
-                      activity.status === 'success' ? 'bg-green-500/20 text-green-400' :
-                      activity.status === 'completed' ? 'bg-blue-500/20 text-blue-400' :
-                      activity.status === 'failed' ? 'bg-red-500/20 text-red-400' :
-                      'bg-yellow-500/20 text-yellow-400'
-                    }`}>
+                    <div className="p-2 rounded-lg bg-zinc-800 text-white group-hover:bg-zinc-700 transition-colors">
                       {activity.type === 'trade' ? <BarChart3 className="w-4 h-4" /> :
-                       activity.type === 'prediction' ? <TrendingUp className="w-4 h-4" /> :
-                       activity.type === 'bridge' ? <ArrowRightLeft className="w-4 h-4" /> :
-                       <Zap className="w-4 h-4" />}
+                        activity.type === 'prediction' ? <TrendingUp className="w-4 h-4" /> :
+                          activity.type === 'bridge' ? <ArrowRightLeft className="w-4 h-4" /> :
+                            <Zap className="w-4 h-4" />}
                     </div>
                     <div>
                       <p className="text-white text-sm font-medium">{activity.action}</p>
-                      <p className="text-white/60 text-xs">{activity.platform} • {activity.time}</p>
+                      <p className="text-zinc-500 text-xs">{activity.platform} • {activity.time}</p>
                     </div>
                   </div>
                   <div className="text-right">
                     <p className="text-white font-medium">{activity.amount}</p>
-                    <p className={`text-xs ${
-                      activity.status === 'success' ? 'text-green-400' :
-                      activity.status === 'completed' ? 'text-blue-400' :
-                      activity.status === 'failed' ? 'text-red-400' :
-                      'text-yellow-400'
-                    }`}>
-                      {activity.status}
-                    </p>
+                    <div className="flex items-center justify-end gap-1">
+                      <div className={`w-1.5 h-1.5 rounded-full ${activity.status === 'success' ? 'bg-white' :
+                          activity.status === 'completed' ? 'bg-white' :
+                            activity.status === 'failed' ? 'bg-zinc-600' :
+                              'bg-zinc-400'
+                        }`} />
+                      <p className="text-xs text-zinc-400 capitalize">
+                        {activity.status}
+                      </p>
+                    </div>
                   </div>
                 </motion.div>
               ))
@@ -530,93 +514,96 @@ export default function TradingDashboard() {
           </div>
         </motion.div>
 
-        {/* Quick Actions */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
-        >
-          <h3 className="text-xl font-medium text-white mb-6">Quick Actions</h3>
-          <div className="space-y-4">
-            {[
-              { label: "Polymarket Terminal", href: "/dashboard/polymarket", icon: TrendingUp, color: "from-purple-500 to-pink-500" },
-              { label: "Hyperliquid Terminal", href: "/dashboard/hyperliquid", icon: BarChart3, color: "from-blue-500 to-cyan-500" },
-              { label: "Cross-Chain Bridge", href: "/dashboard/bridge", icon: ArrowRightLeft, color: "from-green-500 to-emerald-500" },
-              { label: "Portfolio Analysis", href: "/dashboard/portfolio", icon: PieChart, color: "from-orange-500 to-red-500" }
-            ].map((action, index) => (
-              <motion.div
-                key={action.label}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.6 + index * 0.1 }}
-              >
-                <Link
-                  href={action.href}
-                  className={`flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r ${action.color} bg-opacity-20 hover:bg-opacity-30 transition-all duration-300 text-white group`}
-                >
-                  <action.icon className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  <span className="font-medium">{action.label}</span>
-                  <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                    →
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </div>
-
-      {/* AI Agents Status */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
-        className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6"
-      >
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-medium text-white">AI Trading Agents</h3>
-          <Link
-            href="/agents"
-            className="text-blue-400 hover:text-blue-300 text-sm transition-colors"
+        {/* Quick Actions & AI Status */}
+        <div className="space-y-8">
+          {/* Quick Actions */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6"
           >
-            View All Agents →
-          </Link>
-        </div>
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-500/20 rounded-lg">
-                <TrendingUp className="w-5 h-5 text-purple-400" />
-              </div>
-              <div>
-                <p className="text-white font-medium">Polymarket Predictor</p>
-                <p className="text-white/60 text-sm">Active • 12 predictions</p>
-              </div>
+            <h3 className="text-lg font-medium text-white mb-6">Quick Actions</h3>
+            <div className="space-y-3">
+              {[
+                { label: "Polymarket Terminal", href: "/dashboard/polymarket", icon: TrendingUp },
+                { label: "Hyperliquid Terminal", href: "/dashboard/hyperliquid", icon: BarChart3 },
+                { label: "Cross-Chain Bridge", href: "/dashboard/bridge", icon: ArrowRightLeft },
+                { label: "Portfolio Analysis", href: "/dashboard/portfolio", icon: PieChart }
+              ].map((action, index) => (
+                <motion.div
+                  key={action.label}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.6 + index * 0.1 }}
+                >
+                  <Link
+                    href={action.href}
+                    className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 text-white group border border-transparent hover:border-white/5"
+                  >
+                    <div className="p-2 rounded-lg bg-zinc-900 text-zinc-400 group-hover:text-white transition-colors">
+                      <action.icon className="w-4 h-4" />
+                    </div>
+                    <span className="font-medium text-sm text-zinc-300 group-hover:text-white">{action.label}</span>
+                    <ArrowUpRight className="w-4 h-4 ml-auto text-zinc-600 group-hover:text-white transition-colors" />
+                  </Link>
+                </motion.div>
+              ))}
             </div>
-            <div className="text-right">
-              <p className="text-green-400 font-medium">+$342.80</p>
-              <p className="text-white/60 text-sm">24h profit</p>
-            </div>
-          </div>
+          </motion.div>
 
-          <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-500/20 rounded-lg">
-                <BarChart3 className="w-5 h-5 text-blue-400" />
+          {/* AI Agents Status */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            className="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-medium text-white">AI Agents</h3>
+              <Link
+                href="/agents"
+                className="text-zinc-400 hover:text-white text-xs transition-colors uppercase tracking-wider"
+              >
+                View All
+              </Link>
+            </div>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-zinc-900 rounded-lg">
+                    <TrendingUp className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-white text-sm font-medium">Polymarket</p>
+                    <p className="text-zinc-500 text-xs">12 predictions</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-white font-medium text-sm">+$342.80</p>
+                  <p className="text-zinc-500 text-xs">24h profit</p>
+                </div>
               </div>
-              <div>
-                <p className="text-white font-medium">Hyperliquid Trader</p>
-                <p className="text-white/60 text-sm">Active • 6 positions</p>
+
+              <div className="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-zinc-900 rounded-lg">
+                    <BarChart3 className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-white text-sm font-medium">Hyperliquid</p>
+                    <p className="text-zinc-500 text-xs">6 positions</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-white font-medium text-sm">+$187.45</p>
+                  <p className="text-zinc-500 text-xs">24h profit</p>
+                </div>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-green-400 font-medium">+$187.45</p>
-              <p className="text-white/60 text-sm">24h profit</p>
-            </div>
-          </div>
+          </motion.div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
