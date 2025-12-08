@@ -3,7 +3,7 @@ import { prisma } from './prisma'
 
 // Initialize OpenAI embeddings
 const embeddings = new OpenAIEmbeddings({
-  openAIApiKey: process.env.OPENAI_API_KEY!,
+  openAIApiKey: process.env.OPENAI_API_KEY || 'dummy-key-for-build',
   model: process.env.EMBEDDING_MODEL || 'text-embedding-ada-002'
 })
 

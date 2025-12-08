@@ -1,6 +1,6 @@
 import { prisma } from './prisma'
 import { ChatOpenAI } from '@langchain/openai'
-import { generateEmbedding, storeEmbedding } from './embeddings'
+import { storeEmbedding } from './embeddings'
 
 // Enhanced session management types
 export interface ChatSessionData {
@@ -66,7 +66,7 @@ const summarizerLlm = new ChatOpenAI({
   model: process.env.SUMMARIZER_MODEL || 'openai/gpt-4o-mini',
   temperature: 0.3,
   maxTokens: 1000,
-  openAIApiKey: process.env.OPENROUTER_API_KEY,
+  openAIApiKey: process.env.OPENROUTER_API_KEY || 'dummy-key-for-build',
   configuration: {
     baseURL: 'https://openrouter.ai/api/v1',
     defaultHeaders: {

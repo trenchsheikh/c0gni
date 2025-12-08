@@ -7,36 +7,35 @@ import { z } from 'zod'
 
 // Import our blockchain tools
 import {
-  listSupportedNetworksTool,
-  searchPoolsTool,
-  getPoolDetailsTool,
-  getSimpleTokenPriceTool,
-  getDexesOnNetworkTool,
-  getTrendingPoolsTool,
-  getMultiplePoolDetailsTool,
-  getTopPoolsOnNetworkTool,
-  getTopPoolsOnDexTool,
-  getNewPoolsTool,
-  getTopPoolsForTokenTool,
-  getTokenDetailsTool,
-  getMultipleTokenDetailsTool,
-  getTokenInfoTool,
-  getPoolTokenInfoTool,
-  getRecentlyUpdatedTokenInfoTool,
-  getPoolTradesTool
+    listSupportedNetworksTool,
+    searchPoolsTool,
+    getPoolDetailsTool,
+    getSimpleTokenPriceTool,
+    getDexesOnNetworkTool,
+    getTrendingPoolsTool,
+    getMultiplePoolDetailsTool,
+    getTopPoolsOnNetworkTool,
+    getTopPoolsOnDexTool,
+    getNewPoolsTool,
+    getTopPoolsForTokenTool,
+    getTokenDetailsTool,
+    getMultipleTokenDetailsTool,
+    getTokenInfoTool,
+    getPoolTokenInfoTool,
+    getRecentlyUpdatedTokenInfoTool,
+    getPoolTradesTool
 } from './langchain-tools/gecko-terminal'
 
 // Import our market data tools
 import {
-  getPolymarketDataTool,
-  getHyperliquidDataTool,
-  analyzeMarketOpportunityTool,
-  getPortfolioInsightsTool
+    getPolymarketDataTool,
+    getHyperliquidDataTool,
+    analyzeMarketOpportunityTool,
+    getPortfolioInsightsTool
 } from './langchain-tools/market-data'
 
 // Import memory services
 import { searchSimilarMemories, storeUserMemory, storeEmbedding } from './embeddings'
-import { getUserWithMemories } from './auth'
 import { ensureSharedKnowledgeBaseUser } from './prisma'
 
 // Initialize the main LLM (OpenRouter)
@@ -44,7 +43,7 @@ const llm = new ChatOpenAI({
   model: process.env.DEFAULT_MODEL || 'qwen/qwen3-235b-a22b-2507',
   temperature: parseFloat(process.env.DEFAULT_TEMPERATURE || '0.7'),
   maxTokens: parseInt(process.env.MAX_TOKENS || '4000'),
-  openAIApiKey: process.env.OPENROUTER_API_KEY,
+  openAIApiKey: process.env.OPENROUTER_API_KEY || 'dummy-key-for-build',
   configuration: {
     baseURL: 'https://openrouter.ai/api/v1',
     defaultHeaders: {
@@ -60,7 +59,7 @@ const memoryExtractionLlm = new ChatOpenAI({
   model: process.env.MEMORY_EXTRACTION_MODEL || 'openai/gpt-oss-20b',
   temperature: 0.3, // Lower temperature for more consistent extraction
   maxTokens: 1000,
-  openAIApiKey: process.env.OPENROUTER_API_KEY,
+  openAIApiKey: process.env.OPENROUTER_API_KEY || 'dummy-key-for-build',
   configuration: {
     baseURL: 'https://openrouter.ai/api/v1',
     defaultHeaders: {
@@ -798,49 +797,8 @@ EXTRACTION RULES:
             undefined,
             metadata.dex
           )
-          
-          // Store as embedding with rich metadata
-          await storeEmbedding(
-            knowledgeId,
-            knowledgeValue,
-            'crypto_knowledge',
-            metadata
-          )
-          
-          console.log(`📊 [AGENT] Extracted structured token analysis: ${tokenSymbol}`)
         }
       }
-
-      // Parse trading strategy tables
-      const tableMatches = assistantResponse.match(/\|\s*Risk Profile\s*\|\s*Recommended Tokens\s*\|[\s\S]*?(?=\n\n|$)/g)
-      if (tableMatches) {
-        for (const table of tableMatches) {
-          const rows = table.split('\n').slice(2) // Skip header and separator
-          for (const row of rows) {
-            const cells = row.split('|').map(cell => cell.trim()).filter(cell => cell)
-            if (cells.length >= 2) {
-              const riskProfile = cells[0]
-              const recommendedTokens = cells[1]
-              
-              const knowledgeKey = `trading_strategy_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`
-              const knowledgeValue = `Trading strategy: ${riskProfile} risk profile recommends ${recommendedTokens}`
-              
-              await storeUserMemory(
-                knowledgeId,
-                'blockchain_knowledge',
-                'trading_strategy',
-                knowledgeKey,
-                knowledgeValue,
-                0.8,
-                'conversation'
-              )
-              
-              console.log(`📈 [AGENT] Extracted trading strategy: ${riskProfile} -> ${recommendedTokens}`)
-            }
-          }
-        }
-      }
-
     } catch (error) {
       console.error('[AGENT] Structured parsing error:', error)
     }
@@ -851,142 +809,20 @@ EXTRACTION RULES:
     userMessage: string,
     assistantResponse: string
   ): Promise<void> {
+    // Simple fallback to store the entire conversation snippet if extraction fails
     try {
-      console.log(`🔧 [AGENT] Using enhanced fallback keyword extraction`)
-      
-      // Comprehensive crypto keyword library
-      const cryptoFactKeywords = {
-        token_symbols: [
-          // Major tokens
-          'btc', 'bitcoin', 'eth', 'ethereum', 'usdc', 'usdt', 'bnb', 'sol', 'solana',
-          'ada', 'cardano', 'dot', 'polkadot', 'matic', 'polygon', 'avax', 'avalanche',
-          'link', 'chainlink', 'uni', 'uniswap', 'aave', 'comp', 'compound', 'mkr', 'maker',
-          // Trending tokens often mentioned
-          'pepe', 'shib', 'doge', 'floki', 'safemoon', 'apt', 'aptos', 'arb', 'arbitrum',
-          'op', 'optimism', 'ftm', 'fantom', 'near', 'icp', 'atom', 'cosmos'
-        ],
-        market_data: [
-          'price', 'volume', 'market cap', 'mcap', 'fdv', 'fully diluted valuation',
-          'tvl', 'total value locked', 'apy', 'apr', 'yield', 'liquidity', 'trading volume',
-          '24h change', '24h volume', '1h change', 'volatility', 'pump', 'dump', 'moon'
-        ],
-        defi_protocols: [
-          'uniswap', 'pancakeswap', 'sushiswap', 'curve', 'balancer', '1inch', 'paraswap',
-          'aave', 'compound', 'makerdao', 'yearn', 'synthetix', 'convex', 'frax',
-          'lido', 'rocket pool', 'euler', 'morpho', 'instadapp', 'zapper', 'defisaver'
-        ],
-        blockchain_tech: [
-          'ethereum', 'solana', 'polygon', 'bsc', 'binance smart chain', 'arbitrum', 'optimism',
-          'avalanche', 'fantom', 'harmony', 'moonbeam', 'cronos', 'celo', 'near',
-          'gas fees', 'gwei', 'transaction fees', 'block confirmation', 'finality',
-          'proof of stake', 'proof of work', 'consensus', 'validator', 'staking'
-        ],
-        token_info: [
-          'contract address', '0x', 'tokenomics', 'supply', 'total supply', 'max supply',
-          'circulating supply', 'burn', 'mint', 'emission', 'inflation', 'deflation',
-          'vesting', 'unlock', 'cliff', 'whitelist', 'presale', 'ico', 'ido', 'fair launch'
-        ],
-        trading_signals: [
-          'buy signal', 'sell signal', 'bullish', 'bearish', 'breakout', 'breakdown',
-          'support', 'resistance', 'rsi', 'macd', 'moving average', 'fibonacci',
-          'accumulation', 'distribution', 'volume spike', 'whale movement'
-        ],
-        trading_strategies: [
-          'arbitrage', 'yield farming', 'liquidity mining', 'staking', 'liquid staking',
-          'impermanent loss', 'dca', 'dollar cost averaging', 'scalping', 'swing trading',
-          'hodl', 'defi strategies', 'farming', 'lending', 'borrowing'
-        ],
-        risk_levels: [
-          'very high risk', 'high risk', 'moderate risk', 'low risk', 'conservative',
-          'aggressive', 'speculative', 'blue chip', 'memecoin', 'altcoin', 'shitcoin'
-        ]
-      }
-
-      const combinedText = `${userMessage} ${assistantResponse}`.toLowerCase()
-      
-      // Extract with context-aware matching
-      for (const [category, keywords] of Object.entries(cryptoFactKeywords)) {
-        const foundKeywords: string[] = []
-        const contextMatches: string[] = []
-        
-        for (const keyword of keywords) {
-          const regex = new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi')
-          const matches = combinedText.match(regex)
-          
-          if (matches) {
-            foundKeywords.push(keyword)
-            
-            // Try to extract surrounding context for better knowledge
-            const contextRegex = new RegExp(`\\b.{0,50}${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}.{0,50}\\b`, 'gi')
-            const contextMatch = combinedText.match(contextRegex)
-            if (contextMatch) {
-              contextMatches.push(...contextMatch)
-            }
-          }
-        }
-        
-        if (foundKeywords.length > 0) {
-          const knowledgeKey = `${category}_enhanced_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`
-          let knowledgeValue = `${category.replace('_', ' ')} data: ${foundKeywords.join(', ')}`
-          
-          // Add context if available
-          if (contextMatches.length > 0) {
-            const uniqueContexts = [...new Set(contextMatches)].slice(0, 3) // Limit to 3 best contexts
-            knowledgeValue += ` | Context: ${uniqueContexts.join(' | ')}`
-          }
-          
-          await storeUserMemory(
-            knowledgeId,
-            'blockchain_knowledge',
-            category,
-            knowledgeKey,
-            knowledgeValue,
-            0.5 + (foundKeywords.length * 0.1), // Dynamic confidence based on keyword count
-            'conversation'
-          )
-          
-          // Store as embedding with metadata
-          await storeEmbedding(
-            knowledgeId,
-            knowledgeValue,
-            'crypto_knowledge',
-            {
-              extraction_method: 'enhanced_fallback',
-              category,
-              found_keywords: foundKeywords,
-              keyword_count: foundKeywords.length,
-              timestamp: new Date().toISOString()
-            }
-          )
-          
-          console.log(`🔍 [AGENT] Enhanced fallback extraction: ${category} - found ${foundKeywords.length} keywords: ${foundKeywords.slice(0, 3).join(', ')}${foundKeywords.length > 3 ? '...' : ''}`)
-        }
-      }
-
-      // Extract any remaining price patterns that might have been missed
-      const priceMatches = combinedText.match(/\$[\d,]+\.?\d*/g)
-      if (priceMatches && priceMatches.length > 0) {
-        const knowledgeKey = `price_patterns_${Date.now()}`
-        const knowledgeValue = `Price mentions: ${priceMatches.join(', ')}`
-        
-        await storeUserMemory(
-          knowledgeId,
-          'blockchain_knowledge',
-          'market_data',
-          knowledgeKey,
-          knowledgeValue,
-          0.7,
-          'conversation'
-        )
-        
-        console.log(`💰 [AGENT] Fallback price extraction: ${priceMatches.length} prices found`)
-      }
-
-    } catch (error) {
-      console.error('[AGENT] Enhanced fallback extraction error:', error)
+      const knowledgeKey = `conversation_snippet_${Date.now()}`
+      await storeUserMemory(
+        knowledgeId,
+        'blockchain_knowledge',
+        'context',
+        knowledgeKey,
+        `User: ${userMessage.substring(0, 100)}... Assistant: ${assistantResponse.substring(0, 200)}...`,
+        0.5,
+        'conversation'
+      )
+    } catch (e) {
+      console.error('[AGENT] Fallback extraction failed:', e)
     }
   }
 }
-
-// Export singleton instance
-export const aiAgent = new AIAgent()
