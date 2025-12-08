@@ -41,31 +41,9 @@ const nextConfig: NextConfig = {
       });
     }
 
-    config.optimization = {
-      ...config.optimization,
-      splitChunks: {
-        chunks: 'all',
-        cacheGroups: {
-          default: false,
-          vendors: false,
-          vendor: {
-            name: 'vendor',
-            chunks: 'all',
-            test: /node_modules/,
-            priority: 20
-          },
-          common: {
-            minChunks: 2,
-            priority: 10,
-            reuseExistingChunk: true,
-            enforce: true
-          }
-        }
-      }
-    };
     return config;
   },
-  compress: false,
+  compress: true,
   poweredByHeader: false,
   generateBuildId: async () => {
     return 'build-' + Date.now();

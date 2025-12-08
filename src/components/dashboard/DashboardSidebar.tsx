@@ -1,8 +1,8 @@
 'use client';
 
-import React from "react";
+import { useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, Brain, Activity, TrendingUp, BarChart3, ArrowRightLeft, Target, ChevronLeft, ChevronRight, Wallet, LogOut, Copy } from "lucide-react";
+import { Home, Brain, TrendingUp, BarChart3, ArrowRightLeft, Target, ChevronLeft, ChevronRight, Wallet, LogOut, Copy } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -10,12 +10,12 @@ import { useWalletManager } from '@/hooks/useWalletManager';
 import { walletUtils } from '@/lib/wallet';
 import { useQueryClient } from '@tanstack/react-query';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
 
@@ -35,47 +35,54 @@ interface DashboardSidebarProps {
 
 export default function DashboardSidebar({ isCollapsed, toggleSidebar }: DashboardSidebarProps) {
   const queryClient = useQueryClient();
+  const prefetchTimeout = useRef<NodeJS.Timeout | null>(null);
   
   // Prefetch data on hover for instant tab switching
   const handleMouseEnter = (href: string) => {
-    if (href === '/dashboard/polymarket') {
-      // Prefetch Polymarket markets data
-      queryClient.prefetchQuery({
-        queryKey: ['polymarket-markets'],
-        queryFn: async () => {
-          const res = await fetch('/api/markets/polymarket', { cache: 'no-store' });
-          if (!res.ok) throw new Error(`Failed to load markets (${res.status})`);
-          const data = await res.json();
-          return (data.markets || data || []).map((m: any) => ({
-            id: m.id || m.slug || String(m.ticker || m.question || Math.random()),
-            question: m.question || m.title || m.name || 'Untitled market',
-            description: m.description || undefined,
-            category: m.category || (Array.isArray(m.tags) && m.tags[0]) || 'All',
-            yesPrice: typeof m.yesPrice === 'number' ? m.yesPrice : (m.prices?.yes ?? m.prices?.[0] ?? 0),
-            noPrice: typeof m.noPrice === 'number' ? m.noPrice : (m.prices?.no ?? m.prices?.[1] ?? 0),
-            volume24h: m.volume24h || m.volume_24h || 0,
-            totalVolume: m.totalVolume || m.volume || 0,
-            liquidity: m.liquidity || 0,
-            resolutionDate: m.endDate ? new Date(m.endDate) : undefined,
-            status: m.status || (m.active ? 'active' : 'closed'),
-            tags: m.tags || [],
-            impliedOdds: typeof m.impliedOdds === 'number' ? m.impliedOdds : (m.yesPrice ?? m.prices?.yes ?? 0)
-          }));
-        },
-        staleTime: 60 * 1000,
-      });
-    } else if (href === '/dashboard/hyperliquid') {
-      // Prefetch Hyperliquid markets data
-      queryClient.prefetchQuery({
-        queryKey: ['hyperliquid-markets'],
-        queryFn: async () => {
-          const res = await fetch('/api/markets/hyperliquid', { cache: 'no-store' });
-          if (!res.ok) throw new Error(`Failed to load markets (${res.status})`);
-          return res.json();
-        },
-        staleTime: 30 * 1000,
-      });
+    if (prefetchTimeout.current) {
+      clearTimeout(prefetchTimeout.current);
     }
+
+    prefetchTimeout.current = setTimeout(() => {
+      if (href === '/dashboard/polymarket') {
+        // Prefetch Polymarket markets data
+        queryClient.prefetchQuery({
+          queryKey: ['polymarket-markets'],
+          queryFn: async () => {
+            const res = await fetch('/api/markets/polymarket', { cache: 'no-store' });
+            if (!res.ok) throw new Error(`Failed to load markets (${res.status})`);
+            const data = await res.json();
+            return (data.markets || data || []).map((m: any) => ({
+              id: m.id || m.slug || String(m.ticker || m.question || Math.random()),
+              question: m.question || m.title || m.name || 'Untitled market',
+              description: m.description || undefined,
+              category: m.category || (Array.isArray(m.tags) && m.tags[0]) || 'All',
+              yesPrice: typeof m.yesPrice === 'number' ? m.yesPrice : (m.prices?.yes ?? m.prices?.[0] ?? 0),
+              noPrice: typeof m.noPrice === 'number' ? m.noPrice : (m.prices?.no ?? m.prices?.[1] ?? 0),
+              volume24h: m.volume24h || m.volume_24h || 0,
+              totalVolume: m.totalVolume || m.volume || 0,
+              liquidity: m.liquidity || 0,
+              resolutionDate: m.endDate ? new Date(m.endDate) : undefined,
+              status: m.status || (m.active ? 'active' : 'closed'),
+              tags: m.tags || [],
+              impliedOdds: typeof m.impliedOdds === 'number' ? m.impliedOdds : (m.yesPrice ?? m.prices?.yes ?? 0)
+            }));
+          },
+          staleTime: 60 * 1000,
+        });
+      } else if (href === '/dashboard/hyperliquid') {
+        // Prefetch Hyperliquid markets data
+        queryClient.prefetchQuery({
+          queryKey: ['hyperliquid-markets'],
+          queryFn: async () => {
+            const res = await fetch('/api/markets/hyperliquid', { cache: 'no-store' });
+            if (!res.ok) throw new Error(`Failed to load markets (${res.status})`);
+            return res.json();
+          },
+          staleTime: 30 * 1000,
+        });
+      }
+    }, 150);
   };
   const pathname = usePathname();
   const { isConnected, address, disconnect, connect } = useWalletManager();
