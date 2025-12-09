@@ -43,7 +43,7 @@ c0gni is a revolutionary collective intelligence platform where thousands of cry
 1. **Start Chatting**: Ask any crypto question - no signup required
 2. **Explore the Graph**: Visualize knowledge connections and patterns  
 3. **Contribute Wisdom**: Your insights help everyone learn faster
-4. **Access Premium**: Stake $COGNI for enhanced features and agent swarms
+4. **Access Premium**: Stake $COGNI for enhanced features and agent swarms/
 
 ```bash
 # For developers interested in the codebase
