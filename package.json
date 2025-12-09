@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --webpack",
-    "build": "next build --webpack",
-    "build:vercel": "next build --webpack",
-    "start": "next start --webpack",
+    "dev": "next dev",
+    "build": "next build",
+    "build:vercel": "next build",
+    "start": "next start",
     "lint": "eslint",
     "postinstall": "echo 'Skipping prisma generate'",
     "db:reset": "echo 'Skipping db reset'"
