@@ -28,7 +28,7 @@ const Circle = forwardRef<
     <div
       ref={ref}
       className={cn(
-        "z-10 flex size-12 items-center justify-center rounded-full border-2 border-white/20 bg-white/10 p-3 backdrop-blur-xl",
+        "z-10 flex size-12 items-center justify-center rounded-full border-2 border-black/10 dark:border-white/20 bg-white dark:bg-white/10 p-3 backdrop-blur-xl shadow-sm dark:shadow-none transition-colors duration-500",
         className,
       )}
     >
@@ -47,10 +47,11 @@ const Icons = {
       viewBox="0 0 100 100"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className="text-black dark:text-white transition-colors duration-500"
     >
       <path
         d="M6.017 4.313l55.333 -4.087c6.797 -0.583 8.543 -0.19 12.817 2.917l17.663 12.443c2.913 2.14 3.883 2.723 3.883 5.053v68.243c0 4.277 -1.553 6.807 -6.99 7.193L24.467 99.967c-4.08 0.193 -6.023 -0.39 -8.16 -3.113L3.3 79.94c-2.333 -3.113 -3.3 -5.443 -3.3 -8.167V11.113c0 -3.497 1.553 -6.413 6.017 -6.8z"
-        fill="#ffffff"
+        fill="currentColor"
       />
     </svg>
   ),
@@ -60,8 +61,9 @@ const Icons = {
       height="24"
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
+      className="text-black dark:text-white transition-colors duration-500"
     >
-      <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" fill="white" />
+      <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" fill="currentColor" />
     </svg>
   ),
   googleDrive: () => (
@@ -117,9 +119,10 @@ const Icons = {
       height="24"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="white"
+      stroke="currentColor"
       strokeWidth="2"
       xmlns="http://www.w3.org/2000/svg"
+      className="text-black dark:text-white transition-colors duration-500"
     >
       <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
       <circle cx="12" cy="7" r="4" />
@@ -154,7 +157,7 @@ const CombinedFactoryStudioCard = () => {
         scale: 1.02,
         transition: { duration: 0.3, ease: "easeOut" }
       }}
-      className="group relative p-4 sm:p-6 md:p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl hover:bg-white/[0.08] hover:border-white/20 transition-all duration-500"
+      className="group relative p-4 sm:p-6 md:p-8 bg-white dark:bg-white/5 shadow-sm dark:shadow-none backdrop-blur-xl border border-black/10 dark:border-white/10 rounded-2xl hover:bg-gray-50 dark:hover:bg-white/[0.08] hover:border-black/20 dark:hover:border-white/20 transition-all duration-500"
     >
       <div
         className="relative flex h-[200px] sm:h-[250px] md:h-[300px] w-full items-center justify-center overflow-hidden"
@@ -175,7 +178,7 @@ const CombinedFactoryStudioCard = () => {
               <Icons.messenger />
             </Circle>
             <Circle ref={div5Ref}>
-              <Bot className="w-6 h-6 text-white" />
+              <Bot className="w-6 h-6 text-black dark:text-white transition-colors duration-500" />
             </Circle>
           </div>
           <div className="flex flex-col justify-center">
@@ -256,15 +259,15 @@ const ServiceCard = ({ service, index, tall }: { service: ServiceType, index: nu
         scale: 1.02,
         transition: { duration: 0.3, ease: "easeOut" }
       }}
-      className={`group relative p-4 sm:p-6 md:p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl hover:bg-white/[0.08] hover:border-white/20 transition-all duration-500 ${tall ? 'h-full flex flex-col' : ''}`}
+      className={`group relative p-4 sm:p-6 md:p-8 bg-white dark:bg-white/5 shadow-sm dark:shadow-none backdrop-blur-xl border border-black/10 dark:border-white/10 rounded-2xl hover:bg-gray-50 dark:hover:bg-white/[0.08] hover:border-black/20 dark:hover:border-white/20 transition-all duration-500 ${tall ? 'h-full flex flex-col' : ''}`}
     >
       <div className={`relative z-10 ${tall ? 'h-full flex flex-col' : ''}`}>
         <div className={tall ? 'flex-1 flex flex-col justify-center' : ''}>
-          <div className="inline-flex p-2 sm:p-3 rounded-xl bg-white/10 mb-4 sm:mb-6 group-hover:bg-white/20 transition-colors duration-300 w-fit">
-            <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+          <div className="inline-flex p-2 sm:p-3 rounded-xl bg-black/5 dark:bg-white/10 mb-4 sm:mb-6 group-hover:bg-black/10 dark:group-hover:bg-white/20 transition-colors duration-300 w-fit">
+            <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-black dark:text-white transition-colors duration-500" />
           </div>
-          <h3 className="text-lg sm:text-xl font-semibold text-white mb-3 sm:mb-4">{service.title}</h3>
-          <p className="text-sm sm:text-base text-white/70 leading-relaxed">{service.description}</p>
+          <h3 className="text-lg sm:text-xl font-semibold text-black dark:text-white mb-3 sm:mb-4 transition-colors duration-500">{service.title}</h3>
+          <p className="text-sm sm:text-base text-black/70 dark:text-white/70 leading-relaxed transition-colors duration-500">{service.description}</p>
         </div>
         {service.title === "Agent Cloud" && tall && (
           <div className="relative h-64 overflow-hidden -mb-8">
@@ -281,11 +284,11 @@ export default function ServicesSection() {
   const isInView = useInView(sectionRef, { once: true, margin: "-200px" });
 
   return (
-    <section ref={sectionRef} className="py-16 sm:py-24 md:py-32 bg-[#0A0A0A] relative overflow-hidden" id="services">
+    <section ref={sectionRef} className="py-16 sm:py-24 md:py-32 bg-gray-50 dark:bg-[#0A0A0A] relative overflow-hidden transition-colors duration-500" id="services">
       {/* Background orbs */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-0 w-96 h-96 bg-gradient-to-r from-white/3 to-gray-400/3 rounded-full filter blur-3xl animate-blob" />
-        <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-gradient-to-l from-gray-300/3 to-white/3 rounded-full filter blur-3xl animate-blob animation-delay-2000" />
+        <div className="absolute top-1/4 left-0 w-96 h-96 bg-gradient-to-r from-black/5 dark:from-white/3 to-gray-400/5 dark:to-gray-400/3 rounded-full filter blur-3xl animate-blob" />
+        <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-gradient-to-l from-gray-300/5 dark:from-gray-300/3 to-black/5 dark:to-white/3 rounded-full filter blur-3xl animate-blob animation-delay-2000" />
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
@@ -299,15 +302,15 @@ export default function ServicesSection() {
             initial={{ opacity: 0 }}
             animate={isInView ? { opacity: 1 } : {}}
             transition={{ delay: 0.2 }}
-            className="text-sm font-medium text-white/60 tracking-wider uppercase"
+            className="text-sm font-medium text-black/60 dark:text-white/60 tracking-wider uppercase"
           >
             Multi-Chain Agent Operating System
           </motion.span>
-          <h2 className="mt-4 text-5xl md:text-6xl font-light text-white tracking-tighter">
+          <h2 className="mt-4 text-5xl md:text-6xl font-light text-black dark:text-white tracking-tighter">
             Not Just Trading—<br />
             <span className="font-medium">Wealth Building</span>
           </h2>
-          <p className="mt-6 text-lg text-white/60 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-6 text-lg text-black/60 dark:text-white/60 max-w-2xl mx-auto leading-relaxed">
             Execute on low-gas chains. Build wealth on Ethereum.<br />
             EVM-native agents that trade fast, rotate profits to blue-chips, and compound yields automatically.
           </p>

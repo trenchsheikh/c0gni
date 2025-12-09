@@ -3,6 +3,7 @@
 import { PrivyProvider } from '@privy-io/react-auth'
 import { WagmiProvider } from '@privy-io/wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ThemeProvider } from 'next-themes'
 import { useState } from 'react'
 import { http } from 'viem'
 import { polygon } from 'viem/chains'
@@ -45,7 +46,7 @@ export function Providers({ children }: ProvidersProps) {
       config={{
         // Appearance settings
         appearance: {
-          theme: 'dark',
+          theme: 'dark', // Keep Privy dark for now or make dynamic later
           accentColor: '#00D2FF',
           logo: '/c0gni-c-white.svg',
           walletList: ['metamask', 'coinbase_wallet', 'rainbow', 'uniswap', 'phantom'],
@@ -80,12 +81,14 @@ export function Providers({ children }: ProvidersProps) {
       }}
     >
       <QueryClientProvider client={queryClient}>
-        <WagmiProvider config={wagmiConfig}>
-          <WalletProvider>
-            {children}
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <WagmiProvider config={wagmiConfig}>
+            <WalletProvider>
+              {children}
             <Toaster />
-          </WalletProvider>
-        </WagmiProvider>
+            </WalletProvider>
+          </WagmiProvider>
+        </ThemeProvider>
       </QueryClientProvider>
     </PrivyProvider>
   )

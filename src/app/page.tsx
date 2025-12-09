@@ -11,7 +11,7 @@ import Footer from '@/components/Footer';
 
 export default function Home() {
   return (
-    <div className="bg-[#0A0A0A]">
+    <div className="bg-white dark:bg-[#0A0A0A] min-h-screen transition-colors duration-500">
       <ScrollNavigation />
       <HeroSection />
       <PartnerLogos />

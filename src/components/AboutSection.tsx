@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { InteractiveGridPattern } from "@/components/magicui/interactive-grid-pattern";
 import { cn } from "@/lib/utils";
@@ -8,7 +8,7 @@ export default function AboutSection() {
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
-    <section ref={sectionRef} className="py-16 sm:py-24 md:py-32 bg-[#0A0A0A] relative overflow-hidden" id="about">
+    <section ref={sectionRef} className="py-16 sm:py-24 md:py-32 bg-white dark:bg-[#0A0A0A] relative overflow-hidden transition-colors duration-500" id="about">
       {/* Interactive Grid Pattern Background */}
       <div className="absolute inset-0 flex items-center justify-end pr-8 sm:pr-16 md:pr-32">
         <InteractiveGridPattern
@@ -17,7 +17,7 @@ export default function AboutSection() {
             "skew-y-6 opacity-20 sm:opacity-30",
           )}
           squares={[20, 20]}
-          squaresClassName="stroke-white/20 hover:fill-white/10"
+          squaresClassName="stroke-black/10 dark:stroke-white/20 hover:fill-black/5 dark:hover:fill-white/10"
         />
       </div>
       
@@ -28,14 +28,14 @@ export default function AboutSection() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="text-center"
         >
-          <span className="text-sm font-medium text-white/60 tracking-wider uppercase">
+          <span className="text-sm font-medium text-black/60 dark:text-white/60 tracking-wider uppercase">
             Multi-Chain Execution, Ethereum Settlement
           </span>
-          <h2 className="mt-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white tracking-tighter px-4">
+          <h2 className="mt-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-black dark:text-white tracking-tighter px-4">
             Fast trades on low-gas chains.<br />
             <span className="font-medium">Wealth preservation on Ethereum.</span>
           </h2>
-          <p className="mt-6 text-base sm:text-lg text-white/60 max-w-3xl mx-auto leading-relaxed px-4">
+          <p className="mt-6 text-base sm:text-lg text-black/60 dark:text-white/60 max-w-3xl mx-auto leading-relaxed px-4">
             Polygon, Arbitrum, Base = &lt;$0.01 transaction fees. High-frequency trading without the cost.<br />
             Flashbots = MEV protection. The Graph = real-time indexing across all chains.<br />
             <br />
